@@ -5,7 +5,7 @@
 
 # Definitions.
 CC = avr-gcc
-CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I. -I../../utils -I../../fonts -I../../drivers -I../../drivers/avr
+CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I. -I../utils -I../fonts -I../drivers -I../drivers/avr
 OBJCOPY = avr-objcopy
 SIZE = avr-size
 DEL = rm
@@ -19,10 +19,16 @@ all: game.out
 state.o: state.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: game.c ../../drivers/avr/system.h
+menu.o: menu.c state.o
 	$(CC) -c $(CFLAGS) $< -o $@
 
-system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
+tetris.o: tetris.c state.o
+	$(CC) -c $(CFLAGS) $< -o $@
+
+game.o: game.c ../drivers/avr/system.h state.o menu.o tetris.o
+	$(CC) -c $(CFLAGS) $< -o $@
+
+system.o: ../drivers/avr/system.c ../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 

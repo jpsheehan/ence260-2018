@@ -1,5 +1,8 @@
 #include "system.h"
 
+#include "state.h"
+#include "tetris.h"
+#include "menu.h"
 
 /**
  * Initialises the hardware and starts the main loop.
@@ -11,6 +14,8 @@ int main (void)
     // init the led matrix
 
     // init the button
+
+    // init the IR comms
     
     // init the pacer (100Hz should be good enough to update the screen and the game)
 
@@ -24,10 +29,10 @@ int main (void)
 
                 break;
             case SINGLE_PLAYER_GAME:
-
+                playTetris(1);
                 break;
             case MULTI_PLAYER_GAME:
-
+                playTetris(2);
                 break;
         }
     }

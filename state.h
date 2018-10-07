@@ -1,29 +1,31 @@
 #ifndef STATE_H_
 #define STATE_H_
 
+#include <stdint.h>
+
 /**
  * The different states that the game can be in.
  */
-typedef enum State {
-    STARTUP,
-    MAIN_MENU,
-    SINGLE_PLAYER_GAME,
-    MULTI_PLAYER_GAME
+enum state_e {
+    STARTUP = 0,
+    MAIN_MENU = 1,
+    SINGLE_PLAYER_GAME = 2,
+    MULTI_PLAYER_GAME = 3
 };
 
 /**
  * Stores the state of the game.
  */
-static State state;
+static uint8_t state;
 
 /**
  * Sets the state of the game to _state.
  */
-void setState(State _state);
+void setState(uint8_t _state);
 
 /**
  * Returns the state of the game.
  */
-State getState();
+uint8_t getState(void);
 
 #endif
