@@ -16,6 +16,9 @@ all: game.out
 
 
 # Compile: create object files from C source files.
+state.o: state.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
 game.o: game.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
