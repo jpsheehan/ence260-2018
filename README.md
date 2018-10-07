@@ -23,4 +23,15 @@ The idea of this project is to give a basic implementation of classic Tetris.
 
 ## Rules
 
-As we have limited hardware (most obviously, a 5x7 display) we cannot adhere to the 
+As we have limited hardware (most obviously, a 5x7 display) we cannot adhere to the [Tetris Guideline](http://tetris.wikia.com/wiki/Tetris_Guideline). The following rules apply:
+- Playfield is 5x12, where rows above 7 are hidden from the player. This is required so that we don't get any nasty errors when placing an I piece at the very top of the stack.
+- The following Tetrominos are used:
+  - I piece
+  - O piece
+  - T piece
+  - S piece
+  - Z piece
+  - J piece
+  - L piece
+- Tetromino start locations:
+  - TODO...
