@@ -1,7 +1,7 @@
 #ifndef PIECERANDOMISER_H_
 #define PIECERANDOMISER_H_
 
-#include <stdint.h>
+#include "system.h"
 #include "timer.h"
 
 /** 
