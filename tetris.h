@@ -23,6 +23,13 @@
 #define ROTATE_270 3
 
 /**
+ * Some useful macros for the size of the game board
+ */
+#define GAME_BOARD_WIDTH 5
+#define GAME_BOARD_HEIGHT 12
+#define GAME_BOARD_VISIBLE_HEIGHT 7
+
+/**
  * Represents a 2D position.
  */
 typedef struct position_s {
@@ -34,7 +41,7 @@ typedef struct position_s {
  * Represents the entire state of the game.
  */
 typedef struct game_s {
-    uint8_t board[7][5];
+    uint8_t board[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];
     uint8_t active_piece;
     uint8_t active_orientation;
     Position active_position;
