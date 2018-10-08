@@ -4,7 +4,7 @@
  * Applies gravity to the active piece.
  * If the active piece would collide with the stack then it is added to the stack before it is moved.
  */
-void applyGravity(Board* board)
+void applyGravity(Game* game)
 {
 
 }
@@ -14,7 +14,7 @@ void applyGravity(Board* board)
  * If rotation cannot occur, nothing will happen.
  * A rotation will sometimes cause a kick to occur.
  */
-void rotateActivePiece(Board* board, uint8_t direction)
+void rotateActivePiece(Game* game, uint8_t direction)
 {
-    
+
 }
