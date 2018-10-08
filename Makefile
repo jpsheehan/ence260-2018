@@ -19,13 +19,22 @@ all: game.out
 state.o: state.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-menu.o: menu.c state.o
+menu.o: menu.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-tetris.o: tetris.c state.o
+tetris.o: tetris.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: game.c ../drivers/avr/system.h state.o menu.o tetris.o
+pieceRandomiser.o: pieceRandomiser.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+physics.o: physics.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+game.o: game.c ../drivers/avr/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+timer.o: ../drivers/avr/timer.c ../drivers/avr/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 system.o: ../drivers/avr/system.c ../drivers/avr/system.h
@@ -34,7 +43,7 @@ system.o: ../drivers/avr/system.c ../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o
+game.out: game.o system.o timer.o tetris.o state.o pieceRandomiser.o menu.o physics.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

@@ -14,7 +14,7 @@
 /**
  * Stores the state of the game.
  */
-static uint8_t state = STATE_STARTUP;
+static uint8_t state;
 
 /**
  * Sets the state of the game to _state.
