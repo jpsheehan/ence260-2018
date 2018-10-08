@@ -12,7 +12,6 @@ int main (void)
     system_init ();
 
     // init the led matrix
-    //comment
 
     // init the button
 
@@ -22,7 +21,7 @@ int main (void)
 
     while (1)
     {
-        switch (state) {
+        switch (getState()) {
             case STARTUP:
 
                 break;
