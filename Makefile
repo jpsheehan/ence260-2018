@@ -34,7 +34,7 @@ physics.o: physics.c
 game.o: game.c ../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-display.o: display.c
+showScreen.o: showScreen.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
@@ -48,7 +48,7 @@ system.o: ../drivers/avr/system.c ../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o timer.o tetris.o state.o pieceRandomiser.o menu.o physics.o display.o
+game.out: game.o system.o timer.o tetris.o state.o pieceRandomiser.o menu.o physics.o showScreen.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
