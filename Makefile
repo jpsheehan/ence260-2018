@@ -28,6 +28,9 @@ tetris.o: tetris.c state.o
 pieceRandomiser.o: ../drivers/avr/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+physics.o: physics.c tetris.o
+	$(CC) -c $(CFLAGS) $< -o $@
+
 game.o: game.c ../drivers/avr/system.h state.o menu.o tetris.o
 	$(CC) -c $(CFLAGS) $< -o $@
 
