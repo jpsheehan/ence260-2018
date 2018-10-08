@@ -12,7 +12,7 @@ void show_screen(uint8_t gameBoard[7][5]) {
         for (int j = 0; j < 7; j++) {
             // If pixel is active on gameboard
             if (gameBoard[j][i]) {
-                cols[i] |= (1 << j)
+                cols[i] |= (1 << j);
             }
         }
         ledmad_display_column (cols[i], i);
