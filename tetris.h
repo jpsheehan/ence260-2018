@@ -23,6 +23,14 @@
 #define ROTATE_270 3
 
 /**
+ * Represents a 2D position.
+ */
+typedef struct position_s {
+    uint8_t x;
+    uint8_t y;
+} Position;
+
+/**
  * Represents the entire state of the game.
  */
 typedef struct game_s {
@@ -32,14 +40,6 @@ typedef struct game_s {
     Position active_position;
     uint16_t score;
 } Game;
-
-/**
- * Represents a 2D position.
- */
-typedef struct position_s {
-    uint8_t x;
-    uint8_t y;
-} Position;
 
 /**
  * Starts a game of tetris.
