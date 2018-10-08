@@ -18,20 +18,21 @@ int main (void)
     // init the IR comms
     
     // init the pacer (100Hz should be good enough to update the screen and the game)
+    setState(STATE_STARTUP);
 
     while (1)
     {
         switch (getState()) {
-            case STARTUP:
+            case STATE_STARTUP:
 
                 break;
-            case MAIN_MENU:
+            case STATE_MENU:
 
                 break;
-            case SINGLE_PLAYER_GAME:
+            case STATE_1P_GAME:
                 playTetris(1);
                 break;
-            case MULTI_PLAYER_GAME:
+            case STATE_2P_GAME:
                 playTetris(2);
                 break;
         }
