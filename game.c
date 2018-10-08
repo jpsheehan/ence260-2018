@@ -12,6 +12,7 @@ int main (void)
     system_init ();
 
     // init the led matrix
+    //comment
 
     // init the button
 
