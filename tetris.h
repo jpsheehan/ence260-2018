@@ -21,6 +21,7 @@ typedef struct game_s {
     uint8_t active_piece;
     uint8_t active_orientation;
     Position active_position;
+    uint16_t score;
 } Game;
 
 typedef struct position_s {
