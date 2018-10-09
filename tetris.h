@@ -4,7 +4,9 @@
 #include <stdint.h>
 
 /**
- * Represents the Tetrominos
+ * Represents the Tetrominos.
+ * The origin of all pieces is defined as being the topmost cell. If there is
+ * more than one topmost cell, then the topmost and leftmost cell is the origin
  */
 #define I 0
 #define T 1
@@ -38,12 +40,22 @@ typedef struct position_s {
 } Position;
 
 /**
+ * Represents one of ROTATE_0, ROTATE_90, ROTATE_180 or ROTATE_270.
+ */
+typedef uint8_t Orientation;
+
+/**
+ * Represents one of I, O, T, S, Z, L or J.
+ */
+typedef uint8_t Piece;
+
+/**
  * Represents the entire state of the game.
  */
 typedef struct game_s {
     uint8_t board[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];
-    uint8_t active_piece;
-    uint8_t active_orientation;
+    Piece active_piece;
+    Orientation active_orientation;
     Position active_position;
     uint16_t score;
 } Game;
