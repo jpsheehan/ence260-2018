@@ -5,7 +5,8 @@
 
 # Definitions.
 CC = avr-gcc
-CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I. -I../utils -I../fonts -I../drivers -I../drivers/avr
+UCFK = ..
+CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I. -I $(UCFK)/utils -I $(UCFK)/fonts -I $(UCFK)/drivers -I $(UCFK)/drivers/avr
 OBJCOPY = avr-objcopy
 SIZE = avr-size
 DEL = rm
@@ -31,7 +32,7 @@ pieceRandomiser.o: pieceRandomiser.c
 physics.o: physics.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: game.c ../drivers/avr/system.h
+game.o: game.c $(UCFK)/drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 showScreen.o: showScreen.c
@@ -39,10 +40,10 @@ showScreen.o: showScreen.c
 
 
 # Drivers/System stuff:
-timer.o: ../drivers/avr/timer.c ../drivers/avr/timer.h
+timer.o: $(UCFK)/drivers/avr/timer.c $(UCFK)/drivers/avr/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-system.o: ../drivers/avr/system.c ../drivers/avr/system.h
+system.o: ../drivers/avr/system.c $(UCFK)/drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
