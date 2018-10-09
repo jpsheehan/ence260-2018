@@ -96,6 +96,9 @@ PhysicsResult applyGravity(Game* game)
  * Attempts to rotate the active piece by the amount specified.
  * If rotation cannot occur, nothing will happen.
  * A rotation will sometimes cause a kick to occur.
+ * Rotations are defined here: https://vignette.wikia.nocookie.net/tetrisconcept/images/3/3d/SRS-pieces.png/revision/latest?cb=20060626173148
+ * The I piece and the O piece are the only tetrominos which require special treatment when calculating their centre points during rotation
+ * However the O piece doesn't change when rotated, so the I piece is the only piece that has a changing centre point
  */
 PhysicsResult rotateActivePiece(Game* game, uint8_t direction)
 {
@@ -133,114 +136,65 @@ PhysicsResult rotateActivePiece(Game* game, uint8_t direction)
             break;
     }
 
-    // change the center position of the game piece
-    switch (game->active_piece) {
-        case I:
-            switch (game->active_orientation) {
-                case ROTATE_0:
-                    if (direction == CLOCKWISE) {
-                        result.position = (Position){ game->active_position.x + 1, game->active_position.y };
-                    } else {
-                        result.position = (Position){ game->active_position.x, game->active_position.y };
-                    }
-                    break;
-                case ROTATE_90:
-                    if (direction == CLOCKWISE) {
-                        result.position = (Position){ game->active_position.x - 1, game->active_position.y - 1 };
-                    } else {
-                        result.position = (Position){ game->active_position.x - 1, game->active_position.y };
-                    }
-                    break;
-                case ROTATE_180:
-                    if (direction == CLOCKWISE) {
-                        result.position = (Position){ game->active_position.x, game->active_position.y - 1 };
-                    } else {
-                        result.position = (Position){ game->active_position.x + 1, game->active_position.y + 1};
-                    }
-                    break;
-                case ROTATE_270:
-                    if (direction == CLOCKWISE) {
-                        result.position = (Position){ game->active_position.x, game->active_position.y };
-                    } else {
-                        result.position = (Position){ game->active_position.x, game->active_position.y + 1};
-                    }
-                    break;
+    if (game->active_piece == O) {
+
+        // O can't perform kicks
+        result.position = (Position){ game->active_position.x, game->active_position.y };
+        result.isLockedDown = false;
+
+    } else {
+
+        Position *kickData;
+
+        // perform any kicks
+        switch (game->active_piece) {
+            case I:
+                // I has its own set of kicks
+                kickData = kickDataForI;
+                break;
+            case J:
+            case L:
+            case S:
+            case Z:
+            case T:
+                // these pieces share their own kick data
+                kickData = kickDataForJLSTZ;
+                break;
+        }
+
+        uint8_t row = game->active_orientation * 2 + (direction * 2 - 1) * (-1);
+        uint8_t test = 0;
+        for (; test < 5; test++) {
+
+            // get the current position and add the relative test position to it
+            Position pos = *(kickData + sizeof(Position) * 5 * row + sizeof(Position) * test);
+            pos.x = pos.x + game->active_position.x;
+            pos.y = pos.y + game->active_position.y;
+
+            // if this position is free, this is the new position for the piece
+            if (checkIfPositionFree(game, pos)) {
+                result.position = pos;
+                break;
             }
-            break;
-        case O:
-            // no real orientation for this piece
-            // hence one cannot rotate it
-            result.position = (Position){ game->active_position.x, game->active_position.y };
-            break;
-        case T:
-            switch (game->active_orientation) {
-                case ROTATE_0:
+        }
 
-                    break;
-                case ROTATE_90:
+        if (test == 5) {
+            // could not move, set the position and orientation to the origingal values
+            result.isLockedDown = false;
+            result.orientation = game->active_orientation;
+            result.position = game->active_position;
+        }
 
-                    break;
-                case ROTATE_180:
-
-                    break;
-                case ROTATE_270:
-
-                    break;
-            }
-            break;
-        case S:
-            if (game->active_orientation == ROTATE_0 ||
-                game->active_orientation == ROTATE_180) {
-                // S piece is horizontal
-                
-            } else {
-                // S piece is vertical
-            }
-            break;
-        case Z:
-            if (game->active_orientation == ROTATE_0 ||
-                game->active_orientation == ROTATE_180) {
-                // Z piece is horizontal
-                
-            } else {
-                // Z piece is vertical
-            }
-            break;
-        case L:
-            switch (game->active_orientation) {
-                case ROTATE_0:
-
-                    break;
-                case ROTATE_90:
-
-                    break;
-                case ROTATE_180:
-
-                    break;
-                case ROTATE_270:
-
-                    break;
-            }
-            break;
-        case J:
-            switch (game->active_orientation) {
-                case ROTATE_0:
-
-                    break;
-                case ROTATE_90:
-
-                    break;
-                case ROTATE_180:
-
-                    break;
-                case ROTATE_270:
-
-                    break;
-            }
-            break;
     }
 
     return result;
+}
+
+/**
+ * Checks if the position is free and returns one of WALL, STACK or EMPTY
+ */
+bool checkIfPositionFree(Game* game, Position pos) {
+    return game->board[pos.y][pos.x] == EMPTY;
 }
 
 /**

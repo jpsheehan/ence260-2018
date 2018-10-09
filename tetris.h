@@ -38,6 +38,14 @@
 #define COUNTERCLOCKWISE 1
 
 /**
+ * Some useful macros for specifying the type of block at a particular place
+ */
+#define EMPTY 0
+#define WALL 1
+#define STACK 2
+#define GHOST 3
+
+/**
  * Represents a 2D position.
  */
 typedef struct position_s {
