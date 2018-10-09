@@ -4,9 +4,92 @@
  * Applies gravity to the active piece.
  * If the active piece would collide with the stack then it is added to the stack before it is moved.
  */
-void applyGravity(Game* game)
+PhysicsResult applyGravity(Game* game)
 {
+    PhysicsResult result = {0};
 
+    switch (game->active_piece) {
+        case I:
+            if (game->active_orientation == ROTATE_0 ||
+                game->active_orientation == ROTATE_180) {
+                // I piece is vertical
+                
+            } else {
+                // I piece is horizontal
+            }
+            break;
+        case O:
+            // no real orientation for this piece
+            break;
+        case T:
+            switch (game->active_orientation) {
+                case ROTATE_0:
+
+                    break;
+                case ROTATE_90:
+
+                    break;
+                case ROTATE_180:
+
+                    break;
+                case ROTATE_270:
+
+                    break;
+            }
+            break;
+        case S:
+            if (game->active_orientation == ROTATE_0 ||
+                game->active_orientation == ROTATE_180) {
+                // S piece is horizontal
+                
+            } else {
+                // S piece is vertical
+            }
+            break;
+        case Z:
+            if (game->active_orientation == ROTATE_0 ||
+                game->active_orientation == ROTATE_180) {
+                // Z piece is horizontal
+                
+            } else {
+                // Z piece is vertical
+            }
+            break;
+        case L:
+            switch (game->active_orientation) {
+                case ROTATE_0:
+
+                    break;
+                case ROTATE_90:
+
+                    break;
+                case ROTATE_180:
+
+                    break;
+                case ROTATE_270:
+
+                    break;
+            }
+            break;
+        case J:
+            switch (game->active_orientation) {
+                case ROTATE_0:
+
+                    break;
+                case ROTATE_90:
+
+                    break;
+                case ROTATE_180:
+
+                    break;
+                case ROTATE_270:
+
+                    break;
+            }
+            break;
+    }
+
+    return result;
 }
 
 /**
@@ -14,9 +97,11 @@ void applyGravity(Game* game)
  * If rotation cannot occur, nothing will happen.
  * A rotation will sometimes cause a kick to occur.
  */
-void rotateActivePiece(Game* game, uint8_t direction)
+PhysicsResult rotateActivePiece(Game* game, uint8_t direction)
 {
+    PhysicsResult result = {0};
 
+    return result;
 }
 
 /**
