@@ -32,6 +32,12 @@
 #define GAME_BOARD_VISIBLE_HEIGHT 7
 
 /**
+ * Some useful macros for specifying relative rotation direction.
+ */
+#define CLOCKWISE 0
+#define COUNTERCLOCKWISE 1
+
+/**
  * Represents a 2D position.
  */
 typedef struct position_s {

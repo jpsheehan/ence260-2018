@@ -101,6 +101,145 @@ PhysicsResult rotateActivePiece(Game* game, uint8_t direction)
 {
     PhysicsResult result = {0};
 
+    // change the orientation of the piece
+    switch (game->active_orientation) {
+        case ROTATE_0:
+            if (direction == CLOCKWISE) {
+                result.orientation = ROTATE_90;
+            } else {
+                result.orientation = ROTATE_270;
+            }
+            break;
+        case ROTATE_90:
+            if (direction == CLOCKWISE) {
+                result.orientation = ROTATE_180;
+            } else {
+                result.orientation = ROTATE_0;
+            }
+            break;
+        case ROTATE_180:
+            if (direction == CLOCKWISE) {
+                result.orientation = ROTATE_270;
+            } else {
+                result.orientation = ROTATE_90;
+            }
+            break;
+        case ROTATE_270:
+            if (direction == CLOCKWISE) {
+                result.orientation = ROTATE_180;
+            } else {
+                result.orientation = ROTATE_0;
+            }
+            break;
+    }
+
+    // change the center position of the game piece
+    switch (game->active_piece) {
+        case I:
+            switch (game->active_orientation) {
+                case ROTATE_0:
+                    if (direction == CLOCKWISE) {
+                        result.position = (Position){ game->active_position.x + 1, game->active_position.y };
+                    } else {
+                        result.position = (Position){ game->active_position.x, game->active_position.y };
+                    }
+                    break;
+                case ROTATE_90:
+                    if (direction == CLOCKWISE) {
+                        result.position = (Position){ game->active_position.x - 1, game->active_position.y - 1 };
+                    } else {
+                        result.position = (Position){ game->active_position.x - 1, game->active_position.y };
+                    }
+                    break;
+                case ROTATE_180:
+                    if (direction == CLOCKWISE) {
+                        result.position = (Position){ game->active_position.x, game->active_position.y - 1 };
+                    } else {
+                        result.position = (Position){ game->active_position.x + 1, game->active_position.y + 1};
+                    }
+                    break;
+                case ROTATE_270:
+                    if (direction == CLOCKWISE) {
+                        result.position = (Position){ game->active_position.x, game->active_position.y };
+                    } else {
+                        result.position = (Position){ game->active_position.x, game->active_position.y + 1};
+                    }
+                    break;
+            }
+            break;
+        case O:
+            // no real orientation for this piece
+            // hence one cannot rotate it
+            result.position = (Position){ game->active_position.x, game->active_position.y };
+            break;
+        case T:
+            switch (game->active_orientation) {
+                case ROTATE_0:
+
+                    break;
+                case ROTATE_90:
+
+                    break;
+                case ROTATE_180:
+
+                    break;
+                case ROTATE_270:
+
+                    break;
+            }
+            break;
+        case S:
+            if (game->active_orientation == ROTATE_0 ||
+                game->active_orientation == ROTATE_180) {
+                // S piece is horizontal
+                
+            } else {
+                // S piece is vertical
+            }
+            break;
+        case Z:
+            if (game->active_orientation == ROTATE_0 ||
+                game->active_orientation == ROTATE_180) {
+                // Z piece is horizontal
+                
+            } else {
+                // Z piece is vertical
+            }
+            break;
+        case L:
+            switch (game->active_orientation) {
+                case ROTATE_0:
+
+                    break;
+                case ROTATE_90:
+
+                    break;
+                case ROTATE_180:
+
+                    break;
+                case ROTATE_270:
+
+                    break;
+            }
+            break;
+        case J:
+            switch (game->active_orientation) {
+                case ROTATE_0:
+
+                    break;
+                case ROTATE_90:
+
+                    break;
+                case ROTATE_180:
+
+                    break;
+                case ROTATE_270:
+
+                    break;
+            }
+            break;
+    }
+
     return result;
 }
 
