@@ -28,9 +28,11 @@ uint8_t processLineClears(Game* game)
 {
     uint8_t num_clears = 0;
     
+    // loop through each row
     uint8_t i = 0;
     for (; i < GAME_BOARD_HEIGHT; i++) {
-
+        
+        // loop through each cell, checking that it is full (a part of the stack)
         uint8_t j = 0;
         for (; j < GAME_BOARD_WIDTH; j++) {
 
@@ -40,10 +42,31 @@ uint8_t processLineClears(Game* game)
 
         }
 
+        // if this row is full
         if (j == GAME_BOARD_WIDTH) {
             num_clears++;
-        }
 
+            // we must now clear this row by shifting all rows above it down by 1
+
+            // starting at the current row (the row to be cleared) and working our way up to the top of the board,
+            // we must shift each k-1 row to the kth row position
+            int k = i;
+            for (; k > 0; k--) {
+
+                // for each cell in the previous row move it down one
+                int j = 0;
+                for (; j < GAME_BOARD_WIDTH; j++) {
+                    game->board[k][j] = game->board[k-1][j];
+                }
+            }
+
+            // we must now clear the 0th row, because there cannot possibly be any stack there
+            int j = 0;
+            for (; j < GAME_BOARD_WIDTH; j++) {
+                game->board[0][j] = 0;
+            }
+        }
     }
+    
     return num_clears;
 }
