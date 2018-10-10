@@ -4,6 +4,7 @@
 #include "system.h"
 #include "ledmat.h"
 #include "display.h"
+#include "pacer.h"
 
 /**
  * displays the screen based on a 7*5 array
