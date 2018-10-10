@@ -112,19 +112,45 @@ void fillFramebuffer(Game *game)
     
 }
 
-/**
- * Checks if the relative position of the active piece is free and returns one of EMPTY, WALL, STACK or FLOOR
- */
-uint8_t testNewPosition(Game* game, Position pos) {
-
-    Position absPos = {game->active_position.x + pos.x, game->active_position.y + pos.y};
+uint8_t testAbsolutePosition(Game* game, Position absPos)
+{
+    Position *collData = drawData[game->active_piece][game->active_orientation];
 
     uint8_t i = 0;
-    for (; i < 4; i++) {
+    for (; i < NUM_MINOS_IN_PIECE; i++) {
 
+        Position pos = { collData[i].x + absPos.x, collData[i].y + absPos.y };
+        printf("Testing (%d, %d)\n", absPos.x, absPos.y);
+        
+        // check x bounds
+        if (pos.x < 0 || pos.x >= GAME_BOARD_WIDTH) {
+            return WALL;
+        }
+
+        // check y bounds
+        if (pos.y >= GAME_BOARD_HEIGHT) {
+            return FLOOR;
+        }
+
+        // we ignore checking for if the piece occupies space above the play area
+        // but we still don't want to index game board with out of bounds indices
+        if (pos.y >= 0) {
+            uint8_t found = game->board[pos.y][pos.x];
+            if (found != EMPTY) {
+                return found;
+            }
+        }
     }
-
     return EMPTY;
+}
+
+/**
+ * Checks if the current piece, in its current orientation could occupy the relative position pos.
+ * Returns the kind of clipping that would occur: EMPTY, WALL, FLOOR or STACK
+ */
+uint8_t testRelativePosition(Game* game, Position pos) {
+
+    return testAbsolutePosition(game, (Position){ game->active_position.x + pos.x, game->active_position.y + pos.y });
 }
 
 /**
@@ -135,89 +161,35 @@ PhysicsResult applyGravity(Game* game)
 {
     PhysicsResult result = {0};
 
-    // switch (game->active_piece) {
-    //     case I:
-    //         if (game->active_orientation == ROTATE_0 ||
-    //             game->active_orientation == ROTATE_180) {
-    //             // I piece is vertical
+    Position newPosition = { game->active_position.x, game->active_position.y + 1 };
+
+    uint8_t test = testAbsolutePosition(game, newPosition);
+    uint8_t i = 0;
+
+    #include <stdio.h>
+    printf("%d\n", test);
+
+    switch (test) {
+        case EMPTY:
+            // everything okay! let's move the piece to its new position
+            game->active_position.x = newPosition.x;
+            game->active_position.y = newPosition.y;
+            result.isLockedDown = false;
+            break;
+        case FLOOR:
+        case STACK:
+            // uh, oh! the piece collided with the floor or the stack, let's turn the active piece into part of the stack
+            for (; i < NUM_MINOS_IN_PIECE; i++) {
+                Position relPos = drawData[game->active_piece][game->active_orientation][i];
+                uint8_t x = game->active_position.x + relPos.x;
+                uint8_t y = game->active_position.y + relPos.y;
                 
-    //         } else {
-    //             // I piece is horizontal
-    //         }
-    //         break;
-    //     case O:
-    //         // no real orientation for this piece
-    //         break;
-    //     case T:
-    //         switch (game->active_orientation) {
-    //             case ROTATE_0:
-
-    //                 break;
-    //             case ROTATE_90:
-
-    //                 break;
-    //             case ROTATE_180:
-
-    //                 break;
-    //             case ROTATE_270:
-
-    //                 break;
-    //         }
-    //         break;
-    //     case S:
-    //         if (game->active_orientation == ROTATE_0 ||
-    //             game->active_orientation == ROTATE_180) {
-    //             // S piece is horizontal
-                
-    //         } else {
-    //             // S piece is vertical
-    //         }
-    //         break;
-    //     case Z:
-    //         if (game->active_orientation == ROTATE_0 ||
-    //             game->active_orientation == ROTATE_180) {
-    //             // Z piece is horizontal
-                
-    //         } else {
-    //             // Z piece is vertical
-    //         }
-    //         break;
-    //     case L:
-    //         switch (game->active_orientation) {
-    //             case ROTATE_0:
-
-    //                 break;
-    //             case ROTATE_90:
-
-    //                 break;
-    //             case ROTATE_180:
-
-    //                 break;
-    //             case ROTATE_270:
-
-    //                 break;
-    //         }
-    //         break;
-    //     case J:
-    //         switch (game->active_orientation) {
-    //             case ROTATE_0:
-
-    //                 break;
-    //             case ROTATE_90:
-
-    //                 break;
-    //             case ROTATE_180:
-
-    //                 break;
-    //             case ROTATE_270:
-
-    //                 break;
-    //         }
-    //         break;
-    // }
-
-    // result.orientation = game->active_orientation;
-    game->active_position = (Position){ game->active_position.x, game->active_position.y + 1};
+                printf("%d, %d\n", x, y);
+                game->board[y][x] = STACK;
+            }
+            result.isLockedDown = true;
+            break;
+    }
 
     return result;
 }

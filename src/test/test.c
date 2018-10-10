@@ -38,8 +38,34 @@ int main(void)
     //     }
     // }
 
+    applyGravity(&game);
+    applyGravity(&game);
+    applyGravity(&game);
+    applyGravity(&game);
+    applyGravity(&game);
+    applyGravity(&game);
+    applyGravity(&game);
+
+    game.active_piece = I;
+    game.active_position = (Position){ 2, 0 };
+    game.active_orientation = ROTATE_0;
 
 
+    printf("Board:\n");
+    display(&game);
+
+
+    applyGravity(&game);
+    applyGravity(&game);
+    applyGravity(&game);
+    applyGravity(&game);
+    applyGravity(&game);
+    applyGravity(&game);
+
+
+    game.active_piece = I;
+    game.active_position = (Position){ 2, 0 };
+    game.active_orientation = ROTATE_0;
     printf("Board:\n");
     display(&game);
 

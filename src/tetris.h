@@ -29,6 +29,7 @@
  */
 #define GAME_BOARD_WIDTH 5
 #define GAME_BOARD_HEIGHT 7
+#define NUM_MINOS_IN_PIECE 4
 
 /**
  * Some useful macros for specifying relative rotation direction.
