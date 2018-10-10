@@ -6,7 +6,7 @@
  * IN FUTURE CONSIDER USING THE 7-BAG METHOD
  */
 uint8_t getNextTetromino(void) {
-    #if __AVR__
+    #ifdef __AVR__
         return timer_get() % NUM_TETROMINOS;
     #else
         return rand() % NUM_TETROMINOS;

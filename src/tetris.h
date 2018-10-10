@@ -2,20 +2,10 @@
 #define TETRIS_H_
 
 /**
- * Define a macro named __AVR__ to be true if we are compiling on AVR.
- * We need this so we can test the same code on PC.
- */
-#if defined __i386__ || defined __amd64__
-    #define __AVR__ false
-#else
-    #define __AVR__ true
-#endif
-
-/**
  * Platform independent:
  * Required for random number generation for spawnNextTetromino().
  */
-#if __AVR__
+#ifdef __AVR__
     #include "timer.h"
 #else
     #include <stdlib.h>
