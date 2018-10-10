@@ -1,8 +1,4 @@
 {
-    "files.associations": {
-        "state.h": "c",
-        "piecerandomiser.h": "c"
-    },
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
