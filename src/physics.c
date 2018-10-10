@@ -151,6 +151,27 @@ uint8_t testRelativePosition(Game* game, Position pos) {
 }
 
 /**
+ * Attempts to move the active piece in the specified direction.
+ * Returns true if it succeeded.
+ */
+bool moveActivePiece(Game* game, uint8_t direction)
+{
+    Position newPosition = { game->active_position.x + (direction == LEFT ? -1 : 1), game->active_position.y };
+
+    uint8_t test = testAbsolutePosition(game, newPosition);
+
+    if (test == EMPTY) {
+        // everything is ok! we can move the piece to the new position
+        game->active_position.x = newPosition.x;
+        game->active_position.y = newPosition.y;
+        return true;
+    } else {
+        // we can't move the piece :(
+        return false;
+    }
+}
+
+/**
  * Applies gravity to the active piece.
  * If the active piece would collide with the stack then it is added to the stack before it is moved.
  * It spawns a new piece if the active piece collided with the stack or floor.

@@ -64,11 +64,11 @@ int main(void)
             printf("Rotating counter-clockwise...\n");
             display(&game);
         } else if (strcmp(input, "l") == 0 || strcmp(input, "left") == 0) {
-
+            moveActivePiece(&game, LEFT);
             printf("Shifting left...\n");
             display(&game);
         } else if (strcmp(input, "r") == 0 || strcmp(input, "right") == 0) {
-
+            moveActivePiece(&game, RIGHT);
             printf("Shifting right...\n");
             display(&game);
         }

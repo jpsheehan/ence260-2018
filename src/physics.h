@@ -27,6 +27,12 @@ bool applyGravity(Game* game);
 PhysicsResult rotateActivePiece(Game* game, uint8_t direction);
 
 /**
+ * Attempts to move the active piece in the specified direction.
+ * Returns true if it succeeded.
+ */
+bool moveActivePiece(Game* game, uint8_t direction);
+
+/**
  * Checks each row in the game board for any line clears.
  * If any are found, they are removed and everything above is moved down.
  * Returns the number of lines cleared.

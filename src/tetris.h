@@ -45,10 +45,12 @@
 #define NUM_TETROMINOS 7
 
 /**
- * Some useful macros for specifying relative rotation direction.
+ * Some useful macros for specifying relative rotation direction and shift direction.
  */
 #define CLOCKWISE 0
 #define COUNTERCLOCKWISE 1
+#define LEFT 0
+#define RIGHT 1
 
 /**
  * Some useful macros for specifying the type of block at a particular place
