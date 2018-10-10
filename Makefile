@@ -5,8 +5,9 @@
 
 # Definitions.
 CC = avr-gcc
+SRC = ./src
 UCFK = ..
-CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I. -I $(UCFK)/utils -I $(UCFK)/fonts -I $(UCFK)/drivers -I $(UCFK)/drivers/avr
+CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I$(SRC) -I $(UCFK)/utils -I $(UCFK)/fonts -I $(UCFK)/drivers -I $(UCFK)/drivers/avr
 OBJCOPY = avr-objcopy
 SIZE = avr-size
 DEL = rm
@@ -17,25 +18,25 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-state.o: state.c
+state.o: $(SRC)/state.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-menu.o: menu.c
+menu.o: $(SRC)/menu.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-tetris.o: tetris.c
+tetris.o: $(SRC)/tetris.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-pieceRandomiser.o: pieceRandomiser.c
+pieceRandomiser.o: $(SRC)/pieceRandomiser.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-physics.o: physics.c
+physics.o: $(SRC)/physics.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: game.c $(UCFK)/drivers/avr/system.h
+game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-showScreen.o: showScreen.c
+showScreen.o: $(SRC)/showScreen.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
@@ -43,7 +44,7 @@ showScreen.o: showScreen.c
 timer.o: $(UCFK)/drivers/avr/timer.c $(UCFK)/drivers/avr/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-system.o: ../drivers/avr/system.c $(UCFK)/drivers/avr/system.h
+system.o: $(UCFK)/drivers/avr/system.c $(UCFK)/drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
