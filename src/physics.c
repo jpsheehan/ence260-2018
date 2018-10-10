@@ -176,7 +176,7 @@ bool moveActivePiece(Game* game, uint8_t direction)
  * Applies gravity to the active piece.
  * If the active piece would collide with the stack then it is added to the stack before it is moved.
  * It spawns a new piece if the active piece collided with the stack or floor.
- * Returns true if it was added to the stack
+ * Returns true the tetromino wasn't added to the stack
  */
 bool applyGravity(Game* game)
 {
@@ -190,7 +190,7 @@ bool applyGravity(Game* game)
             // everything okay! let's move the piece to its new position
             game->active_position.x = newPosition.x;
             game->active_position.y = newPosition.y;
-            return false;
+            return true;
         case FLOOR:
         case STACK:
             // uh, oh! the piece collided with the floor or the stack, let's turn the active piece into part of the stack
@@ -200,11 +200,10 @@ bool applyGravity(Game* game)
                 uint8_t y = game->active_position.y + relPos.y;
                 game->board[y][x] = STACK;
             }
-            spawnNextTetromino(game);
-            return true;
+            return false;
     }
 
-    return false;
+    return true;
 }
 
 /**
@@ -266,7 +265,7 @@ bool rotateActivePiece(Game* game, uint8_t direction)
         switch (game->active_piece) {
             case I:
                 // I has its own set of kicks
-                kickData = kickDataForI;
+                kickData = (Position*)kickDataForI;
                 break;
             case J:
             case L:
@@ -274,7 +273,7 @@ bool rotateActivePiece(Game* game, uint8_t direction)
             case Z:
             case T:
                 // these pieces share their own kick data
-                kickData = kickDataForJLSTZ;
+                kickData = (Position*)kickDataForJLSTZ;
                 break;
         }
 
