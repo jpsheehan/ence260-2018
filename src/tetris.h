@@ -1,6 +1,7 @@
 #ifndef TETRIS_H_
 #define TETRIS_H_
 
+#include "timer.h"
 #include <stdint.h>
 
 /**
@@ -80,5 +81,16 @@ typedef struct game_s {
  * Starts a game of tetris.
  */
 void playTetris(uint8_t num_players);
+
+
+/**
+ * The default spawn position of all pieces.
+ */
+const Position DefaultSpawnPosition = {1, 0};
+
+/**
+ * Generates the next (or first) tetromino and spawns it.
+ */
+void spawnNextTetromino(Game* game);
 
 #endif

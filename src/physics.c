@@ -77,8 +77,6 @@ static Position drawData[7][4][4] = {
     },
 };
 
-Position spawnLocation = {1, 0};
-
 void fillFramebuffer(Game *game)
 {   
     // copy the stack data and clear the frameBuffer at the same time
@@ -120,7 +118,6 @@ uint8_t testAbsolutePosition(Game* game, Position absPos)
     for (; i < NUM_MINOS_IN_PIECE; i++) {
 
         Position pos = { collData[i].x + absPos.x, collData[i].y + absPos.y };
-        printf("Testing (%d, %d)\n", absPos.x, absPos.y);
         
         // check x bounds
         if (pos.x < 0 || pos.x >= GAME_BOARD_WIDTH) {
@@ -166,9 +163,6 @@ PhysicsResult applyGravity(Game* game)
     uint8_t test = testAbsolutePosition(game, newPosition);
     uint8_t i = 0;
 
-    #include <stdio.h>
-    printf("%d\n", test);
-
     switch (test) {
         case EMPTY:
             // everything okay! let's move the piece to its new position
@@ -183,8 +177,6 @@ PhysicsResult applyGravity(Game* game)
                 Position relPos = drawData[game->active_piece][game->active_orientation][i];
                 uint8_t x = game->active_position.x + relPos.x;
                 uint8_t y = game->active_position.y + relPos.y;
-                
-                printf("%d, %d\n", x, y);
                 game->board[y][x] = STACK;
             }
             result.isLockedDown = true;
