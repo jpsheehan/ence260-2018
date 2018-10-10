@@ -10,4 +10,9 @@
  */
 void show_screen(uint8_t gameBoard[7][5]);
 
+/**
+ * initialise the screen
+ */
+void screen_init(void);
+
 #endif

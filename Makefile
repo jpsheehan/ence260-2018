@@ -33,10 +33,10 @@ tetris.o: $(SRC)/tetris.c
 physics.o: $(SRC)/physics.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h
+game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-showScreen.o: $(SRC)/showScreen.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h
+showScreen.o: $(SRC)/showScreen.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
@@ -56,10 +56,13 @@ display.o: $(UCFK)/drivers/display.c $(UCFK)/drivers/avr/system.h $(UCFK)/driver
 pio.o: $(UCFK)/drivers/avr/pio.c $(UCFK)/drivers/avr/pio.h $(UCFK)/drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+pacer.o: $(UCFK)/utils/pacer.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/timer.h $(UCFK)/utils/pacer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o
+game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
