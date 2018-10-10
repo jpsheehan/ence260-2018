@@ -16,6 +16,9 @@ DEL = rm
 # Default target.
 all: game.out
 
+test:
+	make -f Makefile.test all
+
 
 # Compile: create object files from C source files.
 state.o: $(SRC)/state.c
