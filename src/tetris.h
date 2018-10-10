@@ -44,6 +44,7 @@
 #define STACK 2
 #define ACTIVE 3
 #define GHOST 4
+#define FLOOR 5
 
 /**
  * Represents a 2D position.

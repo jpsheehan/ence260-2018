@@ -77,6 +77,8 @@ static Position drawData[7][4][4] = {
     },
 };
 
+Position spawnLocation = {1, 0};
+
 void fillFramebuffer(Game *game)
 {   
     // copy the stack data and clear the frameBuffer at the same time
@@ -111,11 +113,18 @@ void fillFramebuffer(Game *game)
 }
 
 /**
- * Checks if the position is free and returns one of WALL, STACK or EMPTY
- * Needs a more comprehensive test
+ * Checks if the relative position of the active piece is free and returns one of EMPTY, WALL, STACK or FLOOR
  */
-bool checkIfPositionFree(Game* game, Position pos) {
-    return game->board[pos.y][pos.x] == EMPTY;
+uint8_t testNewPosition(Game* game, Position pos) {
+
+    Position absPos = {game->active_position.x + pos.x, game->active_position.y + pos.y};
+
+    uint8_t i = 0;
+    for (; i < 4; i++) {
+
+    }
+
+    return EMPTY;
 }
 
 /**
