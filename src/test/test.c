@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "../physics.h"
+#include "../tetris.h"
 
 /**
  * Prints the game board to std out.
@@ -54,7 +55,7 @@ int main(void)
             printf("cw: rotate clockwise\n");
             printf("ccw: rotate counter-clockwise\n");
             printf("d, drop: non-locking soft-drop\n");
-
+            printf("h, hold: holds the current piece\n");
 
         } else if (strcmp(input, "gravity") == 0 || strcmp(input, "g") == 0) {
             printf("Applying gravity...\n");
@@ -71,39 +72,37 @@ int main(void)
                     break;
                 }
             }
-            display(&game);
-
 
         } else if (strcmp(input, "cw") == 0) {
-            rotateActivePiece(&game, CLOCKWISE);
             printf("Rotating clockwise...\n");
-            display(&game);
-
+            rotateActivePiece(&game, CLOCKWISE);
 
         } else if (strcmp(input, "ccw") == 0) {
-            rotateActivePiece(&game, COUNTERCLOCKWISE);
             printf("Rotating counter-clockwise...\n");
-            display(&game);
-
+            rotateActivePiece(&game, COUNTERCLOCKWISE);
 
         } else if (strcmp(input, "l") == 0 || strcmp(input, "left") == 0) {
-            moveActivePiece(&game, LEFT);
             printf("Shifting left...\n");
-            display(&game);
-
+            moveActivePiece(&game, LEFT);
 
         } else if (strcmp(input, "r") == 0 || strcmp(input, "right") == 0) {
-            moveActivePiece(&game, RIGHT);
             printf("Shifting right...\n");
-            display(&game);
+            moveActivePiece(&game, RIGHT);
         
         } else if (strcmp(input, "d") == 0 || strcmp(input, "drop") == 0) {
-            softDrop(&game);
             printf("Non-locking soft-drop...\n");
-            display(&game);
+            softDrop(&game);
 
+        } else if (strcmp(input, "h") == 0 || strcmp(input, "hold") == 0) {
+            
+            if (holdPiece(&game) == true) {
+                printf("Held the active piece :)\n");
+            } else {
+                printf("Could not hold the piece :(\n");
+            }
         }
-
+        
+        display(&game);
         printf("> ");
         numRead = scanf("%s", input);
         input[127] = '\0';

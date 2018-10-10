@@ -88,6 +88,8 @@ typedef struct game_s {
     Orientation active_orientation;
     Position active_position;
     uint16_t score;
+    Piece held_piece;
+    bool has_held_this_turn;
 } Game;
 
 /**
@@ -110,5 +112,11 @@ void playTetris(uint8_t num_players);
  * Generates the next (or first) tetromino and spawns it.
  */
 bool spawnNextTetromino(Game* game);
+
+/**
+ * Attempts to hold the active piece.
+ * Returns true if successful.
+ */
+bool holdPiece(Game* game);
 
 #endif
