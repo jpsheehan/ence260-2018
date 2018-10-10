@@ -6,7 +6,7 @@
 # Definitions.
 CC = avr-gcc
 SRC = ./src
-UCFK = ..
+UCFK = ./lib
 CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I$(SRC) -I $(UCFK)/utils -I $(UCFK)/fonts -I $(UCFK)/drivers -I $(UCFK)/drivers/avr
 OBJCOPY = avr-objcopy
 SIZE = avr-size
