@@ -49,6 +49,7 @@ int main(void)
             printf("g, gravity: makes the active tetromino fall\n");
         } else if (strcmp(input, "gravity") == 0 || strcmp(input, "g") == 0) {
             applyGravity(&game);
+            printf("Applying gravity...\n");
             display(&game);
         }
 

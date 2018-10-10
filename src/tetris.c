@@ -17,7 +17,7 @@ void spawnNextTetromino(Game* game) {
  * To be called to initialise the game.
  */
 void tetris_init(void) {
-    DefaultSpawnPosition = (Position){0, 1};
+    DefaultSpawnPosition = (Position){1, 0};
 }
 
 /**
