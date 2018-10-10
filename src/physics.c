@@ -321,7 +321,7 @@ uint8_t processLineClears(Game* game)
         uint8_t j = 0;
         for (; j < GAME_BOARD_WIDTH; j++) {
 
-            if (game->board[i][j] != 1) {
+            if (game->board[i][j] != STACK) {
                 break;
             }
 
