@@ -31,6 +31,15 @@ static Position kickDataForI[8][5] = {
     { (Position){0, 0}, (Position){-2, 0}, (Position){1, 0}, (Position){-2, 1}, (Position){1, -2} }, // 3 >> 2 or COUNTERCLOCKWISE from ROTATE_270
 };
 
+
+/**
+ * Checks if the position is free and returns one of WALL, STACK or EMPTY
+ * Needs a more comprehensive test
+ */
+bool checkIfPositionFree(Game* game, Position pos) {
+    return game->board[pos.y][pos.x] == EMPTY;
+}
+
 /**
  * Applies gravity to the active piece.
  * If the active piece would collide with the stack then it is added to the stack before it is moved.
@@ -219,13 +228,6 @@ PhysicsResult rotateActivePiece(Game* game, uint8_t direction)
     }
 
     return result;
-}
-
-/**
- * Checks if the position is free and returns one of WALL, STACK or EMPTY
- */
-bool checkIfPositionFree(Game* game, Position pos) {
-    return game->board[pos.y][pos.x] == EMPTY;
 }
 
 /**
