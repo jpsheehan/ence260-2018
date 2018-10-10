@@ -90,6 +90,11 @@ typedef struct game_s {
 } Game;
 
 /**
+ * To be called to initialise the game.
+ */
+void tetris_init(void);
+
+/**
  * Starts a game of tetris.
  */
 void playTetris(uint8_t num_players);
@@ -98,7 +103,7 @@ void playTetris(uint8_t num_players);
 /**
  * The default spawn position of all pieces.
  */
-const Position DefaultSpawnPosition = {1, 0};
+Position DefaultSpawnPosition;
 
 /**
  * Generates the next (or first) tetromino and spawns it.

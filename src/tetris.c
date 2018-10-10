@@ -14,6 +14,13 @@ void spawnNextTetromino(Game* game) {
 }
 
 /**
+ * To be called to initialise the game.
+ */
+void tetris_init(void) {
+    DefaultSpawnPosition = (Position){0, 1};
+}
+
+/**
  * Starts a game of tetris.
  */
 void playTetris(uint8_t num_players)
