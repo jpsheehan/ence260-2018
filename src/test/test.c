@@ -56,11 +56,11 @@ int main(void)
             printf("Applying gravity...\n");
             display(&game);
         } else if (strcmp(input, "cw") == 0) {
-
+            rotateActivePiece(&game, CLOCKWISE);
             printf("Rotating clockwise...\n");
             display(&game);
         } else if (strcmp(input, "ccw") == 0) {
-
+            rotateActivePiece(&game, COUNTERCLOCKWISE);
             printf("Rotating counter-clockwise...\n");
             display(&game);
         } else if (strcmp(input, "l") == 0 || strcmp(input, "left") == 0) {
