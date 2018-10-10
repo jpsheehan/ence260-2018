@@ -32,6 +32,7 @@ static Position kickDataForI[8][5] = {
     { {0, 0}, {-2, 0}, {1, 0}, {-2, 1}, {1, -2} }, // 3 >> 2 or COUNTERCLOCKWISE from ROTATE_270
 };
 
+// this serves as the drawing data and as the collision detection data.
 static Position drawData[7][4][4] = {
     {
         { {-1, 0}, {0, 0}, {1, 0}, {2, 0} }, // I 0
@@ -219,88 +220,88 @@ PhysicsResult rotateActivePiece(Game* game, uint8_t direction)
     PhysicsResult result = {0};
 
     // change the orientation of the piece
-    // switch (game->active_orientation) {
-    //     case ROTATE_0:
-    //         if (direction == CLOCKWISE) {
-    //             result.orientation = ROTATE_90;
-    //         } else {
-    //             result.orientation = ROTATE_270;
-    //         }
-    //         break;
-    //     case ROTATE_90:
-    //         if (direction == CLOCKWISE) {
-    //             result.orientation = ROTATE_180;
-    //         } else {
-    //             result.orientation = ROTATE_0;
-    //         }
-    //         break;
-    //     case ROTATE_180:
-    //         if (direction == CLOCKWISE) {
-    //             result.orientation = ROTATE_270;
-    //         } else {
-    //             result.orientation = ROTATE_90;
-    //         }
-    //         break;
-    //     case ROTATE_270:
-    //         if (direction == CLOCKWISE) {
-    //             result.orientation = ROTATE_180;
-    //         } else {
-    //             result.orientation = ROTATE_0;
-    //         }
-    //         break;
-    // }
+    switch (game->active_orientation) {
+        case ROTATE_0:
+            if (direction == CLOCKWISE) {
+                result.orientation = ROTATE_90;
+            } else {
+                result.orientation = ROTATE_270;
+            }
+            break;
+        case ROTATE_90:
+            if (direction == CLOCKWISE) {
+                result.orientation = ROTATE_180;
+            } else {
+                result.orientation = ROTATE_0;
+            }
+            break;
+        case ROTATE_180:
+            if (direction == CLOCKWISE) {
+                result.orientation = ROTATE_270;
+            } else {
+                result.orientation = ROTATE_90;
+            }
+            break;
+        case ROTATE_270:
+            if (direction == CLOCKWISE) {
+                result.orientation = ROTATE_180;
+            } else {
+                result.orientation = ROTATE_0;
+            }
+            break;
+    }
 
     // perform kicks
-    // if (game->active_piece == O) {
+    if (game->active_piece == O) {
 
-    //     // O can't perform kicks
-    //     result.position = (Position){ game->active_position.x, game->active_position.y };
-    //     result.isLockedDown = false;
+        // O can't perform kicks
+        result.position = (Position){ game->active_position.x, game->active_position.y };
+        result.isLockedDown = false;
 
-    // } else {
+    } else {
 
-    //     Position *kickData = NULL;
+        Position *kickData = NULL;
 
-    //     // perform kicks on other pieces
-    //     switch (game->active_piece) {
-    //         case I:
-    //             // I has its own set of kicks
-    //             kickData = &kickDataForI;
-    //             break;
-    //         case J:
-    //         case L:
-    //         case S:
-    //         case Z:
-    //         case T:
-    //             // these pieces share their own kick data
-    //             // kickData = kickDataForJLSTZ;
-    //             break;
-    //     }
+        // perform kicks on other pieces
+        switch (game->active_piece) {
+            case I:
+                // I has its own set of kicks
+                kickData = kickDataForI;
+                break;
+            case J:
+            case L:
+            case S:
+            case Z:
+            case T:
+                // these pieces share their own kick data
+                kickData = kickDataForJLSTZ;
+                break;
+        }
 
-    //     uint8_t row = game->active_orientation * 2 + (direction * 2 - 1) * (-1);
-    //     uint8_t test = 0;
-    //     for (; test < 5; test++) {
+        uint8_t row = game->active_orientation * 2 + (direction * 2 - 1) * (-1);
+        uint8_t test = 0;
+        for (; test < 5; test++) {
 
-    //         // get the current position and add the relative test position to it
-    //         Position pos = *(kickData + sizeof(Position) * 5 * row + sizeof(Position) * test);
-    //         pos.x = pos.x + game->active_position.x;
-    //         pos.y = pos.y + game->active_position.y;
+            // get the current position and add the relative test position to it
+            Position pos = *(kickData + sizeof(Position) * 5 * row + sizeof(Position) * test);
+            pos.x = pos.x + game->active_position.x;
+            pos.y = pos.y + game->active_position.y;
 
-    //         // if this position is free, this is the new position for the piece
-    //         if (checkIfPositionFree(game, pos)) {
-    //             result.position = pos;
-    //             break;
-    //         }
-    //     }
+            // if this position is free, this is the new position for the piece
+            if (testAbsolutePosition(game, pos)) {
+                result.position = pos;
+                break;
+            }
+        }
 
-    //     if (test == 5) {
-    //         // could not move, set the position and orientation to the origingal values
-    //         result.isLockedDown = false;
-    //         result.orientation = game->active_orientation;
-    //         result.position = game->active_position;
-    //     }
+        if (test == 5) {
+            // could not move, set the position and orientation to the origingal values
+            result.isLockedDown = false;
+            result.orientation = game->active_orientation;
+            result.position = game->active_position;
+        }
 
-    // }
+    }
 
     return result;
     
