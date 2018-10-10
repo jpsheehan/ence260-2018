@@ -17,7 +17,7 @@ typedef struct physics_result_s {
  * Applies gravity to the active piece.
  * If the active piece would collide with the stack then it is added to the stack before it is moved.
  */
-PhysicsResult applyGravity(Game* game);
+bool applyGravity(Game* game);
 
 /**
  * Attempts to rotate the active piece by the amount specified.

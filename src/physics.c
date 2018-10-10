@@ -153,11 +153,11 @@ uint8_t testRelativePosition(Game* game, Position pos) {
 /**
  * Applies gravity to the active piece.
  * If the active piece would collide with the stack then it is added to the stack before it is moved.
+ * It spawns a new piece if the active piece collided with the stack or floor.
+ * Returns true if it was added to the stack
  */
-PhysicsResult applyGravity(Game* game)
+bool applyGravity(Game* game)
 {
-    PhysicsResult result = {0};
-
     Position newPosition = { game->active_position.x, game->active_position.y + 1 };
 
     uint8_t test = testAbsolutePosition(game, newPosition);
@@ -168,8 +168,7 @@ PhysicsResult applyGravity(Game* game)
             // everything okay! let's move the piece to its new position
             game->active_position.x = newPosition.x;
             game->active_position.y = newPosition.y;
-            result.isLockedDown = false;
-            break;
+            return false;
         case FLOOR:
         case STACK:
             // uh, oh! the piece collided with the floor or the stack, let's turn the active piece into part of the stack
@@ -179,11 +178,11 @@ PhysicsResult applyGravity(Game* game)
                 uint8_t y = game->active_position.y + relPos.y;
                 game->board[y][x] = STACK;
             }
-            result.isLockedDown = true;
-            break;
+            spawnNextTetromino(game);
+            return true;
     }
 
-    return result;
+    return false;
 }
 
 /**
