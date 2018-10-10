@@ -121,7 +121,7 @@ void fillFramebuffer(Game *game)
         int8_t x = absPos->x + relPos.x;
         int8_t y = absPos->y + relPos.y;
 
-        if (x >= 0 && y >= 0 && x < GAME_BOARD_WIDTH && y < GAME_BOARD_HEIGHT) {
+        if (x >= 0 && y >= 0 && x < GAME_BOARD_WIDTH && y < GAME_BOARD_HEIGHT && frameBuffer[y][x] != STACK) {
             frameBuffer[y][x] = ACTIVE;
         }
     }

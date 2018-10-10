@@ -41,6 +41,8 @@ int main(void)
 
         if (strcmp(input, "q") == 0 || strcmp(input, "quit") == 0) {
             break;
+
+
         } else if (strcmp(input, "?") == 0 || strcmp(input, "help") == 0) {
             printf("Options:\n");
             printf("?, help: displays this message\n");
@@ -51,6 +53,8 @@ int main(void)
             printf("g, gravity: makes the active tetromino fall\n");
             printf("cw: rotate clockwise\n");
             printf("ccw: rotate counter-clockwise\n");
+
+
         } else if (strcmp(input, "gravity") == 0 || strcmp(input, "g") == 0) {
             printf("Applying gravity...\n");
             if (!applyGravity(&game)) {
@@ -67,18 +71,26 @@ int main(void)
                 }
             }
             display(&game);
+
+
         } else if (strcmp(input, "cw") == 0) {
             rotateActivePiece(&game, CLOCKWISE);
             printf("Rotating clockwise...\n");
             display(&game);
+
+
         } else if (strcmp(input, "ccw") == 0) {
             rotateActivePiece(&game, COUNTERCLOCKWISE);
             printf("Rotating counter-clockwise...\n");
             display(&game);
+
+
         } else if (strcmp(input, "l") == 0 || strcmp(input, "left") == 0) {
             moveActivePiece(&game, LEFT);
             printf("Shifting left...\n");
             display(&game);
+
+
         } else if (strcmp(input, "r") == 0 || strcmp(input, "right") == 0) {
             moveActivePiece(&game, RIGHT);
             printf("Shifting right...\n");
@@ -91,7 +103,7 @@ int main(void)
 
     }
 
-    printf("Game Over!");
+    printf("Game Over!\n");
     display(&game);
 
     return 0;
