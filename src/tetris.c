@@ -4,7 +4,11 @@
  * Generates the next (or first) tetromino and spawns it.
  */
 void spawnNextTetromino(Game* game) {
-    game->active_piece = timer_get() % 7;
+    #if __AVR__
+        game->active_piece = timer_get() % NUM_TETROMINOS;
+    #else
+        game->active_piece = rand() % NUM_TETROMINOS;
+    #endif
     game->active_position = DefaultSpawnPosition;
     game->active_orientation = ROTATE_0;
 }

@@ -1,7 +1,18 @@
 #ifndef TETRIS_H_
 #define TETRIS_H_
 
-#include "timer.h"
+#if defined __i386__ || defined __amd64__
+    #define __AVR__ false
+#else
+    #define __AVR__ true
+#endif
+
+#if __AVR__
+    #include "timer.h"
+#else
+    #include <stdlib.h>
+#endif
+
 #include <stdint.h>
 
 /**
@@ -31,6 +42,7 @@
 #define GAME_BOARD_WIDTH 5
 #define GAME_BOARD_HEIGHT 7
 #define NUM_MINOS_IN_PIECE 4
+#define NUM_TETROMINOS 7
 
 /**
  * Some useful macros for specifying relative rotation direction.
