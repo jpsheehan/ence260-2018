@@ -1,12 +1,20 @@
 #ifndef TETRIS_H_
 #define TETRIS_H_
 
+/**
+ * Define a macro named __AVR__ to be true if we are compiling on AVR.
+ * We need this so we can test the same code on PC.
+ */
 #if defined __i386__ || defined __amd64__
     #define __AVR__ false
 #else
     #define __AVR__ true
 #endif
 
+/**
+ * Platform independent:
+ * Required for random number generation for spawnNextTetromino().
+ */
 #if __AVR__
     #include "timer.h"
 #else
@@ -92,6 +100,12 @@ typedef struct game_s {
 } Game;
 
 /**
+ * The default spawn position of all pieces.
+ * This is set in the tetris_init() function.
+ */
+Position DefaultSpawnPosition;
+
+/**
  * To be called to initialise the game.
  */
 void tetris_init(void);
@@ -100,12 +114,6 @@ void tetris_init(void);
  * Starts a game of tetris.
  */
 void playTetris(uint8_t num_players);
-
-
-/**
- * The default spawn position of all pieces.
- */
-Position DefaultSpawnPosition;
 
 /**
  * Generates the next (or first) tetromino and spawns it.
