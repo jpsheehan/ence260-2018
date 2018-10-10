@@ -32,7 +32,13 @@ static Position kickDataForI[8][5] = {
     { {0, 0}, {-2, 0}, {1, 0}, {-2, 1}, {1, -2} }, // 3 >> 2 or COUNTERCLOCKWISE from ROTATE_270
 };
 
-// this serves as the drawing data and as the collision detection data.
+/**
+ * This serves as the drawing data and as the collision detection data.
+ * This is interpreted from https://vignette.wikia.nocookie.net/tetrisconcept/images/3/3d/SRS-pieces.png/revision/latest?cb=20060626173148
+ * The centre point for the I piece is the second mino from the top or left.
+ * The centre point for the O piece is the top left mino.
+ * The centre point for all other pieces is as described in the image above.
+ */
 static Position drawData[7][4][4] = {
     {
         { {-1, 0}, {0, 0}, {1, 0}, {2, 0} }, // I 0
