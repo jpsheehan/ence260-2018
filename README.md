@@ -34,4 +34,4 @@ As we have limited hardware (most obviously, a 5x7 display) we cannot adhere to 
   - J piece
   - L piece
 - All pieces spawn at position (1, 0)
-- STS rotations and kicks are used
+- SRS rotations and kicks are used
