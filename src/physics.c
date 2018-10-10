@@ -21,7 +21,7 @@ static Position kickDataForJLSTZ[8][5] = {
  * Kick data for the I mino
  */
 static Position kickDataForI[8][5] = {
-    { (Position){0, 0}, (Position){-2, 0}, (Position){1, 0}, (Position){-2, 1}, (Position){1, -2} }, // 0 >> 1 or CLOCKWISE from ROTATE_0
+    { {0, 0}, (Position){-2, 0}, (Position){1, 0}, (Position){-2, 1}, (Position){1, -2} }, // 0 >> 1 or CLOCKWISE from ROTATE_0
     { (Position){0, 0}, (Position){-1, 0}, (Position){2, 0}, (Position){-1, -2}, (Position){2, 1} }, // 0 >> 3 or COUNTERCLOCKWISE from ROTATE_0
     { (Position){0, 0}, (Position){-1, 0}, (Position){2, 0}, (Position){-1, -2}, (Position){2, 1} }, // 1 >> 2 or CLOCKWISE from ROTATE_90
     { (Position){0, 0}, (Position){2, 0}, (Position){-1, 0}, (Position){2, -1}, (Position){-1, 2} }, // 1 >> 0 or COUNTERCLOCKWISE from ROTATE_90
@@ -31,6 +31,83 @@ static Position kickDataForI[8][5] = {
     { (Position){0, 0}, (Position){-2, 0}, (Position){1, 0}, (Position){-2, 1}, (Position){1, -2} }, // 3 >> 2 or COUNTERCLOCKWISE from ROTATE_270
 };
 
+static Position drawData[7][4][4] = {
+    {
+        { {-1, 0}, {0, 0}, {1, 0}, {2, 0} }, // I 0
+        { {1, -1}, {1, 0}, {1, 1}, {1, 2} }, // I 90
+        { {-1, 1}, {0, 1}, {1, 1}, {2, 1} }, // I 180
+        { {0, -1}, {0, 0}, {0, 1}, {0, 2} }, // I 270
+    },
+    {
+        { {-1, -1}, {-1, 0}, {0, 0}, {1, 0} }, // J 0
+        { {1, -1}, {0, -1}, {0, 0}, {0, 1} }, // J 90
+        { {-1, 0}, {0, 0}, {1, 0}, {1, 1} }, // J 180
+        { {0, -1}, {0, 0}, {0, 1}, {-1, 1} }, // J 270
+    },
+    {
+        { {1, -1}, {-1, 0}, {0, 0}, {1, 0} }, // L 0
+        { {1, 1}, {0, -1}, {0, 0}, {0, 1} }, // L 90
+        { {-1, 0}, {0, 0}, {1, 0}, {1, -1} }, // L 180
+        { {0, -1}, {0, 0}, {0, 1}, {-1, -1} }, // L 270
+    },
+    {
+        { {0, 0}, {0, 1}, {1, 0}, {1, 1} }, // O 0
+        { {0, 0}, {0, 1}, {1, 0}, {1, 1} }, // O 90
+        { {0, 0}, {0, 1}, {1, 0}, {1, 1} }, // O 180
+        { {0, 0}, {0, 1}, {1, 0}, {1, 1} }, // O 270
+    },
+    {
+        { {-1, 0}, {0, 0}, {0, -1}, {1, -1} }, // S 0
+        { {0, -1}, {0, 0}, {1, 0}, {1, 1} }, // S 90
+        { {-1, 1}, {0, 1}, {0, 0}, {1, 0} }, // S 180
+        { {-1, -1}, {-1, 0}, {0, 0}, {0, 1} }, // S 270
+    },
+    {
+        { {0, 0}, {-1, 0}, {0, -1}, {1, 0} }, // T 0
+        { {0, 0}, {0, -1}, {1, 0}, {0, 1} }, // T 90
+        { {0, 0}, {1, 0}, {0, 1}, {-1, 0} }, // T 180
+        { {0, 0}, {0, 1}, {-1, 0}, {0, -1} }, // T 270
+    },
+    {
+        { {-1, -1}, {-1, 0}, {0, 0}, {1, 0} }, // Z 0
+        { {1, -1}, {1, 0}, {0, 0}, {0, 1} }, // Z 90
+        { {-1, 0}, {0, 0}, {0, 1}, {1, 1} }, // Z 180
+        { {0, -1}, {0, 0}, {-1, 0}, {-1, 1} }, // Z 270
+    },
+};
+
+void fillFramebuffer(Game *game)
+{   
+    // copy the stack data and clear the frameBuffer at the same time
+    uint8_t i = 0;
+    for (; i < GAME_BOARD_HEIGHT; i++) {
+        uint8_t j = 0;
+        for (; j < GAME_BOARD_WIDTH; j++) {
+            if (game->board[i][j]) {
+                frameBuffer[i][j] = STACK;
+            } else {
+                frameBuffer[i][j] = EMPTY;
+            }
+        }
+    }
+
+    // make it easier to access thhe position of the active piece
+    Position* absPos = &game->active_position;
+
+    // draw the piece data
+    Position *posData = drawData[game->active_piece][game->active_orientation];
+
+    for (i = 0; i < 4; i++) {
+        Position relPos = posData[i];
+        int8_t x = absPos->x + relPos.x;
+        int8_t y = absPos->y + relPos.y;
+
+        if (x >= 0 && y >= 0 && x < GAME_BOARD_WIDTH && y < GAME_BOARD_HEIGHT) {
+            frameBuffer[y][x] = ACTIVE;
+        }
+    }
+    
+}
 
 /**
  * Checks if the position is free and returns one of WALL, STACK or EMPTY

@@ -9,12 +9,12 @@
  * more than one topmost cell, then the topmost and leftmost cell is the origin
  */
 #define I 0
-#define T 1
-#define O 2
-#define S 3
-#define Z 4
-#define L 5
-#define J 6
+#define J 1
+#define L 2
+#define O 3
+#define S 4
+#define T 5
+#define Z 6
 
 /**
  * Represents the different states of rotation that the Tetrominos can be in.
@@ -28,8 +28,7 @@
  * Some useful macros for the size of the game board
  */
 #define GAME_BOARD_WIDTH 5
-#define GAME_BOARD_HEIGHT 12
-#define GAME_BOARD_VISIBLE_HEIGHT 7
+#define GAME_BOARD_HEIGHT 7
 
 /**
  * Some useful macros for specifying relative rotation direction.
@@ -43,14 +42,15 @@
 #define EMPTY 0
 #define WALL 1
 #define STACK 2
-#define GHOST 3
+#define ACTIVE 3
+#define GHOST 4
 
 /**
  * Represents a 2D position.
  */
 typedef struct position_s {
-    uint8_t x;
-    uint8_t y;
+    int8_t x;
+    int8_t y;
 } Position;
 
 /**
@@ -67,7 +67,7 @@ typedef uint8_t Piece;
  * Represents the entire state of the game.
  */
 typedef struct game_s {
-    uint8_t board[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];
+    uint8_t board[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH]; // contains information about the stack ONLY
     Piece active_piece;
     Orientation active_orientation;
     Position active_position;

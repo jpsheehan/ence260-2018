@@ -2,8 +2,9 @@
 #define PHYSICS_H_
 
 #include <stdint.h>
-#include "tetris.h"
 #include <stdbool.h>
+
+#include "tetris.h"
 
 typedef struct physics_result_s {
     bool isLockedDown;
@@ -30,5 +31,10 @@ PhysicsResult rotateActivePiece(Game* game, uint8_t direction);
  * Returns the number of lines cleared.
  */
 uint8_t processLineClears(Game* game);
+
+// MOVE THESE TO GRAPHICS
+uint8_t frameBuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];
+
+void fillFramebuffer(Game *game);
 
 #endif
