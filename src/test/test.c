@@ -1,7 +1,11 @@
 #include <stdio.h>
-#include "../tetris.h"
+#include <string.h>
+
 #include "../physics.h"
 
+/**
+ * Prints the game board to std out.
+ */
 void display(Game* game)
 {
     fillFramebuffer(game);
@@ -21,54 +25,38 @@ void display(Game* game)
 
 int main(void)
 {
+    tetris_init();
+
     Game game = {0};
     char input[10] = {0};
+    uint8_t numRead = 0;
+    spawnNextTetromino(&game);
 
-    game.active_piece = I;
-    game.active_position = (Position){ 2, 0 };
-    game.active_orientation = ROTATE_0;
-
-    // add sample stack
-    // for (int i = 0; i < GAME_BOARD_WIDTH; i++) {
-    //     game.board[GAME_BOARD_HEIGHT - 2][i] = 1;
-    //     game.board[GAME_BOARD_HEIGHT - 3][i] = 1;
-    //     if (i % 2 == 0) {
-    //         game.board[GAME_BOARD_HEIGHT - 4][i] = 1;
-    //         game.board[GAME_BOARD_HEIGHT - 1][i] = 1;
-    //     }
-    // }
-
-    applyGravity(&game);
-    applyGravity(&game);
-    applyGravity(&game);
-    applyGravity(&game);
-    applyGravity(&game);
-    applyGravity(&game);
-    applyGravity(&game);
-
-    game.active_piece = I;
-    game.active_position = (Position){ 2, 0 };
-    game.active_orientation = ROTATE_0;
-
-
-    printf("Board:\n");
     display(&game);
+    printf("> ");
+    numRead = scanf("%s", input);
+    input[9] = '\0';
 
+    while (numRead > 0) {
 
-    applyGravity(&game);
-    applyGravity(&game);
-    applyGravity(&game);
-    applyGravity(&game);
-    applyGravity(&game);
-    applyGravity(&game);
+        if (strcmp(input, "q") == 0 || strcmp(input, "quit") == 0) {
+            break;
+        } else if (strcmp(input, "?") == 0 || strcmp(input, "help") == 0) {
+            printf("Options:\n");
+            printf("?, help: displays this message\n");
+            printf("q, quit: quits the program\n");
+            printf("--------\n");
+            printf("g, gravity: makes the active tetromino fall\n");
+        } else if (strcmp(input, "gravity") == 0 || strcmp(input, "g") == 0) {
+            applyGravity(&game);
+            display(&game);
+        }
 
+        printf("> ");
+        numRead = scanf("%s", input);
+        input[9] = '\0';
 
-    game.active_piece = I;
-    game.active_position = (Position){ 2, 0 };
-    game.active_orientation = ROTATE_0;
-    printf("Board:\n");
-    display(&game);
-
+    }
 
     return 0;
 }

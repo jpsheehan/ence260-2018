@@ -9,7 +9,7 @@ void spawnNextTetromino(Game* game) {
     #else
         game->active_piece = rand() % NUM_TETROMINOS;
     #endif
-    game->active_position = DefaultSpawnPosition;
+    game->active_position = (Position){ DefaultSpawnPosition.x, DefaultSpawnPosition.y };
     game->active_orientation = ROTATE_0;
 }
 
