@@ -52,8 +52,14 @@ int main(void)
             printf("cw: rotate clockwise\n");
             printf("ccw: rotate counter-clockwise\n");
         } else if (strcmp(input, "gravity") == 0 || strcmp(input, "g") == 0) {
-            applyGravity(&game);
             printf("Applying gravity...\n");
+            if (!applyGravity(&game)) {
+                uint8_t clears = processLineClears(&game);
+                if (clears) {
+                    printf("Cleared %d lines!\n", clears);
+                }
+                spawnNextTetromino(&game);
+            }
             display(&game);
         } else if (strcmp(input, "cw") == 0) {
             rotateActivePiece(&game, CLOCKWISE);
