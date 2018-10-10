@@ -22,6 +22,7 @@
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * Represents the Tetrominos.
@@ -118,6 +119,6 @@ void playTetris(uint8_t num_players);
 /**
  * Generates the next (or first) tetromino and spawns it.
  */
-void spawnNextTetromino(Game* game);
+bool spawnNextTetromino(Game* game);
 
 #endif

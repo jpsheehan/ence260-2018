@@ -146,9 +146,9 @@ uint8_t testAbsolutePosition(Game* game, Position absPos)
  * Checks if the current piece, in its current orientation could occupy the relative position pos.
  * Returns the kind of clipping that would occur: EMPTY, WALL, FLOOR or STACK
  */
-uint8_t testRelativePosition(Game* game, Position pos) {
+uint8_t testRelativePosition(Game* game, Position relPos) {
 
-    return testAbsolutePosition(game, (Position){ game->active_position.x + pos.x, game->active_position.y + pos.y });
+    return testAbsolutePosition(game, (Position){ game->active_position.x + relPos.x, game->active_position.y + relPos.y });
 }
 
 /**
@@ -176,14 +176,13 @@ bool moveActivePiece(Game* game, uint8_t direction)
  * Applies gravity to the active piece.
  * If the active piece would collide with the stack then it is added to the stack before it is moved.
  * It spawns a new piece if the active piece collided with the stack or floor.
- * Returns true the tetromino wasn't added to the stack
+ * Returns false if the tetromino should be committed to the stack
  */
 bool applyGravity(Game* game)
 {
     Position newPosition = { game->active_position.x, game->active_position.y + 1 };
 
     uint8_t test = testAbsolutePosition(game, newPosition);
-    uint8_t i = 0;
 
     switch (test) {
         case EMPTY:
@@ -194,16 +193,33 @@ bool applyGravity(Game* game)
         case FLOOR:
         case STACK:
             // uh, oh! the piece collided with the floor or the stack, let's turn the active piece into part of the stack
-            for (; i < NUM_MINOS_IN_PIECE; i++) {
-                Position relPos = drawData[game->active_piece][game->active_orientation][i];
-                uint8_t x = game->active_position.x + relPos.x;
-                uint8_t y = game->active_position.y + relPos.y;
-                game->board[y][x] = STACK;
-            }
             return false;
     }
 
     return true;
+}
+
+
+/**
+ * Commits the current active tetromino to the stack.
+ * Returns true if the game is still not over.
+ * Returns false if the game is over.
+ */
+bool commitActiveTetrominoToStack(Game* game)
+{
+    bool isGameOver = false;
+    uint8_t i = 0;
+    for (; i < NUM_MINOS_IN_PIECE; i++) {
+        Position relPos = drawData[game->active_piece][game->active_orientation][i];
+        int8_t x = game->active_position.x + relPos.x;
+        int8_t y = game->active_position.y + relPos.y;
+        if (y < 0) {
+            isGameOver = true;
+        } else {
+            game->board[y][x] = STACK;
+        }
+    }
+    return !isGameOver;
 }
 
 /**

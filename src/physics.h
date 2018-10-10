@@ -40,6 +40,12 @@ bool moveActivePiece(Game* game, uint8_t direction);
  */
 uint8_t processLineClears(Game* game);
 
+uint8_t testAbsolutePosition(Game* game, Position absPos);
+
+uint8_t testRelativePosition(Game* game, Position relPos);
+
+bool commitActiveTetrominoToStack(Game* game);
+
 // MOVE THESE TO GRAPHICS
 uint8_t frameBuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];
 

@@ -54,11 +54,17 @@ int main(void)
         } else if (strcmp(input, "gravity") == 0 || strcmp(input, "g") == 0) {
             printf("Applying gravity...\n");
             if (!applyGravity(&game)) {
+                if (!commitActiveTetrominoToStack(&game)) {
+                    break;
+                }
+                
                 uint8_t clears = processLineClears(&game);
                 if (clears) {
                     printf("Cleared %d lines!\n", clears);
                 }
-                spawnNextTetromino(&game);
+                if (!spawnNextTetromino(&game)) {
+                    break;
+                }
             }
             display(&game);
         } else if (strcmp(input, "cw") == 0) {
@@ -84,6 +90,9 @@ int main(void)
         input[127] = '\0';
 
     }
+
+    printf("Game Over!");
+    display(&game);
 
     return 0;
 }
