@@ -20,11 +20,12 @@ typedef struct physics_result_s {
 bool applyGravity(Game* game);
 
 /**
- * Attempts to rotate the active piece by the amount specified.
+ * Attempts to rotate the active piece either CLOCKWISE or COUNTERCLOCKWISE.
  * If rotation cannot occur, nothing will happen.
  * A rotation will sometimes cause a kick to occur.
+ * It will return true if successfully rotated
  */
-PhysicsResult rotateActivePiece(Game* game, uint8_t direction);
+bool rotateActivePiece(Game* game, uint8_t direction);
 
 /**
  * Attempts to move the active piece in the specified direction.

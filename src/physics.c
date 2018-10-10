@@ -215,38 +215,39 @@ bool applyGravity(Game* game)
  * The I piece and the O piece are the only tetrominos which require special treatment when calculating their centre points during rotation
  * However the O piece doesn't change when rotated, so the I piece is the only piece that has a changing centre point
  */
-PhysicsResult rotateActivePiece(Game* game, uint8_t direction)
+bool rotateActivePiece(Game* game, uint8_t direction)
 {
-    PhysicsResult result = {0};
+    // store the old rotation unless we neeed it
+    Orientation oldOrientation = game->active_orientation;
 
     // change the orientation of the piece
     switch (game->active_orientation) {
         case ROTATE_0:
             if (direction == CLOCKWISE) {
-                result.orientation = ROTATE_90;
+                game->active_orientation = ROTATE_90;
             } else {
-                result.orientation = ROTATE_270;
+                game->active_orientation = ROTATE_270;
             }
             break;
         case ROTATE_90:
             if (direction == CLOCKWISE) {
-                result.orientation = ROTATE_180;
+                game->active_orientation = ROTATE_180;
             } else {
-                result.orientation = ROTATE_0;
+                game->active_orientation = ROTATE_0;
             }
             break;
         case ROTATE_180:
             if (direction == CLOCKWISE) {
-                result.orientation = ROTATE_270;
+                game->active_orientation = ROTATE_270;
             } else {
-                result.orientation = ROTATE_90;
+                game->active_orientation = ROTATE_90;
             }
             break;
         case ROTATE_270:
             if (direction == CLOCKWISE) {
-                result.orientation = ROTATE_180;
+                game->active_orientation = ROTATE_180;
             } else {
-                result.orientation = ROTATE_0;
+                game->active_orientation = ROTATE_0;
             }
             break;
     }
@@ -254,9 +255,8 @@ PhysicsResult rotateActivePiece(Game* game, uint8_t direction)
     // perform kicks
     if (game->active_piece == O) {
 
-        // O can't perform kicks
-        result.position = (Position){ game->active_position.x, game->active_position.y };
-        result.isLockedDown = false;
+        // O can't perform kicks, so we say that the rotation has occurred
+        return true;
 
     } else {
 
@@ -278,33 +278,31 @@ PhysicsResult rotateActivePiece(Game* game, uint8_t direction)
                 break;
         }
 
-        uint8_t row = game->active_orientation * 2 + (direction * 2 - 1) * (-1);
-        uint8_t test = 0;
-        for (; test < 5; test++) {
+        // get the row of kickData to loop through
+        Position *kickDataArray = (kickData + (2 * oldOrientation + direction) * 5 * sizeof(Position));
 
-            // get the current position and add the relative test position to it
-            Position pos = *(kickData + sizeof(Position) * 5 * row + sizeof(Position) * test);
-            pos.x = pos.x + game->active_position.x;
-            pos.y = pos.y + game->active_position.y;
+        uint8_t i = 0;
+        for (; i < 5; i++) {
+
+            // get the absolute position of the new position
+            Position testPosition = *(kickDataArray + i * sizeof(Position));
+            testPosition.x = testPosition.x + game->active_position.x;
+            testPosition.y = testPosition.y + game->active_position.y;
 
             // if this position is free, this is the new position for the piece
-            if (testAbsolutePosition(game, pos)) {
-                result.position = pos;
-                break;
+            if (testAbsolutePosition(game, testPosition) == EMPTY) {
+                game->active_position = testPosition;
+                return true;
             }
         }
 
-        if (test == 5) {
-            // could not move, set the position and orientation to the origingal values
-            result.isLockedDown = false;
-            result.orientation = game->active_orientation;
-            result.position = game->active_position;
-        }
+        // we could not find a suitable rotation for the piece
+        // restore the old orientation
+        game->active_orientation = oldOrientation;
+        return false;
 
     }
-
-    return result;
-    
+      
 }
 
 /**
