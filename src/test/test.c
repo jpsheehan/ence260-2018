@@ -53,6 +53,7 @@ int main(void)
             printf("g, gravity: makes the active tetromino fall\n");
             printf("cw: rotate clockwise\n");
             printf("ccw: rotate counter-clockwise\n");
+            printf("d, drop: non-locking soft-drop\n");
 
 
         } else if (strcmp(input, "gravity") == 0 || strcmp(input, "g") == 0) {
@@ -95,6 +96,12 @@ int main(void)
             moveActivePiece(&game, RIGHT);
             printf("Shifting right...\n");
             display(&game);
+        
+        } else if (strcmp(input, "d") == 0 || strcmp(input, "drop") == 0) {
+            softDrop(&game);
+            printf("Non-locking soft-drop...\n");
+            display(&game);
+
         }
 
         printf("> ");

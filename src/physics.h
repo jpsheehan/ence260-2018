@@ -46,6 +46,11 @@ uint8_t testRelativePosition(Game* game, Position relPos);
 
 bool commitActiveTetrominoToStack(Game* game);
 
+/**
+ * Performs a non-locking soft-drop of the active piece
+ */
+void softDrop(Game* game);
+
 // MOVE THESE TO GRAPHICS
 uint8_t frameBuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];
 

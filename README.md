@@ -18,7 +18,7 @@ The idea of this project is to give a basic implementation of classic Tetris.
 - Left/Right navigation buttons move the current piece left or right
 - Down navigation button rotates a piece clockwise
 - Up navigation button rotates a piece counter-clockwise
-- Centre navigation button performs a hard drop
+- Centre navigation button performs a non-locking soft-drop
 - The side button holds a piece
 
 ## Rules

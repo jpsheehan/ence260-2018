@@ -388,3 +388,18 @@ uint8_t processLineClears(Game* game)
     
     return num_clears;
 }
+
+/**
+ * Performs a non-locking soft-drop of the active piece
+ */
+void softDrop(Game* game)
+{
+    Position newPos = game->active_position;
+
+    while (testAbsolutePosition(game, newPos) == EMPTY) {
+        newPos.y += 1;
+    }
+    newPos.y -= 1;
+
+    game->active_position = newPos;
+}
