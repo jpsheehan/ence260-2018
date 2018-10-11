@@ -3,8 +3,14 @@
 
 #include "tetris.h"
 #include "physics.h"
-#include "navswitch.h"
-#include "pacer.h"
+
+#ifdef __AVR__
+    #include "navswitch.h"
+    #include "button.h"
+    #include "led.h"
+    #include "pio.h"
+    #include "../lib/utils/pacer.h"
+#endif
 
 /**
  * We generate random numbers using the 7-bag system.
@@ -109,6 +115,7 @@ void tetris_init(void) {
     generateSevenBag();
 }
 
+#ifdef __AVR__
 /**
  * Starts a game of tetris.
  */
@@ -125,6 +132,7 @@ void playTetris(uint8_t num_players)
             fillFramebuffer(&game);
             show_screen(frameBuffer);
 
+            button_update();
             navswitch_update ();
             check_move(&game);
         }
@@ -150,8 +158,18 @@ void check_move(Game* game) {
     } else if (navswitch_push_event_p(NAVSWITCH_WEST)) {
         moveActivePiece(game, LEFT);
     } else if (navswitch_push_event_p(NAVSWITCH_NORTH)) {
+<<<<<<< HEAD
         rotateActivePiece(game, COUNTERCLOCKWISE);
+=======
+        led_set(0, PIO_OUTPUT_LOW);
+        rotateActivePiece(game, CLOCKWISE);
+>>>>>>> f0f12e1248db75b0e05c1d10144b6ad700392093
     } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         holdPiece(game);
     }
+
+    if (navswitch_release_event_p(NAVSWITCH_NORTH)) {
+        led_set(0, PIO_OUTPUT_HIGH);
+    }
 }
+#endif
