@@ -33,7 +33,7 @@ tetris.o: $(SRC)/tetris.c $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/system.h
 physics.o: $(SRC)/physics.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h
+game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h $(UCFK)/utils/tinygl.h $(UCFK)/fonts/font5x7_1.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 showScreen.o: $(SRC)/showScreen.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h
@@ -59,7 +59,6 @@ pio.o: $(UCFK)/drivers/avr/pio.c $(UCFK)/drivers/avr/pio.h $(UCFK)/drivers/avr/s
 pacer.o: $(UCFK)/utils/pacer.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/timer.h $(UCFK)/utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-
 button.o: $(UCFK)/drivers/button.c $(UCFK)/drivers/button.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -69,11 +68,17 @@ led.o: $(UCFK)/drivers/led.c $(UCFK)/drivers/led.h
 navswitch.o: $(UCFK)/drivers/navswitch.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/navswitch.h $(UCFK)/drivers/avr/delay.h $(UCFK)/drivers/avr/pio.h 
 	$(CC) -c $(CFLAGS) $< -o $@
 
+tinygl.o: $(UCFK)/utils/tinygl.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/tinygl.h $(UCFK)/drivers/display.h $(UCFK)/utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+font.o: $(UCFK)/utils/font.c $(UCFK)/utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o led.o button.o
+game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o led.o button.o tinygl.o font.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

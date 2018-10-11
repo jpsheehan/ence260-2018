@@ -1,8 +1,10 @@
+#include <stdint.h>
+#include <string.h>
+
 #include "tetris.h"
 #include "physics.h"
 
 #ifdef __AVR__
-    #include "showScreen.h"
     #include "navswitch.h"
     #include "button.h"
     #include "led.h"
@@ -125,7 +127,7 @@ void playTetris(uint8_t num_players)
     Game game = {0};
     spawnNextTetromino(&game);
     while (1) {
-        for (wait = 0; wait < 50; wait++) {
+        for (wait = 0; wait < 35; wait++) {
             pacer_wait();
             fillFramebuffer(&game);
             show_screen(frameBuffer);
