@@ -1,6 +1,9 @@
 #include "system.h"
-#include "pacer.h"
+#include "../lib/utils/pacer.h"
 #include "navswitch.h"
+#include "button.h"
+#include "led.h"
+#include "pio.h"
 
 #include "state.h"
 #include "tetris.h"
@@ -19,8 +22,15 @@ int main (void)
     screen_init();
 
     // init the button
-    tetris_init();
+    button_init();
+
+    // init the nav switch
     navswitch_init ();
+
+    // init the led
+    led_init();
+    led_set(0, PIO_OUTPUT_LOW);
+    
 
     // init the IR comms
     

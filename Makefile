@@ -59,6 +59,13 @@ pio.o: $(UCFK)/drivers/avr/pio.c $(UCFK)/drivers/avr/pio.h $(UCFK)/drivers/avr/s
 pacer.o: $(UCFK)/utils/pacer.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/timer.h $(UCFK)/utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+
+button.o: $(UCFK)/drivers/button.c $(UCFK)/drivers/button.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+led.o: $(UCFK)/drivers/led.c $(UCFK)/drivers/led.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 navswitch.o: $(UCFK)/drivers/navswitch.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/navswitch.h $(UCFK)/drivers/avr/delay.h $(UCFK)/drivers/avr/pio.h 
 	$(CC) -c $(CFLAGS) $< -o $@=
 
@@ -66,7 +73,7 @@ navswitch.o: $(UCFK)/drivers/navswitch.c $(UCFK)/drivers/avr/system.h $(UCFK)/dr
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o
+game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o led.o button.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
