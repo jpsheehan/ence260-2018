@@ -1,18 +1,58 @@
+#include <stdint.h>
+#include <string.h>
+
 #include "tetris.h"
 #include "physics.h"
 #include "navswitch.h"
 #include "pacer.h"
 
 /**
+ * We generate random numbers using the 7-bag system.
+ * Imagine all 7 different pieces are placed in a bag and drawn at random one-by-one.
+ * When you run out of pieces in the bag you put all the pieces back and start again.
+ */
+static uint8_t sevenBag[BAG_SIZE];
+static uint8_t sevenBagIndex;
+
+bool existsInSevenBag(uint8_t piece)
+{
+    uint8_t i = 0;
+    for (; i < BAG_SIZE; i++) {
+        if (sevenBag[i] == piece) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void generateSevenBag(void)
+{
+    // reset the contents of the bag
+    memset(sevenBag, NONE, BAG_SIZE);
+
+    uint8_t i = 0;
+    for (; i < BAG_SIZE; i++) {
+
+        // pick a piece at random
+        uint8_t piece = rand() % NUM_TETROMINOS;
+
+        while (existsInSevenBag(piece)) {
+            piece = rand() % NUM_TETROMINOS;
+        }
+
+        sevenBag[i] = piece;
+    }
+    sevenBagIndex = 0;
+}
+
+/**
  * Returns a number from 0 - 6 (inclusive) that represents the next tetromino to spawned
- * IN FUTURE CONSIDER USING THE 7-BAG METHOD
  */
 uint8_t getNextTetromino(void) {
-    #ifdef __AVR__
-        return timer_get() % NUM_TETROMINOS;
-    #else
-        return rand() % NUM_TETROMINOS;
-    #endif
+    if (sevenBagIndex == BAG_SIZE) {
+        generateSevenBag();
+    }
+    return sevenBag[sevenBagIndex++];
 }
 
 
@@ -66,6 +106,7 @@ bool holdPiece(Game* game)
  */
 void tetris_init(void) {
     DefaultSpawnPosition = (Position){1, 0};
+    generateSevenBag();
 }
 
 /**

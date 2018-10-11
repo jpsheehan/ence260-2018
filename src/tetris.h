@@ -5,12 +5,7 @@
  * Platform independent:
  * Required for random number generation for spawnNextTetromino().
  */
-#ifdef __AVR__
-    #include "timer.h"
-#else
-    #include <stdlib.h>
-#endif
-
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -26,6 +21,7 @@
 #define S 4
 #define T 5
 #define Z 6
+#define NONE 255
 
 /**
  * Represents the different states of rotation that the Tetrominos can be in.
@@ -60,6 +56,11 @@
 #define ACTIVE 3
 #define GHOST 4
 #define FLOOR 5
+
+/**
+ * Related to random piece generation.
+ */
+#define BAG_SIZE 7
 
 /**
  * Represents a 2D position.
