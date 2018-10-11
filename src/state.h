@@ -12,11 +12,6 @@
 #define STATE_2P_GAME 3
 
 /**
- * Stores the state of the game.
- */
-static uint8_t state;
-
-/**
  * Sets the state of the game to _state.
  */
 void setState(uint8_t _state);

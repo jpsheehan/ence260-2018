@@ -1,6 +1,11 @@
 #include "state.h"
 
 /**
+ * Stores the state of the game.
+ */
+static uint8_t state;
+
+/**
  * Sets the state of the game to _state.
  */
 void setState(uint8_t _state)
