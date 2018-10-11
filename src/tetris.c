@@ -158,12 +158,7 @@ void check_move(Game* game) {
     } else if (navswitch_push_event_p(NAVSWITCH_WEST)) {
         moveActivePiece(game, LEFT);
     } else if (navswitch_push_event_p(NAVSWITCH_NORTH)) {
-<<<<<<< HEAD
         rotateActivePiece(game, COUNTERCLOCKWISE);
-=======
-        led_set(0, PIO_OUTPUT_LOW);
-        rotateActivePiece(game, CLOCKWISE);
->>>>>>> f0f12e1248db75b0e05c1d10144b6ad700392093
     } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         holdPiece(game);
     }
