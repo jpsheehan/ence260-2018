@@ -4,7 +4,7 @@
 #include "tetris.h"
 #include "physics.h"
 #include "navswitch.h"
-#include "pacer.h"
+#include "../lib/utils/pacer.h"
 
 /**
  * We generate random numbers using the 7-bag system.
