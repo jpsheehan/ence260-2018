@@ -41,7 +41,7 @@ int main (void)
     pacer_init(300);
 
 
-    setState(STATE_1P_GAME);
+    setState(STATE_STARTUP);
 
     
     uint8_t player_num = 1;

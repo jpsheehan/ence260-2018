@@ -123,17 +123,23 @@ void playTetris(uint8_t num_players)
 {
     tetris_init();
     uint16_t wait;
+    uint8_t aTime = 35;
     uint8_t clears = 0;
     Game game = {0};
     spawnNextTetromino(&game);
     while (1) {
-        for (wait = 0; wait < 35; wait++) {
+        for (wait = 0; wait < aTime; wait++) {
             pacer_wait();
             fillFramebuffer(&game);
             show_screen(frameBuffer);
 
             button_update();
             navswitch_update ();
+            if (button_down_p(0)) {
+                aTime = 12;
+            } else {
+                aTime = 35;
+            }
             check_move(&game);
         }
         if (!applyGravity(&game)) {
@@ -159,7 +165,9 @@ void check_move(Game* game) {
         moveActivePiece(game, LEFT);
     } else if (navswitch_push_event_p(NAVSWITCH_NORTH)) {
         rotateActivePiece(game, CLOCKWISE);
-    } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
+    } else if (navswitch_push_event_p(NAVSWITCH_SOUTH)) {
+        rotateActivePiece(game, COUNTERCLOCKWISE);
+    }else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         holdPiece(game);
     }
 }
