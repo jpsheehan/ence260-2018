@@ -31,7 +31,7 @@ int main (void)
 
     // init the led
     led_init();
-    led_set(0, PIO_OUTPUT_LOW);
+    led_set(0, false);
 
     
 

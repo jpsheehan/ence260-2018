@@ -104,22 +104,22 @@ void fillFramebuffer(Game *game)
     Position *posData = drawData[game->active_piece][game->active_orientation];
 
     // find where the ghost piece can go
-    // Position ghostPos = game->active_position;
-    // while (testAbsolutePosition(game, ghostPos) == EMPTY) {
-    //     ghostPos.y += 1;
-    // }
-    // ghostPos.y -= 1;
+    Position ghostPos = game->active_position;
+    while (testAbsolutePosition(game, ghostPos) == EMPTY) {
+        ghostPos.y += 1;
+    }
+    ghostPos.y -= 1;
 
     // draw the ghost piece
-    // for (i = 0; i < 4; i++) {
-    //     Position relPos = posData[i];
-    //     int8_t x = ghostPos.x + relPos.x;
-    //     int8_t y = ghostPos.y + relPos.y;
+    for (i = 0; i < 4; i++) {
+        Position relPos = posData[i];
+        int8_t x = ghostPos.x + relPos.x;
+        int8_t y = ghostPos.y + relPos.y;
 
-    //     if (x >= 0 && y >= 0 && x < GAME_BOARD_WIDTH && y < GAME_BOARD_HEIGHT) {
-    //         frameBuffer[y][x] = GHOST;
-    //     }
-    // }
+        if (x >= 0 && y >= 0 && x < GAME_BOARD_WIDTH && y < GAME_BOARD_HEIGHT) {
+            frameBuffer[y][x] = GHOST;
+        }
+    }
 
     // draw the active piece
     for (i = 0; i < 4; i++) {
