@@ -207,16 +207,15 @@ bool applyGravity(Game* game)
 
     uint8_t test = testAbsolutePosition(game, newPosition);
 
-    switch (test) {
-        case EMPTY:
-            // everything okay! let's move the piece to its new position
-            game->active_position.x = newPosition.x;
-            game->active_position.y = newPosition.y;
-            return true;
-        case FLOOR:
-        case STACK:
-            // uh, oh! the piece collided with the floor or the stack, let's turn the active piece into part of the stack
-            return false;
+    if (test == EMPTY) {
+        // everything okay! let's move the piece to its new position
+        game->active_position.x = newPosition.x;
+        game->active_position.y = newPosition.y;
+        return true;
+
+    } else if (test == STACK || test == FLOOR) {
+        // uh, oh! the piece collided with the floor or the stack, let's turn the active piece into part of the stack
+        return false;
     }
 
     return true;
@@ -298,19 +297,16 @@ bool rotateActivePiece(Game* game, uint8_t direction)
 
     } else {
 
-        Position *kickData = NULL;
+        Position *kickDataArray = NULL;
 
         // perform kicks on other pieces
         if (game->active_piece == I) {
             // I has its own set of kicks
-            kickData = (Position*)kickDataForI;
+            kickDataArray = *(kickDataForI + (2 * oldOrientation + direction) * 5 * sizeof(Position));
         } else {
             // J, L, Z, S and T pieces share their kick data
-            kickData = (Position*)kickDataForJLSTZ;
+            kickDataArray = *(kickDataForJLSTZ + (2 * oldOrientation + direction) * 5 * sizeof(Position));
         }
-
-        // get the row of kickData to loop through
-        Position *kickDataArray = (kickData + (2 * oldOrientation + direction) * 5 * sizeof(Position));
 
         uint8_t i = 0;
         for (; i < 5; i++) {
