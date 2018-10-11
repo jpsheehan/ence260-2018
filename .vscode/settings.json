@@ -8,5 +8,8 @@
         "*.o": true,
         "*.out": true,
         "*.hex": true
+    },
+    "files.associations": {
+        "showscreen.h": "c"
     }
 }
