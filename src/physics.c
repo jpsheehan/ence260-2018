@@ -55,7 +55,7 @@ static Position drawData[7][4][4] = {
     {
         { {1, -1}, {-1, 0}, {0, 0}, {1, 0} }, // L 0
         { {1, 1}, {0, -1}, {0, 0}, {0, 1} }, // L 90
-        { {-1, 0}, {0, 0}, {1, 0}, {1, -1} }, // L 180
+        { {-1, 0}, {0, 0}, {1, 0}, {-1, 1} }, // L 180
         { {0, -1}, {0, 0}, {0, 1}, {-1, -1} }, // L 270
     },
     {
@@ -283,9 +283,9 @@ bool rotateActivePiece(Game* game, uint8_t direction)
             break;
         case ROTATE_270:
             if (direction == CLOCKWISE) {
-                game->active_orientation = ROTATE_180;
-            } else {
                 game->active_orientation = ROTATE_0;
+            } else {
+                game->active_orientation = ROTATE_180;
             }
             break;
     }
@@ -301,19 +301,12 @@ bool rotateActivePiece(Game* game, uint8_t direction)
         Position *kickData = NULL;
 
         // perform kicks on other pieces
-        switch (game->active_piece) {
-            case I:
-                // I has its own set of kicks
-                kickData = (Position*)kickDataForI;
-                break;
-            case J:
-            case L:
-            case S:
-            case Z:
-            case T:
-                // these pieces share their own kick data
-                kickData = (Position*)kickDataForJLSTZ;
-                break;
+        if (game->active_piece == I) {
+            // I has its own set of kicks
+            kickData = (Position*)kickDataForI;
+        } else {
+            // J, L, Z, S and T pieces share their kick data
+            kickData = (Position*)kickDataForJLSTZ;
         }
 
         // get the row of kickData to loop through
