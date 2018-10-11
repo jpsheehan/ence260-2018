@@ -127,7 +127,7 @@ void playTetris(uint8_t num_players)
     Game game = {0};
     spawnNextTetromino(&game);
     while (1) {
-        for (wait = 0; wait < 200; wait++) {
+        for (wait = 0; wait < 50; wait++) {
             pacer_wait();
             fillFramebuffer(&game);
             show_screen(frameBuffer);

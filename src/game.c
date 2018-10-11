@@ -46,7 +46,7 @@ int main (void)
                          {1, 1, 1, 1, 0},
                          {0, 0, 1, 1, 0},
                          {0, 0, 1, 1, 0},
-                         {0, 0, 0, 0 ,1}
+                         {0, 0, 0, 0, 0}
                        };
 
     while (1)
@@ -58,6 +58,7 @@ int main (void)
             case STATE_STARTUP:
                 while (1) {
                     show_screen(init_screen);
+                    navswitch_update();
                     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
                         setState(STATE_1P_GAME);
                         break;
