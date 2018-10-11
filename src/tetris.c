@@ -158,17 +158,23 @@ void playTetris(uint8_t num_players)
     }
 }
 
-void check_move(Game* game) {
-           if (navswitch_push_event_p(NAVSWITCH_EAST)) {
+void check_move(Game* game)
+{
+    if (navswitch_push_event_p(NAVSWITCH_EAST)) {
         moveActivePiece(game, RIGHT);
+
     } else if (navswitch_push_event_p(NAVSWITCH_WEST)) {
         moveActivePiece(game, LEFT);
+
     } else if (navswitch_push_event_p(NAVSWITCH_NORTH)) {
-        rotateActivePiece(game, CLOCKWISE);
-    } else if (navswitch_push_event_p(NAVSWITCH_SOUTH)) {
         rotateActivePiece(game, COUNTERCLOCKWISE);
-    }else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
+
+    } else if (navswitch_push_event_p(NAVSWITCH_SOUTH)) {
+        rotateActivePiece(game, CLOCKWISE);
+
+    } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         holdPiece(game);
+        
     }
 }
 #endif
