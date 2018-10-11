@@ -28,7 +28,16 @@ int main (void)
     pacer_init(500);
 
 
-    setState(STATE_1P_GAME);
+    setState(STATE_STARTUP);
+
+    init_screen[7][5] ={ {1, 1, 0, 0, 0},
+                         {1, 1, 0, 0, 0},
+                         {1, 1, 1, 1, 0},
+                         {1, 1, 1, 1, 0},
+                         {0, 0, 1, 1, 0},
+                         {0, 0, 1, 1, 0},
+                         {0, 0, 0, 0 ,1}
+                       }
 
     while (1)
     {
@@ -37,7 +46,13 @@ int main (void)
 
         switch (getState()) {
             case STATE_STARTUP:
-
+                while (1) {
+                    show_screen(init_screen);
+                    if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
+                        setState(STATE_1P_GAME);
+                        break
+                    }
+                }
                 break;
             case STATE_MENU:
 

@@ -150,7 +150,7 @@ void check_move(Game* game) {
     } else if (navswitch_push_event_p(NAVSWITCH_WEST)) {
         moveActivePiece(game, LEFT);
     } else if (navswitch_push_event_p(NAVSWITCH_NORTH)) {
-        rotateActivePiece(game, CLOCKWISE);
+        rotateActivePiece(game, COUNTERCLOCKWISE);
     } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         holdPiece(game);
     }
