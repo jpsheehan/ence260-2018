@@ -158,17 +158,9 @@ void check_move(Game* game) {
     } else if (navswitch_push_event_p(NAVSWITCH_WEST)) {
         moveActivePiece(game, LEFT);
     } else if (navswitch_push_event_p(NAVSWITCH_NORTH)) {
-        Orientation oldOrientation = game->active_orientation;
         rotateActivePiece(game, CLOCKWISE);
-        if (oldOrientation == game->active_orientation) {
-            led_set(0, true);            
-        }
     } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         holdPiece(game);
-    }
-
-    if (navswitch_release_event_p(NAVSWITCH_NORTH)) {
-        led_set(0, false);
     }
 }
 #endif
