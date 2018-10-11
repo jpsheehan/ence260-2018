@@ -1,4 +1,5 @@
 #include "physics.h"
+#include "tetris.h"
 
 /**
  * Wall kick data for J, L, S, T, Z minoes
@@ -297,25 +298,22 @@ bool rotateActivePiece(Game* game, uint8_t direction)
 
     } else {
 
-        Position *kickData = NULL;
+        // get the row of kickData to loop through
+        Position *kickDataArray = NULL;
 
-        // perform kicks on other pieces
         if (game->active_piece == I) {
             // I has its own set of kicks
-            kickData = (Position*)kickDataForI;
+            kickDataArray = (Position*)(kickDataForI + (2 * oldOrientation + direction) * 5 * sizeof(Position));
         } else {
             // J, L, Z, S and T pieces share their kick data
-            kickData = (Position*)kickDataForJLSTZ;
+            kickDataArray = (Position*)(kickDataForJLSTZ + (2 * oldOrientation + direction) * 5 * sizeof(Position));
         }
-
-        // get the row of kickData to loop through
-        Position *kickDataArray = (kickData + (2 * oldOrientation + direction) * 5 * sizeof(Position));
 
         uint8_t i = 0;
         for (; i < 5; i++) {
-
+            Position offsetPos = *(kickDataArray + i * sizeof(Position));
             // get the absolute position of the new position
-            Position testPosition = *(kickDataArray + i * sizeof(Position));
+            Position testPosition = { offsetPos.x, offsetPos.y };
             testPosition.x = testPosition.x + game->active_position.x;
             testPosition.y = testPosition.y + game->active_position.y;
 
@@ -329,7 +327,7 @@ bool rotateActivePiece(Game* game, uint8_t direction)
         // we could not find a suitable rotation for the piece
         // restore the old orientation
         game->active_orientation = oldOrientation;
-        return false;
+        return false; // should be false
 
     }
       

@@ -1,9 +1,10 @@
 #include "system.h"
-#include "../lib/utils/pacer.h"
 #include "navswitch.h"
 #include "button.h"
 #include "led.h"
 #include "pio.h"
+
+#include "../lib/utils/pacer.h"
 
 #include "state.h"
 #include "tetris.h"
@@ -29,16 +30,16 @@ int main (void)
 
     // init the led
     led_init();
-    led_set(0, PIO_OUTPUT_LOW);
+    led_set(0, false);
     
 
     // init the IR comms
     
     // init the pacer (100Hz should be good enough to update the screen and the game)
-    pacer_init(500);
+    pacer_init(100);
 
 
-    setState(STATE_STARTUP);
+    setState(STATE_1P_GAME);
 
     uint8_t init_screen[7][5] ={ {1, 1, 0, 0, 0},
                          {1, 1, 0, 0, 0},
