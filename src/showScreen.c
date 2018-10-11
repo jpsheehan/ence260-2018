@@ -1,5 +1,6 @@
 #include "showScreen.h"
-#include "pacer.h"
+#include "../lib/utils/pacer.h"
+#include "pio.h"
 
 /**
  * initialising columns
@@ -19,8 +20,9 @@ void show_screen(uint8_t gameBoard[7][5]) {
             }
         }
         ledmat_display_column (cols[i], i);
+        pacer_wait();
     }
-    pacer_wait();
+    pio_output_high(LEDMAT_COL5_PIO);
 }
 
 void screen_init() {
