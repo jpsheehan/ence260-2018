@@ -115,6 +115,15 @@ void tetris_init(void) {
     generateSevenBag();
 }
 
+
+Game newGame(void)
+{
+    Game game = { {0}, I, ROTATE_0, DefaultSpawnPosition, 0, NONE, false };
+    generateSevenBag();
+    spawnNextTetromino(&game);
+    return game;
+}
+
 #ifdef __AVR__
 /**
  * Starts a game of tetris.
@@ -125,8 +134,8 @@ void playTetris(uint8_t num_players)
     uint16_t wait;
     uint8_t aTime = 35;
     uint8_t clears = 0;
-    Game game = {0};
-    spawnNextTetromino(&game);
+    Game game = newGame();
+    
     while (1) {
         for (wait = 0; wait < aTime; wait++) {
             pacer_wait();
@@ -174,7 +183,7 @@ void check_move(Game* game)
 
     } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         holdPiece(game);
-        
+
     }
 }
 #endif

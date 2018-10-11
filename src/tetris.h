@@ -123,4 +123,6 @@ bool holdPiece(Game* game);
 
 void check_move(Game* game);
 
+Game newGame(void);
+
 #endif
