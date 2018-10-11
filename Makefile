@@ -27,13 +27,13 @@ state.o: $(SRC)/state.c
 menu.o: $(SRC)/menu.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-tetris.o: $(SRC)/tetris.c
+tetris.o: $(SRC)/tetris.c $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 physics.o: $(SRC)/physics.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h
+game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 showScreen.o: $(SRC)/showScreen.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h
@@ -60,13 +60,13 @@ pacer.o: $(UCFK)/utils/pacer.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/
 	$(CC) -c $(CFLAGS) $< -o $@
 
 navswitch.o: $(UCFK)/drivers/navswitch.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/navswitch.h $(UCFK)/drivers/avr/delay.h $(UCFK)/drivers/avr/pio.h 
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@=
 
 
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o
+game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

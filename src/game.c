@@ -1,5 +1,6 @@
 #include "system.h"
 #include "pacer.h"
+#include "navswitch.h"
 
 #include "state.h"
 #include "tetris.h"
@@ -19,23 +20,20 @@ int main (void)
 
     // init the button
     tetris_init();
+    navswitch_init ();
 
     // init the IR comms
     
     // init the pacer (100Hz should be good enough to update the screen and the game)
-    pacer_init(100);
+    pacer_init(500);
 
-    Game game = {0};
-    spawnNextTetromino(&game);
 
-    setState(STATE_STARTUP);
+    setState(STATE_1P_GAME);
 
     while (1)
     {
         pacer_wait();
         
-        fillFramebuffer(&game);
-        show_screen(frameBuffer);
 
         switch (getState()) {
             case STATE_STARTUP:
