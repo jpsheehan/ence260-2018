@@ -3,9 +3,9 @@
         {
             "name": "UCFunkit4",
             "includePath": [
-                "../drivers",
-                "../drivers/avr",
-                "."
+                "./lib/drivers",
+                "./lib/drivers/avr",
+                "./src"
             ],
             "intelliSenseMode": "clang-x64",
             "browse": {
@@ -16,5 +16,5 @@
             "cppStandard": "c++17"
         }
     ],
-    "version": 4
+    "version": 3
 }
