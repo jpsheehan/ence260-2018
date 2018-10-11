@@ -67,7 +67,7 @@ led.o: $(UCFK)/drivers/led.c $(UCFK)/drivers/led.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 navswitch.o: $(UCFK)/drivers/navswitch.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/navswitch.h $(UCFK)/drivers/avr/delay.h $(UCFK)/drivers/avr/pio.h 
-	$(CC) -c $(CFLAGS) $< -o $@=
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
 
