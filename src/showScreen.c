@@ -1,6 +1,6 @@
 #include "showScreen.h"
-#include "../lib/utils/pacer.h"
 #include "pio.h"
+#include "../lib/utils/pacer.h"
 
 /**
  * initialising columns

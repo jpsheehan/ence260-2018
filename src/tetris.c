@@ -1,10 +1,8 @@
-#include <stdint.h>
-#include <string.h>
-
 #include "tetris.h"
 #include "physics.h"
 
 #ifdef __AVR__
+    #include "showScreen.h"
     #include "navswitch.h"
     #include "button.h"
     #include "led.h"
