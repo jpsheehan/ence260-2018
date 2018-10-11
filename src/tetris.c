@@ -83,6 +83,8 @@ void playTetris(uint8_t num_players)
             pacer_wait();
             fillFramebuffer(&game);
             show_screen(frameBuffer);
+
+            navswitch_update ();
             check_move(&game);
         }
         if (!applyGravity(&game)) {
