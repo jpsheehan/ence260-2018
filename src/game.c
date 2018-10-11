@@ -44,11 +44,7 @@ int main (void)
     // init the IR comms
     
     // init the pacer (100Hz should be good enough to update the screen and the game)
-<<<<<<< HEAD
-    pacer_init(100);
-=======
     pacer_init(300);
->>>>>>> edcdd2f48ff0f692d6049c470ce0d84832138cd7
 
 
     setState(STATE_1P_GAME);
