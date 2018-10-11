@@ -40,14 +40,14 @@ int main (void)
 
     setState(STATE_STARTUP);
 
-    init_screen[7][5] ={ {1, 1, 0, 0, 0},
+    uint8_t init_screen[7][5] ={ {1, 1, 0, 0, 0},
                          {1, 1, 0, 0, 0},
                          {1, 1, 1, 1, 0},
                          {1, 1, 1, 1, 0},
                          {0, 0, 1, 1, 0},
                          {0, 0, 1, 1, 0},
                          {0, 0, 0, 0 ,1}
-                       }
+                       };
 
     while (1)
     {
@@ -60,7 +60,7 @@ int main (void)
                     show_screen(init_screen);
                     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
                         setState(STATE_1P_GAME);
-                        break
+                        break;
                     }
                 }
                 break;
