@@ -1,4 +1,5 @@
 #include "physics.h"
+#include <stdlib.h>
 
 /**
  * Wall kick data for J, L, S, T, Z minoes

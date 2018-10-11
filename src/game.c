@@ -1,9 +1,10 @@
 #include "system.h"
-#include "../lib/utils/pacer.h"
 #include "navswitch.h"
 #include "button.h"
 #include "led.h"
 #include "pio.h"
+
+#include "../lib/utils/pacer.h"
 
 #include "state.h"
 #include "tetris.h"
@@ -40,7 +41,7 @@ int main (void)
     pacer_init(300);
 
 
-    setState(STATE_STARTUP);
+    setState(STATE_1P_GAME);
 
     
     uint8_t player_num = 1;

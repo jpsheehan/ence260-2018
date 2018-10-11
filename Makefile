@@ -16,8 +16,8 @@ DEL = rm
 # Default target.
 all: game.out
 
-test:
-	make -f Makefile.test all
+test: $(SRC)/test/test.c $(SRC)/tetris.c $(SRC)/physics.c $(SRC)/tetris.h $(SRC)/physics.h
+	gcc -g -o test.o $(SRC)/test/test.c $(SRC)/tetris.c $(SRC)/physics.c
 
 
 # Compile: create object files from C source files.
@@ -27,16 +27,16 @@ state.o: $(SRC)/state.c
 menu.o: $(SRC)/menu.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-tetris.o: $(SRC)/tetris.c $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/system.h
+tetris.o: $(SRC)/tetris.c $(SRC)/tetris.h $(SRC)/physics.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-physics.o: $(SRC)/physics.c
+physics.o: $(SRC)/physics.c $(SRC)/physics.h $(SRC)/tetris.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h $(UCFK)/utils/tinygl.h $(UCFK)/fonts/font5x7_1.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-showScreen.o: $(SRC)/showScreen.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h
+showScreen.o: $(SRC)/showScreen.c $(SRC)/showScreen.h $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/pio.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
