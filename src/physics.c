@@ -55,7 +55,7 @@ static Position drawData[7][4][4] = {
     {
         { {1, -1}, {-1, 0}, {0, 0}, {1, 0} }, // L 0
         { {1, 1}, {0, -1}, {0, 0}, {0, 1} }, // L 90
-        { {-1, 0}, {0, 0}, {1, 0}, {1, -1} }, // L 180
+        { {-1, 0}, {0, 0}, {1, 0}, {-1, 1} }, // L 180
         { {0, -1}, {0, 0}, {0, 1}, {-1, -1} }, // L 270
     },
     {
@@ -283,9 +283,9 @@ bool rotateActivePiece(Game* game, uint8_t direction)
             break;
         case ROTATE_270:
             if (direction == CLOCKWISE) {
-                game->active_orientation = ROTATE_180;
-            } else {
                 game->active_orientation = ROTATE_0;
+            } else {
+                game->active_orientation = ROTATE_180;
             }
             break;
     }
