@@ -301,19 +301,12 @@ bool rotateActivePiece(Game* game, uint8_t direction)
         Position *kickData = NULL;
 
         // perform kicks on other pieces
-        switch (game->active_piece) {
-            case I:
-                // I has its own set of kicks
-                kickData = (Position*)kickDataForI;
-                break;
-            case J:
-            case L:
-            case S:
-            case Z:
-            case T:
-                // these pieces share their own kick data
-                kickData = (Position*)kickDataForJLSTZ;
-                break;
+        if (game->active_piece == I) {
+            // I has its own set of kicks
+            kickData = (Position*)kickDataForI;
+        } else {
+            // J, L, Z, S and T pieces share their kick data
+            kickData = (Position*)kickDataForJLSTZ;
         }
 
         // get the row of kickData to loop through
