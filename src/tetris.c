@@ -3,6 +3,8 @@
 
 #include "tetris.h"
 #include "physics.h"
+#include "navswitch.h"
+#include "pacer.h"
 
 /**
  * We generate random numbers using the 7-bag system.
@@ -112,5 +114,42 @@ void tetris_init(void) {
  */
 void playTetris(uint8_t num_players)
 {
-  
+    tetris_init();
+    uint16_t wait;
+    uint8_t clears = 0;
+    Game game = {0};
+    spawnNextTetromino(&game);
+    while (1) {
+        for (wait = 0; wait < 200; wait++) {
+            pacer_wait();
+            fillFramebuffer(&game);
+            show_screen(frameBuffer);
+            check_move(&game);
+        }
+        if (!applyGravity(&game)) {
+                if (!commitActiveTetrominoToStack(&game)) {
+                    break;
+                }
+
+                //TODO: send clears over IR if 2 player
+                clears = processLineClears(&game);
+                
+                if (!spawnNextTetromino(&game)) {
+                    break;
+                }
+                clears = 0;
+            }
+    }
+}
+
+void check_move(Game* game) {
+           if (navswitch_push_event_p(NAVSWITCH_EAST)) {
+        moveActivePiece(game, RIGHT);
+    } else if (navswitch_push_event_p(NAVSWITCH_WEST)) {
+        moveActivePiece(game, LEFT);
+    } else if (navswitch_push_event_p(NAVSWITCH_NORTH)) {
+        rotateActivePiece(game, CLOCKWISE);
+    } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
+        holdPiece(game);
+    }
 }
