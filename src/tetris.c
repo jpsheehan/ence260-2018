@@ -10,6 +10,7 @@
     #include "led.h"
     #include "pio.h"
     #include "../lib/utils/pacer.h"
+    #include "showScreen.h"
 #endif
 
 /**
@@ -118,7 +119,14 @@ void tetris_init(void) {
 
 Game newGame(void)
 {
-    Game game = { {0}, I, ROTATE_0, DefaultSpawnPosition, 0, NONE, false };
+    Game game = {{
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0}}, I, ROTATE_0, DefaultSpawnPosition, 0, NONE, false };
     generateSevenBag();
     spawnNextTetromino(&game);
     return game;
@@ -135,11 +143,11 @@ void playTetris(uint8_t num_players)
     uint8_t aTime = 35;
     uint8_t clears = 0;
     Game game = newGame();
-    
+
     while (1) {
+
         for (wait = 0; wait < aTime; wait++) {
             pacer_wait();
-            fillFramebuffer(&game);
             show_screen(frameBuffer);
 
             button_update();
@@ -149,25 +157,37 @@ void playTetris(uint8_t num_players)
             } else {
                 aTime = 35;
             }
-            check_move(&game);
-        }
-        if (!applyGravity(&game)) {
-                if (!commitActiveTetrominoToStack(&game)) {
-                    break;
-                }
-
-                //TODO: send clears over IR if 2 player
-                clears = processLineClears(&game);
-                
-                if (!spawnNextTetromino(&game)) {
-                    break;
-                }
-                clears = 0;
+            if (check_move(&game)) {
+                fillFramebuffer(&game);
             }
+        }
+
+
+        if (!applyGravity(&game)) {
+
+            if (!commitActiveTetrominoToStack(&game)) {
+                break;
+            }
+
+            clears = processLineClears(&game);
+
+            if (num_players == 2 && clears > 0) {
+                //TODO: send clears over IR if 2 player
+            }
+            
+            if (!spawnNextTetromino(&game)) {
+                break;
+            }
+            clears = 0;
+            
+        }
+        
+        fillFramebuffer(&game);
     }
 }
 
-void check_move(Game* game)
+// returns true if we need to update the frame buffer
+bool check_move(Game* game)
 {
     if (navswitch_push_event_p(NAVSWITCH_EAST)) {
         moveActivePiece(game, RIGHT);
@@ -184,6 +204,10 @@ void check_move(Game* game)
     } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         holdPiece(game);
 
+    } else {
+        return false;
     }
+
+    return true;
 }
 #endif

@@ -121,7 +121,7 @@ bool spawnNextTetromino(Game* game);
  */
 bool holdPiece(Game* game);
 
-void check_move(Game* game);
+bool check_move(Game* game);
 
 Game newGame(void);
 
