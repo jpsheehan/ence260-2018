@@ -3,6 +3,7 @@
 
 #include "tetris.h"
 #include "physics.h"
+#include "graphics.h"
 
 
 #include "navswitch.h"
@@ -140,7 +141,15 @@ Game newGame(void)
 void playTetris(uint8_t num_players)
 {
     if (num_players == 2) {
-
+        if (ir_uart_read_ready_p()) {
+            ir_uart_getc();
+        } else {
+            ir_uart_putc ('r');
+            while (!ir_uart_read_ready_p()) {
+                show_screen(WAIT_SCREEN);
+            }
+            ir_uart_getc();
+        }
     }
 
     tetris_init();
