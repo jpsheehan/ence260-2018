@@ -130,19 +130,37 @@ void tetris_init(void) {
 }
 
 
-Game newGame(void)
+// Allocates a new game on the heap
+Game* newGame(void)
 {
-    Game game = {{
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0}}, I, ROTATE_0, DefaultSpawnPosition, 0, NONE, false };
+    // initialise a new game object
+    Game* game = malloc(sizeof(Game));
+    game->active_piece = I;
+    game->active_orientation = ROTATE_0;
+    game->active_position = DefaultSpawnPosition;
+    game->score = 0;
+    game->held_piece = NONE;
+    game->has_held_this_turn = false;
+
+    // clear the game board
+    uint8_t i;
+    for (i = 0; i < GAME_BOARD_HEIGHT; i++) {
+        uint8_t j;
+        for (j = 0; j < GAME_BOARD_WIDTH; j++) {
+            game->board[i][j] = EMPTY;
+        }
+    }
+
     generateSevenBag();
-    spawnNextTetromino(&game);
+    spawnNextTetromino(game);
+    fillFramebuffer(game);
     return game;
+}
+
+// frees the memory used by a game
+void destroyGame(Game* game)
+{
+    free(game);
 }
 
 
@@ -173,7 +191,7 @@ uint8_t playTetris(uint8_t num_players)
     uint8_t aTime = 35;
     uint8_t clears = 0;
     uint8_t junklines = 0;
-    Game game = newGame();
+    Game *game = newGame();
 
     while (1) {
 
@@ -189,45 +207,51 @@ uint8_t playTetris(uint8_t num_players)
             } else {
                 aTime = 35;
             }
-            if (check_move(&game)) {
-                fillFramebuffer(&game);
+            if (check_move(game)) {
+                fillFramebuffer(game);
             }
         }
 
         if (ir_uart_read_ready_p()) {
             ir_uart_getc();
+            destroyGame(game);
             return 1;
         }
 
 
-        if (!applyGravity(&game)) {
+        if (!applyGravity(game)) {
 
-            if (!commitActiveTetrominoToStack(&game)) {
+            if (!commitActiveTetrominoToStack(game)) {
                 if (num_players == 2) {
                     ir_uart_putc ('L');
                 }
+                destroyGame(game);
                 return 0;
             }
 
-            clears = processLineClears(&game);
+            clears = processLineClears(game);
 
             if (num_players == 2 && clears > 0) {
                 //TODO: send clears over IR if 2 player
                 //ir_uart_putc (clears);
             }
             
-            if (!spawnNextTetromino(&game)) {
+            if (!spawnNextTetromino(game)) {
                 if (num_players == 2) {
                     ir_uart_putc ('L');
                 }
+                destroyGame(game);
                 return 0;
             }
             clears = 0;
             
         }
         
-        fillFramebuffer(&game);
+        fillFramebuffer(game);
     }
+    
+    destroyGame(game);
+
 }
 
 // returns true if we need to update the frame buffer
