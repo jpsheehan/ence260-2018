@@ -331,3 +331,59 @@ void softDrop(Game* game)
 
     game->active_position = newPos;
 }
+
+/**
+ * Inserts n lines of junk at the bottom of the stack.
+ * If this causes any part of the stack to collide with the "sky" this function returns false as the game is over.
+ * This function returns true if the game is not over.
+ * To be fair to the player, the active piece is also moved up one piece.
+ */
+bool insertJunk(Game* game, uint8_t n)
+{
+    // generate a line of junk to insert. a line of junk has one "hole" in it
+    uint8_t holePosition = rand() % GAME_BOARD_WIDTH;
+    bool is_game_lost = false;
+
+    // push the active piece up as well,
+    // we don't want to be dicks about the fact that you're losing
+    game->active_position.y -= 1;
+
+    // insert n lines of junk
+    uint8_t i = 0;
+    for (i = 0; i < n; i++) {
+
+        // first of all, shift everything in the entire stack up one
+        uint8_t j = 0;
+        for (; j < GAME_BOARD_HEIGHT - 1; j++) {
+            
+            // shift each row up one
+            uint8_t k = 0;
+            for (; k < GAME_BOARD_WIDTH; k++) {
+                
+                // if this is the first row, we check to see if any stack would be pushed
+                // up out of the playfield
+                if (j == 0) {
+                    if (game->board[j][k] == STACK) {
+                        is_game_lost = true;
+                    }
+                }
+
+                game->board[j][k] = game->board[j+1][k];
+            }
+
+        }
+
+        // insert the junk
+        for (j = 0; j < GAME_BOARD_WIDTH; j++) {
+            if (j == holePosition) {
+                game->board[GAME_BOARD_HEIGHT-1][j] = EMPTY;
+            } else {
+                game->board[GAME_BOARD_HEIGHT-1][j] = STACK;
+            }
+        }
+
+    }
+
+    return !is_game_lost;
+
+}
