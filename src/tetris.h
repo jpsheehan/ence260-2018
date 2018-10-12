@@ -108,7 +108,7 @@ void tetris_init(void);
 /**
  * Starts a game of tetris.
  */
-void playTetris(uint8_t num_players);
+uint8_t playTetris(uint8_t num_players);
 
 /**
  * Generates the next (or first) tetromino and spawns it.

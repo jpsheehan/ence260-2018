@@ -48,6 +48,7 @@ int main (void)
 
     
     uint8_t player_num = 1;
+    uint8_t won;
 
     while (1)
     {
@@ -69,9 +70,9 @@ int main (void)
                 while (1) {
                     navswitch_update();
                     if (player_num == 1) {
-                        show_screen(ONE);
+                        show_screen(ONE_SCREEN);
                     } else {
-                        show_screen(TWO);
+                        show_screen(TWO_SCREEN);
                     }
 
                     if (navswitch_push_event_p (NAVSWITCH_NORTH) || navswitch_push_event_p (NAVSWITCH_SOUTH)) {
@@ -86,19 +87,38 @@ int main (void)
 
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                         if (player_num == 1) {
-                            playTetris(1);
+                            won = playTetris(1);
                         } else {
-                            playTetris(2);
+                            won = playTetris(2);
+                        }
+                        if (won) {
+                            setState(STATE_WON);
+                        } else {
+                            setState(STATE_LOST);
                         }
                         break;
                     }
                 }
                 break;
-            case STATE_1P_GAME:
-                playTetris(1);
+            case STATE_WON:
+                while (1){
+                    navswitch_update();
+                    show_screen(WON_SCREEN);
+                    if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                        break;
+                    }
+                }
+                setState(STATE_STARTUP);
                 break;
-            case STATE_2P_GAME:
-                playTetris(2);
+            case STATE_LOST:
+                while (1){
+                    navswitch_update();
+                    show_screen(LOST_SCREEN);
+                    if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                        break;
+                    }
+                }
+                setState(STATE_STARTUP);
                 break;
         }
 

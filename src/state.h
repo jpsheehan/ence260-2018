@@ -8,8 +8,8 @@
  */
 #define STATE_STARTUP 0
 #define STATE_MENU 1
-#define STATE_1P_GAME 2
-#define STATE_2P_GAME 3
+#define STATE_WON 2
+#define STATE_LOST 3
 
 /**
  * Sets the state of the game to _state.

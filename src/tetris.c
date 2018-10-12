@@ -149,14 +149,18 @@ Game newGame(void)
 /**
  * Starts a game of tetris.
  */
-void playTetris(uint8_t num_players)
+uint8_t playTetris(uint8_t num_players)
 {
+    uint16_t wait;
     led_set(0, false);
     if (num_players == 2) {
         if (ir_uart_read_ready_p()) {
             led_set(0, true);
             ir_uart_getc();
             ir_uart_putc ('r');
+            for (wait = 0; wait < 390; wait++) {
+                pacer_wait();
+            }
         } else {
             led_set(0, true);
             ir_uart_putc ('r');
@@ -166,7 +170,6 @@ void playTetris(uint8_t num_players)
     }
     led_set(0, false);
     tetris_init();
-    uint16_t wait;
     uint8_t aTime = 35;
     uint8_t clears = 0;
     uint8_t junklines = 0;
@@ -194,18 +197,24 @@ void playTetris(uint8_t num_players)
         if (!applyGravity(&game)) {
 
             if (!commitActiveTetrominoToStack(&game)) {
-                break;
+                if (num_players == 2) {
+                    ir_uart_putc ('L');
+                }
+                return 0;
             }
 
             clears = processLineClears(&game);
 
             if (num_players == 2 && clears > 0) {
                 //TODO: send clears over IR if 2 player
-                
+                ir_uart_putc (clears);
             }
             
             if (!spawnNextTetromino(&game)) {
-                break;
+                if (num_players == 2) {
+                    ir_uart_putc ('L');
+                }
+                return 0;
             }
             clears = 0;
             
