@@ -1,3 +1,5 @@
+#ifndef GRAPHICS_H_
+#define GRAPHICS_H_
 
 uint8_t INIT_SCREEN[7][5] ={{1, 1, 0, 0, 0},
                             {1, 1, 0, 0, 0},

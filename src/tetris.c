@@ -3,7 +3,6 @@
 
 #include "tetris.h"
 #include "physics.h"
-#include "graphics.h"
 
 
 #include "navswitch.h"
@@ -13,6 +12,15 @@
 #include "../lib/utils/pacer.h"
 #include "showScreen.h"
 #include "ir_uart.h"
+
+uint8_t WAIT_SCREEN[7][5] ={{0, 0, 0, 0, 0},
+                            {0, 1, 1, 1, 0},
+                            {1, 0, 0, 0, 1},
+                            {1, 0, 0, 0, 1},
+                            {1, 0, 0, 0, 1},
+                            {0, 1, 1, 1, 0},
+                            {0, 0, 0, 0, 0}
+                            };
 
 
 /**
@@ -145,17 +153,14 @@ void playTetris(uint8_t num_players)
             ir_uart_getc();
         } else {
             ir_uart_putc ('r');
-            while (!ir_uart_read_ready_p()) {
-                show_screen(WAIT_SCREEN);
-            }
-            ir_uart_getc();
         }
     }
-
+    ir_uart_getc();
     tetris_init();
     uint16_t wait;
     uint8_t aTime = 35;
     uint8_t clears = 0;
+    uint8_t junklines = 0;
     Game game = newGame();
 
     while (1) {
@@ -187,6 +192,7 @@ void playTetris(uint8_t num_players)
 
             if (num_players == 2 && clears > 0) {
                 //TODO: send clears over IR if 2 player
+                
             }
             
             if (!spawnNextTetromino(&game)) {
