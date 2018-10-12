@@ -4,14 +4,14 @@
 #include "tetris.h"
 #include "physics.h"
 
-#ifdef __AVR__
+
     #include "navswitch.h"
     #include "button.h"
     #include "led.h"
     #include "pio.h"
     #include "../lib/utils/pacer.h"
     #include "showScreen.h"
-#endif
+
 
 /**
  * We generate random numbers using the 7-bag system.
@@ -132,7 +132,7 @@ Game newGame(void)
     return game;
 }
 
-#ifdef __AVR__
+
 /**
  * Starts a game of tetris.
  */
@@ -210,4 +210,3 @@ bool check_move(Game* game)
 
     return true;
 }
-#endif
