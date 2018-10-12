@@ -5,12 +5,13 @@
 #include "physics.h"
 
 
-    #include "navswitch.h"
-    #include "button.h"
-    #include "led.h"
-    #include "pio.h"
-    #include "../lib/utils/pacer.h"
-    #include "showScreen.h"
+#include "navswitch.h"
+#include "button.h"
+#include "led.h"
+#include "pio.h"
+#include "../lib/utils/pacer.h"
+#include "showScreen.h"
+#include "ir_uart.h"
 
 
 /**
@@ -138,6 +139,10 @@ Game newGame(void)
  */
 void playTetris(uint8_t num_players)
 {
+    if (num_players == 2) {
+
+    }
+
     tetris_init();
     uint16_t wait;
     uint8_t aTime = 35;
