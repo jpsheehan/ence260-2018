@@ -104,7 +104,11 @@ bool holdPiece(Game* game)
     if (game->has_held_this_turn == false) {
         Piece tempPiece = game->held_piece;
         game->held_piece = game->active_piece;
-        spawnTetromino(game, tempPiece);
+        if (tempPiece == NONE) {
+            spawnTetromino(game, getNextTetromino());
+        } else {
+            spawnTetromino(game, tempPiece);
+        }
         game->has_held_this_turn = true;
         return true;
     } else {
