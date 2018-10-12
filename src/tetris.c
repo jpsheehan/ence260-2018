@@ -12,15 +12,6 @@
 #include "showScreen.h"
 #include "ir_uart.h"
 
-uint8_t FUNKY_WAIT_SCREEN[7][5] ={{0, 0, 0, 0, 0},
-                            {0, 1, 1, 1, 0},
-                            {1, 0, 0, 0, 1},
-                            {1, 0, 0, 0, 1},
-                            {1, 0, 0, 0, 1},
-                            {0, 1, 1, 1, 0},
-                            {0, 0, 0, 0, 0}
-                            };
-
 
 /**
  * We generate random numbers using the 7-bag system.
@@ -169,15 +160,17 @@ void destroyGame(Game* game)
  */
 uint8_t playTetris(uint8_t num_players)
 {
-    uint8_t sentChar;
+    uint8_t receivedChar;
     uint16_t wait;
+    uint8_t junkRows = 0;
+    uint8_t lineClears = 0;
     led_set(0, false);
     if (num_players == 2) {
         while (1) {
             if (ir_uart_read_ready_p()) {
                 led_set(0, false);
-                sentChar = ir_uart_getc();
-                if (sentChar == 'r') {
+                receivedChar = ir_uart_getc();
+                if (receivedChar == 'r') {
                     ir_uart_putc ('r');
                     for (wait = 0; wait < 390; wait++) {
                         pacer_wait();
@@ -187,8 +180,8 @@ uint8_t playTetris(uint8_t num_players)
             } else {
                 led_set(0, true);
                 ir_uart_putc ('r');
-                sentChar = ir_uart_getc();
-                if (sentChar == 'r') {
+                receivedChar = ir_uart_getc();
+                if (receivedChar == 'r') {
                     break;
                 }
             }
@@ -219,11 +212,21 @@ uint8_t playTetris(uint8_t num_players)
         }
 
         if (ir_uart_read_ready_p()) {
-            sentChar = ir_uart_getc();
-            if (sentChar == 'L') {
+            receivedChar = ir_uart_getc();
+            if (receivedChar == 'L') {
                 destroyGame(game);
                 return 1;
             }
+            if (receivedChar < 5 && receivedChar > 0) {
+                junkRows += receivedChar;
+                if(!insertJunk(&game, junkRows / 2)) {
+                    ir_uart_putc ('L');
+                    destroyGame(game);
+                    return 0;
+                }
+                junkRows = junkRows % 2;
+            }
+            
         }
 
 
@@ -237,7 +240,12 @@ uint8_t playTetris(uint8_t num_players)
                 return 0;
             }
 
-            processLineClears(game);
+            lineClears = processLineClears(game);
+            if (num_players == 2 && lineClears > 0) {
+                ir_uart_putc (lineClears);
+                lineClears = 0;
+            }
+
             
             if (!spawnNextTetromino(game)) {
                 if (num_players == 2) {
