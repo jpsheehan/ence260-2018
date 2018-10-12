@@ -12,7 +12,7 @@
 #include "showScreen.h"
 #include "ir_uart.h"
 
-uint8_t WAIT_SCREEN[7][5] ={{0, 0, 0, 0, 0},
+uint8_t FUNKY_WAIT_SCREEN[7][5] ={{0, 0, 0, 0, 0},
                             {0, 1, 1, 1, 0},
                             {1, 0, 0, 0, 1},
                             {1, 0, 0, 0, 1},
@@ -151,14 +151,20 @@ Game newGame(void)
  */
 void playTetris(uint8_t num_players)
 {
+
     if (num_players == 2) {
+        led_set(0, false);
         if (ir_uart_read_ready_p()) {
+            led_set(0, true);
             ir_uart_getc();
-        } else {
             ir_uart_putc ('r');
+        } else {
+            led_set(0, true);
+            ir_uart_putc ('r');
+            ir_uart_getc();
+     
         }
     }
-    ir_uart_getc();
     tetris_init();
     uint16_t wait;
     uint8_t aTime = 35;

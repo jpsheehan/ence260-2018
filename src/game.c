@@ -12,6 +12,7 @@
 #include "showScreen.h"
 #include "physics.h"
 #include "graphics.h"
+#include "ir_uart.h"
 
 /**
  * Initialises the hardware and starts the main loop.
@@ -22,6 +23,8 @@ int main (void)
 
     // init the led matrix
     screen_init();
+
+    ir_uart_init();
 
     // init the button
     button_init();
@@ -83,14 +86,13 @@ int main (void)
 
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                         if (player_num == 1) {
-                            setState(STATE_1P_GAME);
+                            playTetris(1);
                         } else {
-                            setState(STATE_2P_GAME);
+                            playTetris(2);
                         }
                         break;
                     }
                 }
-                setState(STATE_1P_GAME);
                 break;
             case STATE_1P_GAME:
                 playTetris(1);
