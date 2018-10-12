@@ -169,28 +169,34 @@ void destroyGame(Game* game)
  */
 uint8_t playTetris(uint8_t num_players)
 {
+    uint8_t sentChar;
     uint16_t wait;
     led_set(0, false);
     if (num_players == 2) {
-        if (ir_uart_read_ready_p()) {
-            led_set(0, true);
-            ir_uart_getc();
-            ir_uart_putc ('r');
-            for (wait = 0; wait < 390; wait++) {
-                pacer_wait();
+        while (1) {
+            if (ir_uart_read_ready_p()) {
+                led_set(0, false);
+                sentChar = ir_uart_getc();
+                if (sentChar == 'r') {
+                    ir_uart_putc ('r');
+                    for (wait = 0; wait < 390; wait++) {
+                        pacer_wait();
+                    }
+                    break;
+                }
+            } else {
+                led_set(0, true);
+                ir_uart_putc ('r');
+                sentChar = ir_uart_getc();
+                if (sentChar == 'r') {
+                    break;
+                }
             }
-        } else {
-            led_set(0, true);
-            ir_uart_putc ('r');
-            ir_uart_getc();
-     
         }
     }
     led_set(0, false);
     tetris_init();
     uint8_t aTime = 35;
-    uint8_t clears = 0;
-    uint8_t junklines = 0;
     Game *game = newGame();
 
     while (1) {
@@ -213,9 +219,11 @@ uint8_t playTetris(uint8_t num_players)
         }
 
         if (ir_uart_read_ready_p()) {
-            ir_uart_getc();
-            destroyGame(game);
-            return 1;
+            sentChar = ir_uart_getc();
+            if (sentChar == 'L') {
+                destroyGame(game);
+                return 1;
+            }
         }
 
 
@@ -229,12 +237,7 @@ uint8_t playTetris(uint8_t num_players)
                 return 0;
             }
 
-            clears = processLineClears(game);
-
-            if (num_players == 2 && clears > 0) {
-                //TODO: send clears over IR if 2 player
-                //ir_uart_putc (clears);
-            }
+            processLineClears(game);
             
             if (!spawnNextTetromino(game)) {
                 if (num_players == 2) {
@@ -243,7 +246,6 @@ uint8_t playTetris(uint8_t num_players)
                 destroyGame(game);
                 return 0;
             }
-            clears = 0;
             
         }
         
