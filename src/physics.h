@@ -56,4 +56,12 @@ uint8_t frameBuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];
 
 void fillFramebuffer(Game *game);
 
+/**
+ * Inserts n lines of junk at the bottom of the stack.
+ * If this causes any part of the stack to collide with the "sky" this function returns false as the game is over.
+ * This function returns true if the game is not over.
+ * To be fair to the player, the active piece is also moved up one piece.
+ */
+bool insertJunk(Game* game, uint8_t n);
+
 #endif

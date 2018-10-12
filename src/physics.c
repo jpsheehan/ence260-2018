@@ -2,37 +2,6 @@
 #include <stdlib.h>
 
 /**
- * Wall kick data for J, L, S, T, Z minoes
- * from http://tetris.wikia.com/wiki/SRS
- * we take the negative of the y coordinate because the table describing the wall kicks
- * uses a positive y as going upwards
- */
-static Position kickDataForJLSTZ[8][5] = {
-    { {0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2} }, // 0 >> 1 or CLOCKWISE from ROTATE_0
-    { {0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2} }, // 0 >> 3 or COUNTERCLOCKWISE from ROTATE_0
-    { {0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2} }, // 1 >> 2 or CLOCKWISE from ROTATE_90
-    { {0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2} }, // 1 >> 0 or COUNTERCLOCKWISE from ROTATE_90
-    { {0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2} }, // 2 >> 3 or CLOCKWISE from ROTATE_180
-    { {0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2} }, // 2 >> 1 or COUNTERCLOCKWISE from ROTATE_180
-    { {0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2} }, // 3 >> 0 or CLOCKWISE from ROTATE_270
-    { {0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2} }, // 3 >> 2 or COUNTERCLOCKWISE from ROTATE_270
-};
-
-/**
- * Kick data for the I mino
- */
-static Position kickDataForI[8][5] = {
-    { {0, 0}, {-2, 0}, {1, 0}, {-2, 1}, {1, -2} }, // 0 >> 1 or CLOCKWISE from ROTATE_0
-    { {0, 0}, {-1, 0}, {2, 0}, {-1, -2}, {2, 1} }, // 0 >> 3 or COUNTERCLOCKWISE from ROTATE_0
-    { {0, 0}, {-1, 0}, {2, 0}, {-1, -2}, {2, 1} }, // 1 >> 2 or CLOCKWISE from ROTATE_90
-    { {0, 0}, {2, 0}, {-1, 0}, {2, -1}, {-1, 2} }, // 1 >> 0 or COUNTERCLOCKWISE from ROTATE_90
-    { {0, 0}, {2, 0}, {-1, 0}, {2, -1}, {-1, 2} }, // 2 >> 3 or CLOCKWISE from ROTATE_180
-    { {0, 0}, {1, 0}, {-2, 0}, {1, 2}, {-2, -1} }, // 2 >> 1 or COUNTERCLOCKWISE from ROTATE_180
-    { {0, 0}, {1, 0}, {-2, 0}, {1, 2}, {-2, -1} }, // 3 >> 0 or CLOCKWISE from ROTATE_270
-    { {0, 0}, {-2, 0}, {1, 0}, {-2, 1}, {1, -2} }, // 3 >> 2 or COUNTERCLOCKWISE from ROTATE_270
-};
-
-/**
  * This serves as the drawing data and as the collision detection data.
  * This is interpreted from https://vignette.wikia.nocookie.net/tetrisconcept/images/3/3d/SRS-pieces.png/revision/latest?cb=20060626173148
  * The centre point for the I piece is the second mino from the top or left.
@@ -102,24 +71,6 @@ void fillFramebuffer(Game *game)
     // make it easier to access thhe position of the active piece
     Position* absPos = &game->active_position;
     Position *posData = drawData[game->active_piece][game->active_orientation];
-
-    // // find where the ghost piece can go
-    // Position ghostPos = game->active_position;
-    // while (testAbsolutePosition(game, ghostPos) == EMPTY) {
-    //     ghostPos.y += 1;
-    // }
-    // ghostPos.y -= 1;
-
-    // // draw the ghost piece
-    // for (i = 0; i < 4; i++) {
-    //     Position relPos = posData[i];
-    //     int8_t x = ghostPos.x + relPos.x;
-    //     int8_t y = ghostPos.y + relPos.y;
-
-    //     if (x >= 0 && y >= 0 && x < GAME_BOARD_WIDTH && y < GAME_BOARD_HEIGHT) {
-    //         frameBuffer[y][x] = GHOST;
-    //     }
-    // }
 
     // draw the active piece
     for (i = 0; i < 4; i++) {
@@ -289,44 +240,26 @@ bool rotateActivePiece(Game* game, uint8_t direction)
             break;
     }
 
-    // perform kicks
+    // check to see if the rotation is valid (doesn't collide with anything)
     if (game->active_piece == O) {
 
-        // O can't perform kicks, so we say that the rotation has occurred
+        // O doesn't rotate
         return true;
 
     } else {
 
-        Position *kickDataArray = NULL;
+        if (testAbsolutePosition(game, game->active_position) == EMPTY) {
+            
+            // if this orientation doesn't collide with anything, keep it there
+            return true;
 
-        // perform kicks on other pieces
-        if (game->active_piece == I) {
-            // I has its own set of kicks
-            kickDataArray = *(kickDataForI + (2 * oldOrientation + direction) * 5 * sizeof(Position));
         } else {
-            // J, L, Z, S and T pieces share their kick data
-            kickDataArray = *(kickDataForJLSTZ + (2 * oldOrientation + direction) * 5 * sizeof(Position));
+
+            // rotation is not possible for this piece here. restore its orientation
+            game->active_orientation = oldOrientation;
+            return false;
+
         }
-
-        uint8_t i = 0;
-        for (; i < 5; i++) {
-
-            // get the absolute position of the new position
-            Position testPosition = *(kickDataArray + i * sizeof(Position));
-            testPosition.x = testPosition.x + game->active_position.x;
-            testPosition.y = testPosition.y + game->active_position.y;
-
-            // if this position is free, this is the new position for the piece
-            if (testAbsolutePosition(game, testPosition) == EMPTY) {
-                game->active_position = testPosition;
-                return true;
-            }
-        }
-
-        // we could not find a suitable rotation for the piece
-        // restore the old orientation
-        game->active_orientation = oldOrientation;
-        return false;
 
     }
       
@@ -397,4 +330,60 @@ void softDrop(Game* game)
     newPos.y -= 1;
 
     game->active_position = newPos;
+}
+
+/**
+ * Inserts n lines of junk at the bottom of the stack.
+ * If this causes any part of the stack to collide with the "sky" this function returns false as the game is over.
+ * This function returns true if the game is not over.
+ * To be fair to the player, the active piece is also moved up one piece.
+ */
+bool insertJunk(Game* game, uint8_t n)
+{
+    // generate a line of junk to insert. a line of junk has one "hole" in it
+    uint8_t holePosition = rand() % GAME_BOARD_WIDTH;
+    bool is_game_lost = false;
+
+    // push the active piece up as well,
+    // we don't want to be dicks about the fact that you're losing
+    game->active_position.y -= 1;
+
+    // insert n lines of junk
+    uint8_t i = 0;
+    for (i = 0; i < n; i++) {
+
+        // first of all, shift everything in the entire stack up one
+        uint8_t j = 0;
+        for (; j < GAME_BOARD_HEIGHT - 1; j++) {
+            
+            // shift each row up one
+            uint8_t k = 0;
+            for (; k < GAME_BOARD_WIDTH; k++) {
+                
+                // if this is the first row, we check to see if any stack would be pushed
+                // up out of the playfield
+                if (j == 0) {
+                    if (game->board[j][k] == STACK) {
+                        is_game_lost = true;
+                    }
+                }
+
+                game->board[j][k] = game->board[j+1][k];
+            }
+
+        }
+
+        // insert the junk
+        for (j = 0; j < GAME_BOARD_WIDTH; j++) {
+            if (j == holePosition) {
+                game->board[GAME_BOARD_HEIGHT-1][j] = EMPTY;
+            } else {
+                game->board[GAME_BOARD_HEIGHT-1][j] = STACK;
+            }
+        }
+
+    }
+
+    return !is_game_lost;
+
 }

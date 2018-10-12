@@ -17,10 +17,8 @@ void show_screen(uint8_t gameBoard[7][5]) {
         //iterate through rows
         for (j = 0; j < 7; j++) {
             // If pixel is active on gameboard
-            if (gameBoard[j][i] == STACK || gameBoard[j][i] == ACTIVE) {
-                // if (gameBoard[j][i] == GHOST && numberOfTimesCalled % 2 == 0 || gameBoard[j][i] != GHOST) {
-                    cols[i] |= (1 << j);
-                // }
+            if (gameBoard[j][i]) {
+                cols[i] |= (1 << j);
             }
         }
         ledmat_display_column (cols[i], i);

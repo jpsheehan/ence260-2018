@@ -4,14 +4,23 @@
 #include "tetris.h"
 #include "physics.h"
 
-#ifdef __AVR__
-    #include "navswitch.h"
-    #include "button.h"
-    #include "led.h"
-    #include "pio.h"
-    #include "../lib/utils/pacer.h"
-    #include "showScreen.h"
-#endif
+#include "navswitch.h"
+#include "button.h"
+#include "led.h"
+#include "pio.h"
+#include "../lib/utils/pacer.h"
+#include "showScreen.h"
+#include "ir_uart.h"
+
+uint8_t FUNKY_WAIT_SCREEN[7][5] ={{0, 0, 0, 0, 0},
+                            {0, 1, 1, 1, 0},
+                            {1, 0, 0, 0, 1},
+                            {1, 0, 0, 0, 1},
+                            {1, 0, 0, 0, 1},
+                            {0, 1, 1, 1, 0},
+                            {0, 0, 0, 0, 0}
+                            };
+
 
 /**
  * We generate random numbers using the 7-bag system.
@@ -32,6 +41,10 @@ bool existsInSevenBag(uint8_t piece)
     return false;
 }
 
+uint16_t getRand(void) {
+    return rand() + timer_get();
+}
+
 void generateSevenBag(void)
 {
     // reset the contents of the bag
@@ -41,10 +54,10 @@ void generateSevenBag(void)
     for (; i < BAG_SIZE; i++) {
 
         // pick a piece at random
-        uint8_t piece = rand() % NUM_TETROMINOS;
+        uint8_t piece = getRand() % NUM_TETROMINOS;
 
         while (existsInSevenBag(piece)) {
-            piece = rand() % NUM_TETROMINOS;
+            piece = getRand() % NUM_TETROMINOS;
         }
 
         sevenBag[i] = piece;
@@ -132,16 +145,34 @@ Game newGame(void)
     return game;
 }
 
-#ifdef __AVR__
+
 /**
  * Starts a game of tetris.
  */
-void playTetris(uint8_t num_players)
+uint8_t playTetris(uint8_t num_players)
 {
-    tetris_init();
     uint16_t wait;
+    led_set(0, false);
+    if (num_players == 2) {
+        if (ir_uart_read_ready_p()) {
+            led_set(0, true);
+            ir_uart_getc();
+            ir_uart_putc ('r');
+            for (wait = 0; wait < 390; wait++) {
+                pacer_wait();
+            }
+        } else {
+            led_set(0, true);
+            ir_uart_putc ('r');
+            ir_uart_getc();
+     
+        }
+    }
+    led_set(0, false);
+    tetris_init();
     uint8_t aTime = 35;
     uint8_t clears = 0;
+    uint8_t junklines = 0;
     Game game = newGame();
 
     while (1) {
@@ -149,6 +180,7 @@ void playTetris(uint8_t num_players)
         for (wait = 0; wait < aTime; wait++) {
             pacer_wait();
             show_screen(frameBuffer);
+            
 
             button_update();
             navswitch_update ();
@@ -162,21 +194,33 @@ void playTetris(uint8_t num_players)
             }
         }
 
+        if (ir_uart_read_ready_p()) {
+            ir_uart_getc();
+            return 1;
+        }
+
 
         if (!applyGravity(&game)) {
 
             if (!commitActiveTetrominoToStack(&game)) {
-                break;
+                if (num_players == 2) {
+                    ir_uart_putc ('L');
+                }
+                return 0;
             }
 
             clears = processLineClears(&game);
 
             if (num_players == 2 && clears > 0) {
                 //TODO: send clears over IR if 2 player
+                //ir_uart_putc (clears);
             }
             
             if (!spawnNextTetromino(&game)) {
-                break;
+                if (num_players == 2) {
+                    ir_uart_putc ('L');
+                }
+                return 0;
             }
             clears = 0;
             
@@ -210,4 +254,3 @@ bool check_move(Game* game)
 
     return true;
 }
-#endif

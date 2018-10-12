@@ -27,13 +27,13 @@ state.o: $(SRC)/state.c
 menu.o: $(SRC)/menu.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-tetris.o: $(SRC)/tetris.c $(SRC)/tetris.h $(SRC)/physics.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/system.h
+tetris.o: $(SRC)/tetris.c $(SRC)/tetris.h $(SRC)/physics.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/ir_uart.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 physics.o: $(SRC)/physics.c $(SRC)/physics.h $(SRC)/tetris.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h $(UCFK)/utils/tinygl.h $(UCFK)/fonts/font5x7_1.h
+game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h $(UCFK)/utils/tinygl.h $(UCFK)/fonts/font5x7_1.h $(UCFK)/drivers/avr/ir_uart.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 showScreen.o: $(SRC)/showScreen.c $(SRC)/showScreen.h $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/pio.h
@@ -68,17 +68,24 @@ led.o: $(UCFK)/drivers/led.c $(UCFK)/drivers/led.h
 navswitch.o: $(UCFK)/drivers/navswitch.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/navswitch.h $(UCFK)/drivers/avr/delay.h $(UCFK)/drivers/avr/pio.h 
 	$(CC) -c $(CFLAGS) $< -o $@
 
-tinygl.o: $(UCFK)/utils/tinygl.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/tinygl.h $(UCFK)/drivers/display.h $(UCFK)/utils/font.h
+ir_uart.o: $(UCFK)/drivers/avr/ir_uart.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/ir_uart.h $(UCFK)/drivers/avr/timer0.h $(UCFK)/drivers/avr/pio.h $(UCFK)/drivers/avr/delay.h 
 	$(CC) -c $(CFLAGS) $< -o $@
 
-font.o: $(UCFK)/utils/font.c $(UCFK)/utils/font.h
+#possible problem with include <avr/io.h>
+usart1.o: $(UCFK)/drivers/avr/usart1.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/ir_uart.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+timer0.o: $(UCFK)/drivers/avr/timer0.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/bits.h $(UCFK)/drivers/avr/prescale.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+prescale.o: $(UCFK)/drivers/avr/prescale.c $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/prescale.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o led.o button.o tinygl.o font.o
+game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o led.o button.o ir_uart.o usart1.o timer0.o prescale.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

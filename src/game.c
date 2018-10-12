@@ -12,6 +12,7 @@
 #include "showScreen.h"
 #include "physics.h"
 #include "graphics.h"
+#include "ir_uart.h"
 
 /**
  * Initialises the hardware and starts the main loop.
@@ -22,6 +23,8 @@ int main (void)
 
     // init the led matrix
     screen_init();
+
+    ir_uart_init();
 
     // init the button
     button_init();
@@ -45,6 +48,7 @@ int main (void)
 
     
     uint8_t player_num = 1;
+    uint8_t won;
 
     while (1)
     {
@@ -66,9 +70,9 @@ int main (void)
                 while (1) {
                     navswitch_update();
                     if (player_num == 1) {
-                        show_screen(ONE);
+                        show_screen(ONE_SCREEN);
                     } else {
-                        show_screen(TWO);
+                        show_screen(TWO_SCREEN);
                     }
 
                     if (navswitch_push_event_p (NAVSWITCH_NORTH) || navswitch_push_event_p (NAVSWITCH_SOUTH)) {
@@ -83,20 +87,38 @@ int main (void)
 
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                         if (player_num == 1) {
-                            setState(STATE_1P_GAME);
+                            won = playTetris(1);
                         } else {
-                            setState(STATE_2P_GAME);
+                            won = playTetris(2);
+                        }
+                        if (won) {
+                            setState(STATE_WON);
+                        } else {
+                            setState(STATE_LOST);
                         }
                         break;
                     }
                 }
-                setState(STATE_1P_GAME);
                 break;
-            case STATE_1P_GAME:
-                playTetris(1);
+            case STATE_WON:
+                while (1){
+                    navswitch_update();
+                    show_screen(WON_SCREEN);
+                    if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                        break;
+                    }
+                }
+                setState(STATE_STARTUP);
                 break;
-            case STATE_2P_GAME:
-                playTetris(2);
+            case STATE_LOST:
+                while (1){
+                    navswitch_update();
+                    show_screen(LOST_SCREEN);
+                    if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                        break;
+                    }
+                }
+                setState(STATE_STARTUP);
                 break;
         }
 
