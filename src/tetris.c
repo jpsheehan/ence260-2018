@@ -151,9 +151,8 @@ Game newGame(void)
  */
 void playTetris(uint8_t num_players)
 {
-
+    led_set(0, false);
     if (num_players == 2) {
-        led_set(0, false);
         if (ir_uart_read_ready_p()) {
             led_set(0, true);
             ir_uart_getc();
@@ -165,6 +164,7 @@ void playTetris(uint8_t num_players)
      
         }
     }
+    led_set(0, false);
     tetris_init();
     uint16_t wait;
     uint8_t aTime = 35;
