@@ -4,13 +4,13 @@
 #include "tetris.h"
 #include "physics.h"
 
-
-    #include "navswitch.h"
-    #include "button.h"
-    #include "led.h"
-    #include "pio.h"
-    #include "../lib/utils/pacer.h"
-    #include "showScreen.h"
+#include "navswitch.h"
+#include "button.h"
+#include "led.h"
+#include "pio.h"
+#include "../lib/utils/pacer.h"
+#include "showScreen.h"
+#include "timer.h"
 
 
 /**
@@ -32,6 +32,10 @@ bool existsInSevenBag(uint8_t piece)
     return false;
 }
 
+uint16_t getRand(void) {
+    return rand() + timer_get();
+}
+
 void generateSevenBag(void)
 {
     // reset the contents of the bag
@@ -41,10 +45,10 @@ void generateSevenBag(void)
     for (; i < BAG_SIZE; i++) {
 
         // pick a piece at random
-        uint8_t piece = rand() % NUM_TETROMINOS;
+        uint8_t piece = getRand() % NUM_TETROMINOS;
 
         while (existsInSevenBag(piece)) {
-            piece = rand() % NUM_TETROMINOS;
+            piece = getRand() % NUM_TETROMINOS;
         }
 
         sevenBag[i] = piece;
