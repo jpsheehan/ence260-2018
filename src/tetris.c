@@ -180,6 +180,7 @@ uint8_t playTetris(uint8_t num_players)
         for (wait = 0; wait < aTime; wait++) {
             pacer_wait();
             show_screen(frameBuffer);
+            
 
             button_update();
             navswitch_update ();
@@ -191,6 +192,11 @@ uint8_t playTetris(uint8_t num_players)
             if (check_move(&game)) {
                 fillFramebuffer(&game);
             }
+        }
+
+        if (ir_uart_read_ready_p()) {
+            ir_uart_getc();
+            return 1;
         }
 
 
@@ -207,7 +213,7 @@ uint8_t playTetris(uint8_t num_players)
 
             if (num_players == 2 && clears > 0) {
                 //TODO: send clears over IR if 2 player
-                ir_uart_putc (clears);
+                //ir_uart_putc (clears);
             }
             
             if (!spawnNextTetromino(&game)) {
