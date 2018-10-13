@@ -13,6 +13,7 @@
 #include "physics.h"
 #include "graphics.h"
 #include "ir_uart.h"
+#include "../lib/utils/tinygl.h"
 
 /**
  * Initialises the hardware and starts the main loop.
@@ -36,6 +37,8 @@ int main (void)
     led_init();
     led_set(0, false);
 
+    graphics_init();
+
     
 
     // init the IR comms
@@ -58,21 +61,22 @@ int main (void)
         switch (getState()) {
             case STATE_STARTUP:
                 while (1) {
-                    show_screen(INIT_SCREEN);
+                    displayCharacter('T');
                     navswitch_update();
                     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
                         setState(STATE_MENU);
                         break;
                     }
+                    tinygl_update();
                 }
                 break;
             case STATE_MENU:
                 while (1) {
                     navswitch_update();
                     if (player_num == 1) {
-                        show_screen(ONE_SCREEN);
+                        displayCharacter('1');
                     } else {
-                        show_screen(TWO_SCREEN);
+                        displayCharacter('2');
                     }
 
                     if (navswitch_push_event_p (NAVSWITCH_NORTH) || navswitch_push_event_p (NAVSWITCH_SOUTH)) {
@@ -98,25 +102,28 @@ int main (void)
                         }
                         break;
                     }
+                    tinygl_update();
                 }
                 break;
             case STATE_WON:
                 while (1){
                     navswitch_update();
-                    show_screen(WON_SCREEN);
+                    displayCharacter('W');
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                         break;
                     }
+                    tinygl_update();
                 }
                 setState(STATE_STARTUP);
                 break;
             case STATE_LOST:
                 while (1){
                     navswitch_update();
-                    show_screen(LOST_SCREEN);
+                    displayCharacter('L');
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                         break;
                     }
+                    tinygl_update();
                 }
                 setState(STATE_STARTUP);
                 break;

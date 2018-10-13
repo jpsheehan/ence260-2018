@@ -1,5 +1,27 @@
+#include "../lib/utils/tinygl.h"
+#include "../lib/fonts/font3x5_1.h"
+#include "../lib/fonts/font5x7_1.h"
+
 #include "graphics.h"
 #include "physics.h"
+
+void graphics_init(void)
+{
+  tinygl_init (300);
+  tinygl_font_set (&font5x7_1);
+  tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
+  tinygl_clear ();
+  tinygl_text_speed_set (10);
+}
+
+void displayCharacter(char c)
+{
+  char string[2];
+  string[0] = c;
+  string[1] = 0;
+
+  tinygl_text(string);
+}
 
 void fillFramebuffer(Game *game)
 {   
