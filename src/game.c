@@ -59,7 +59,9 @@ int main (void)
         
 
         switch (getState()) {
+
             case STATE_STARTUP:
+                tinygl_clear();
                 while (1) {
                     displayCharacter('T');
                     navswitch_update();
@@ -68,9 +70,12 @@ int main (void)
                         break;
                     }
                     tinygl_update();
+                    pacer_wait();
                 }
                 break;
+
             case STATE_MENU:
+                tinygl_clear();
                 while (1) {
                     navswitch_update();
                     if (player_num == 1) {
@@ -86,8 +91,6 @@ int main (void)
                             player_num = 1;
                         }
                     }
-                    
-                    pacer_wait();
 
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                         if (player_num == 1) {
@@ -102,10 +105,14 @@ int main (void)
                         }
                         break;
                     }
+
                     tinygl_update();
+                    pacer_wait();
                 }
                 break;
+
             case STATE_WON:
+                tinygl_clear();
                 while (1){
                     navswitch_update();
                     displayCharacter('W');
@@ -113,10 +120,13 @@ int main (void)
                         break;
                     }
                     tinygl_update();
+                    pacer_wait();
                 }
                 setState(STATE_STARTUP);
                 break;
+
             case STATE_LOST:
+                tinygl_clear();
                 while (1){
                     navswitch_update();
                     displayCharacter('L');
@@ -124,6 +134,7 @@ int main (void)
                         break;
                     }
                     tinygl_update();
+                    pacer_wait();
                 }
                 setState(STATE_STARTUP);
                 break;
