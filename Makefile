@@ -16,10 +16,6 @@ DEL = rm
 # Default target.
 all: game.out
 
-test: $(SRC)/test/test.c $(SRC)/tetris.c $(SRC)/physics.c $(SRC)/tetris.h $(SRC)/physics.h
-	gcc -g -o test.o $(SRC)/test/test.c $(SRC)/tetris.c $(SRC)/physics.c
-
-
 # Compile: create object files from C source files.
 state.o: $(SRC)/state.c
 	$(CC) -c $(CFLAGS) $< -o $@
