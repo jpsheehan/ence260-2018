@@ -86,6 +86,7 @@ typedef uint8_t Piece;
  */
 typedef struct game_s {
     uint8_t board[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH]; // contains information about the stack ONLY
+    uint8_t framebuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH]; // contains the data to be written to the screen
     Piece active_piece;
     Orientation active_orientation;
     Position active_position;

@@ -4,6 +4,7 @@
 
 #include "tetris.h"
 #include "physics.h"
+#include "graphics.h"
 
 #include "navswitch.h"
 #include "button.h"
@@ -145,6 +146,7 @@ Game* newGame(void)
         uint8_t j;
         for (j = 0; j < GAME_BOARD_WIDTH; j++) {
             game->board[i][j] = EMPTY;
+            game->framebuffer[i][j] = EMPTY;
         }
     }
 
@@ -202,8 +204,7 @@ uint8_t playTetris(uint8_t num_players)
 
         for (wait = 0; wait < aTime; wait++) {
             pacer_wait();
-            show_screen(frameBuffer);
-            
+            show_screen(game->framebuffer);
 
             button_update();
             navswitch_update ();
