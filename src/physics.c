@@ -53,41 +53,19 @@ static Position drawData[7][4][4] = {
     },
 };
 
-void fillFramebuffer(Game *game)
-{   
-    // copy the stack data and clear the frameBuffer at the same time
-    uint8_t i = 0;
-    for (; i < GAME_BOARD_HEIGHT; i++) {
-        uint8_t j = 0;
-        for (; j < GAME_BOARD_WIDTH; j++) {
-            if (game->board[i][j]) {
-                frameBuffer[i][j] = STACK;
-            } else {
-                frameBuffer[i][j] = EMPTY;
-            }
-        }
-    }
+Position* getCollisionData(Piece piece, uint8_t rotation)
+{
+    return drawData[piece][rotation];
+}
 
-    // make it easier to access thhe position of the active piece
-    Position* absPos = &game->active_position;
-    Position *posData = drawData[game->active_piece][game->active_orientation];
-
-    // draw the active piece
-    for (i = 0; i < 4; i++) {
-        Position relPos = posData[i];
-        int8_t x = absPos->x + relPos.x;
-        int8_t y = absPos->y + relPos.y;
-
-        if (x >= 0 && y >= 0 && x < GAME_BOARD_WIDTH && y < GAME_BOARD_HEIGHT && frameBuffer[y][x] != STACK) {
-            frameBuffer[y][x] = ACTIVE;
-        }
-    }
-    
+inline Position* getGraphicsData(Piece piece, uint8_t rotation)
+{
+    return getCollisionData(piece, rotation);
 }
 
 uint8_t testAbsolutePosition(Game* game, Position absPos)
 {
-    Position *collData = drawData[game->active_piece][game->active_orientation];
+    Position *collData = getCollisionData(game->active_piece, game->active_orientation);
 
     uint8_t i = 0;
     for (; i < NUM_MINOS_IN_PIECE; i++) {

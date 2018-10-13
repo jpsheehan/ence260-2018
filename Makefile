@@ -39,6 +39,9 @@ game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)
 showScreen.o: $(SRC)/showScreen.c $(SRC)/showScreen.h $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/pio.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+graphics.o: $(SRC)/graphics.c $(SRC)/graphics.h $(SRC)/tetris.h $(SRC)/physics.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 
 # Drivers/System stuff:
 timer.o: $(UCFK)/drivers/avr/timer.c $(UCFK)/drivers/avr/timer.h
@@ -85,7 +88,7 @@ prescale.o: $(UCFK)/drivers/avr/prescale.c $(UCFK)/drivers/avr/system.h $(UCFK)/
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o led.o button.o ir_uart.o usart1.o timer0.o prescale.o
+game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o led.o button.o ir_uart.o usart1.o timer0.o prescale.o graphics.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

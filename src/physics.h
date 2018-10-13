@@ -51,11 +51,6 @@ bool commitActiveTetrominoToStack(Game* game);
  */
 void softDrop(Game* game);
 
-// MOVE THESE TO GRAPHICS
-uint8_t frameBuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];
-
-void fillFramebuffer(Game *game);
-
 /**
  * Inserts n lines of junk at the bottom of the stack.
  * If this causes any part of the stack to collide with the "sky" this function returns false as the game is over.
@@ -63,5 +58,7 @@ void fillFramebuffer(Game *game);
  * To be fair to the player, the active piece is also moved up one piece.
  */
 bool insertJunk(Game* game, uint8_t n);
+
+Position* getCollisionData(Piece piece, uint8_t rotation);
 
 #endif
