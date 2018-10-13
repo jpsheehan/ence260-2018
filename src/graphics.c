@@ -1,17 +1,29 @@
+#include "pio.h"
+#include "system.h"
+#include "ledmat.h"
+#include "display.h"
+
 #include "../lib/utils/tinygl.h"
 #include "../lib/fonts/font3x5_1.h"
 #include "../lib/fonts/font5x7_1.h"
+#include "../lib/utils/pacer.h"
 
 #include "graphics.h"
 #include "physics.h"
+#include "tetris.h"
 
 void graphics_init(void)
 {
-  tinygl_init (300);
-  tinygl_font_set (&font5x7_1);
-  tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
-  tinygl_clear ();
-  tinygl_text_speed_set (10);
+
+    // initialise TinyGL
+    tinygl_init (300);
+    tinygl_font_set (&font5x7_1);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
+    tinygl_clear ();
+    tinygl_text_speed_set (10);
+
+    // initialise the LED matrix
+    ledmat_init();
 }
 
 void displayCharacter(char c)
@@ -53,4 +65,27 @@ void fillFramebuffer(Game *game)
         }
     }
     
+}
+
+/**
+ * initialising columns
+ */
+void show_screen(uint8_t gameBoard[7][5]) {
+    uint8_t cols[5] = {0};
+
+    // iterate through columns
+    uint8_t i;
+    for (i = 0; i < 5; i++) {
+        //iterate through rows
+        uint8_t j;
+        for (j = 0; j < 7; j++) {
+            // If pixel is active on gameboard
+            if (gameBoard[j][i]) {
+                cols[i] |= (1 << j);
+            }
+        }
+        ledmat_display_column (cols[i], i);
+        pacer_wait();
+    }
+    pio_output_high(LEDMAT_COL5_PIO);
 }

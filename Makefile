@@ -32,10 +32,7 @@ physics.o: $(SRC)/physics.c $(SRC)/physics.h $(SRC)/tetris.h
 game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h $(UCFK)/utils/tinygl.h $(UCFK)/fonts/font5x7_1.h $(UCFK)/drivers/avr/ir_uart.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-showScreen.o: $(SRC)/showScreen.c $(SRC)/showScreen.h $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/pio.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
-graphics.o: $(SRC)/graphics.c $(SRC)/graphics.h $(SRC)/tetris.h $(SRC)/physics.h $(UCFK)/fonts/font5x7_1.h $(UCFK)/utils/font.h $(UCFK)/utils/tinygl.h
+graphics.o: $(SRC)/graphics.c $(SRC)/graphics.h $(SRC)/tetris.h $(SRC)/physics.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/pio.h $(UCFK)/fonts/font5x7_1.h $(UCFK)/utils/font.h $(UCFK)/utils/tinygl.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
@@ -88,7 +85,7 @@ font.o: $(UCFK)/utils/font.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/font.h
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o showScreen.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o led.o button.o ir_uart.o usart1.o timer0.o prescale.o graphics.o font.o tinygl.o
+game.out: game.o system.o timer.o tetris.o state.o menu.o physics.o pio.o display.o ledmat.o pacer.o navswitch.o timer.o led.o button.o ir_uart.o usart1.o timer0.o prescale.o graphics.o font.o tinygl.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

@@ -11,7 +11,6 @@
 #include "led.h"
 #include "pio.h"
 #include "../lib/utils/pacer.h"
-#include "showScreen.h"
 #include "ir_uart.h"
 #include "timer.h"
 

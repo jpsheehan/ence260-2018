@@ -9,7 +9,6 @@
 #include "state.h"
 #include "tetris.h"
 #include "menu.h"
-#include "showScreen.h"
 #include "physics.h"
 #include "graphics.h"
 #include "ir_uart.h"
@@ -21,9 +20,6 @@
 int main (void)
 {
     system_init ();
-
-    // init the led matrix
-    screen_init();
 
     ir_uart_init();
 
