@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "tetris.h"
@@ -11,6 +12,7 @@
 #include "../lib/utils/pacer.h"
 #include "showScreen.h"
 #include "ir_uart.h"
+#include "timer.h"
 
 
 /**
@@ -223,7 +225,7 @@ uint8_t playTetris(uint8_t num_players)
             }
             if (receivedChar < 5 && receivedChar > 0) {
                 junkRows += receivedChar;
-                if(!insertJunk(&game, junkRows / 2)) {
+                if(!insertJunk(game, junkRows / 2)) {
                     ir_uart_putc ('L');
                     destroyGame(game);
                     return 0;
