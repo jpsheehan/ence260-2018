@@ -173,7 +173,10 @@ uint8_t playTetris(uint8_t num_players)
     uint8_t lineClears = 0;
     led_set(0, false);
     if (num_players == 2) {
+        displayText(' ');
+        tinygl_update();
         while (1) {
+            pacer_wait();
             if (ir_uart_read_ready_p()) {
                 led_set(0, false);
                 receivedChar = ir_uart_getc();

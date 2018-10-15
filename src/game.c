@@ -91,6 +91,7 @@ int main (void)
                     }
 
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                        tinygl_clear();
                         if (player_num == 1) {
                             won = playTetris(1);
                         } else {
