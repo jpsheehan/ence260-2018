@@ -28,11 +28,18 @@ void graphics_init(void)
 
 void displayCharacter(char c)
 {
-  char string[2];
-  string[0] = c;
-  string[1] = 0;
+    char string[2];
+    string[0] = c;
+    string[1] = 0;
 
-  tinygl_text(string);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
+    tinygl_text(string);
+}
+
+void displayText(const char * string)
+{
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
+    tinygl_text(string);
 }
 
 void fillFramebuffer(Game *game)

@@ -8,6 +8,8 @@ void graphics_init(void);
 
 void displayCharacter(char c);
 
+void displayText(const char * string);
+
 void fillFramebuffer(Game *game);
 
 /**

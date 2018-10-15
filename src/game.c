@@ -58,8 +58,8 @@ int main (void)
 
             case STATE_STARTUP:
                 tinygl_clear();
+                displayText("Tetris");
                 while (1) {
-                    displayCharacter('T');
                     navswitch_update();
                     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
                         setState(STATE_MENU);
@@ -72,19 +72,21 @@ int main (void)
 
             case STATE_MENU:
                 tinygl_clear();
+                if (player_num == 1) {
+                    displayText("1 Player");
+                } else {
+                    displayText("2 Player");
+                }
                 while (1) {
                     navswitch_update();
-                    if (player_num == 1) {
-                        displayCharacter('1');
-                    } else {
-                        displayCharacter('2');
-                    }
 
                     if (navswitch_push_event_p (NAVSWITCH_NORTH) || navswitch_push_event_p (NAVSWITCH_SOUTH)) {
                         if (player_num == 1) {
                             player_num = 2;
+                            displayText("2 Player");
                         } else {
                             player_num = 1;
+                            displayText("1 Player");
                         }
                     }
 
@@ -109,9 +111,9 @@ int main (void)
 
             case STATE_WON:
                 tinygl_clear();
+                displayText("You Win!");
                 while (1){
                     navswitch_update();
-                    displayCharacter('W');
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                         break;
                     }
@@ -123,9 +125,9 @@ int main (void)
 
             case STATE_LOST:
                 tinygl_clear();
+                displayText("You Lose!");
                 while (1){
                     navswitch_update();
-                    displayCharacter('L');
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                         break;
                     }
