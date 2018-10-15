@@ -38,7 +38,7 @@ void displayCharacter(char c)
 
 void displayText(const char * string)
 {
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
     tinygl_text(string);
 }
 
