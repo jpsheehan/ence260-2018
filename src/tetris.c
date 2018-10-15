@@ -221,14 +221,22 @@ uint8_t playTetris(uint8_t num_players)
             receivedChar = ir_uart_getc();
             if (receivedChar == 'L') {
                 destroyGame(game);
-                return 1;
+                if (num_players == 2){
+                    return 1;
+                } else {
+                    return lineClears;
+                }
             }
             if (receivedChar < 5 && receivedChar > 0) {
                 junkRows += receivedChar;
                 if(!insertJunk(game, junkRows / 2)) {
                     ir_uart_putc ('L');
                     destroyGame(game);
-                    return 0;
+                    if (num_players == 2){
+                        return 0;
+                    } else {
+                        return lineClears;
+                    }
                 }
                 junkRows = junkRows % 2;
             }
@@ -243,7 +251,11 @@ uint8_t playTetris(uint8_t num_players)
                     ir_uart_putc ('L');
                 }
                 destroyGame(game);
-                return 0;
+                if (num_players == 2){
+                    return 0;
+                } else {
+                    return lineClears;
+                }
             }
 
             lineClears = processLineClears(game);
