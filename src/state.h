@@ -10,6 +10,7 @@
 #define STATE_MENU 1
 #define STATE_WON 2
 #define STATE_LOST 3
+#define STATE_SCORE 4
 
 /**
  * Sets the state of the game to _state.

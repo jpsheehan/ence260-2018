@@ -3,6 +3,8 @@
 #include "button.h"
 #include "led.h"
 #include "pio.h"
+#include <stdlib.h>
+#include <string.h>
 
 #include "../lib/utils/pacer.h"
 
@@ -47,7 +49,7 @@ int main (void)
 
     
     uint8_t player_num = 1;
-    uint8_t won;
+    uint8_t won = 0;
 
     while (1)
     {
@@ -94,6 +96,8 @@ int main (void)
                         tinygl_clear();
                         if (player_num == 1) {
                             won = playTetris(1);
+                            setState(STATE_SCORE);
+                            break;
                         } else {
                             won = playTetris(2);
                         }
@@ -109,6 +113,25 @@ int main (void)
                     pacer_wait();
                 }
                 break;
+
+             case STATE_SCORE:
+                tinygl_clear();
+                char buffer[20];
+                strncat(buffer, "Score: ", 7);
+                char score[5];
+                itoa(score, won, 10);
+                strcat(buffer, score);
+                displayText(buffer);
+                while (1){
+                    navswitch_update();
+                    if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                        break;
+                    }
+                    tinygl_update();
+                    pacer_wait();
+                }
+                 setState(STATE_STARTUP);
+                 break;
 
             case STATE_WON:
                 tinygl_clear();
