@@ -13,6 +13,7 @@
 #include "../lib/utils/pacer.h"
 #include "ir_uart.h"
 #include "timer.h"
+#include "../lib/utils/tinygl.h"
 
 
 /**
@@ -173,7 +174,7 @@ uint8_t playTetris(uint8_t num_players)
     uint8_t lineClears = 0;
     led_set(0, false);
     if (num_players == 2) {
-        displayText(' ');
+        displayCharacter(' ');
         tinygl_update();
         while (1) {
             pacer_wait();

@@ -83,6 +83,7 @@ int main (void)
                     navswitch_update();
 
                     if (navswitch_push_event_p (NAVSWITCH_NORTH) || navswitch_push_event_p (NAVSWITCH_SOUTH)) {
+                        tinygl_clear();
                         if (player_num == 1) {
                             player_num = 2;
                             displayText("2 Player");
