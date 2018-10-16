@@ -1,3 +1,8 @@
+/**
+ * Tetris Project
+ * By Ben Slattery and Jesse Sheehan 2018
+ */
+
 #ifndef GRAPHICS_H_
 #define GRAPHICS_H_
 

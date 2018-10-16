@@ -1,3 +1,8 @@
+/**
+ * Tetris Project
+ * By Ben Slattery and Jesse Sheehan 2018
+ */
+
 #include "pio.h"
 #include "system.h"
 #include "ledmat.h"
@@ -20,7 +25,7 @@ void graphics_init(void)
     tinygl_font_set (&font5x7_1);
     tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
     tinygl_clear ();
-    tinygl_text_speed_set (10);
+    tinygl_text_speed_set (20);
 
     // initialise the LED matrix
     ledmat_init();

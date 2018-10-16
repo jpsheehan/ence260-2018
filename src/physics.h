@@ -1,3 +1,8 @@
+/**
+ * Tetris Project
+ * By Ben Slattery and Jesse Sheehan 2018
+ */
+
 #ifndef PHYSICS_H_
 #define PHYSICS_H_
 

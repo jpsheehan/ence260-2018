@@ -1,3 +1,8 @@
+/**
+ * Tetris Project
+ * By Ben Slattery and Jesse Sheehan 2018
+ */
+
 #ifndef MENU_H_
 #define MENU_H_
 

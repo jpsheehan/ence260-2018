@@ -1,3 +1,8 @@
+/**
+ * Tetris Project
+ * By Ben Slattery and Jesse Sheehan 2018
+ */
+
 #include "system.h"
 #include "navswitch.h"
 #include "button.h"
@@ -97,8 +102,8 @@ int main (void)
                         tinygl_clear();
                         if (player_num == 1) {
                             won = playTetris(1);
-                            setState(STATE_SCORE);
-                            break;
+                            // setState(STATE_SCORE);
+                            // break;
                         } else {
                             won = playTetris(2);
                         }
@@ -115,24 +120,24 @@ int main (void)
                 }
                 break;
 
-             case STATE_SCORE:
-                tinygl_clear();
-                char buffer[20];
-                strncat(buffer, "Score: ", 7);
-                char score[5];
-                itoa(score, won, 10);
-                strcat(buffer, score);
-                displayText(buffer);
-                while (1){
-                    navswitch_update();
-                    if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-                        break;
-                    }
-                    tinygl_update();
-                    pacer_wait();
-                }
-                 setState(STATE_STARTUP);
-                 break;
+            //  case STATE_SCORE:
+            //     tinygl_clear();
+            //     char buffer[20];
+            //     strncat(buffer, "Score: ", 7);
+            //     char score[5];
+            //     itoa(score, won, 10);
+            //     strcat(buffer, score);
+            //     displayText(buffer);
+            //     while (1){
+            //         navswitch_update();
+            //         if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+            //             break;
+            //         }
+            //         tinygl_update();
+            //         pacer_wait();
+            //     }
+            //      setState(STATE_STARTUP);
+            //      break;
 
             case STATE_WON:
                 tinygl_clear();
