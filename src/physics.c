@@ -63,6 +63,53 @@ static Position collisionData[7][4][4] = {
 };
 
 /**
+ * Applies gravity to the active piece.
+ * If the active piece would collide with the stack then it is added to the stack before it is moved.
+ *
+ * @param game The game struct pointer.
+ * @returns true if the tetromino is still in play.
+ */
+bool physics_applyGravity(Game* game)
+{
+    Position newPosition = { game->active_position.x, game->active_position.y + 1 };
+
+    uint8_t test = physics_testAbsolutePosition(game, newPosition);
+
+    if (test == EMPTY) {
+
+        // everything okay! let's move the piece to its new position
+        game->active_position.x = newPosition.x;
+        game->active_position.y = newPosition.y;
+        return true;
+
+    } else if (test == STACK || test == FLOOR) {
+
+        // uh, oh! the piece collided with the floor or the stack, let's turn the active piece into part of the stack
+        return false;
+
+    }
+
+    return true;
+}
+
+/**
+ * Performs a non-locking soft-drop of the active piece.
+ *
+ * @param game The game struct pointer.
+ */
+void physics_applySoftDrop(Game* game)
+{
+    Position newPos = game->active_position;
+
+    while (physics_testAbsolutePosition(game, newPos) == EMPTY) {
+        newPos.y += 1;
+    }
+    newPos.y -= 1;
+
+    game->active_position = newPos;
+}
+
+/**
  * Gets the collision/draw data of a particular piece in a particular rotation.
  *
  * @param piece The kind of piece you want.
@@ -72,60 +119,6 @@ static Position collisionData[7][4][4] = {
 Position* physics_getCollisionData(Piece piece, uint8_t rotation)
 {
     return collisionData[piece][rotation];
-}
-
-/**
- * Moves the active tetromino to the specified position and checks for collisions.
- * Possible return values are EMPTY, FLOOR, STACK and WALL.
- *
- * @param game The game struct pointer.
- * @param absPos The absolute position of the tetromino to check.
- * @returns The kind of block that the active piece would intersect.
- */
-uint8_t physics_testAbsolutePosition(Game* game, Position absPos)
-{
-    Position *collData = physics_getCollisionData(game->active_piece, game->active_orientation);
-
-    uint8_t i;
-    for (i = 0; i < NUM_MINOS_IN_PIECE; i++) {
-
-        Position pos = { collData[i].x + absPos.x, collData[i].y + absPos.y };
-
-        // check x bounds
-        if (pos.x < 0 || pos.x >= GAME_BOARD_WIDTH) {
-            return WALL;
-        }
-
-        // check y bounds
-        if (pos.y >= GAME_BOARD_HEIGHT) {
-            return FLOOR;
-        }
-
-        // we ignore checking for if the piece occupies space above the play area
-        // but we still don't want to index game board with out of bounds indices
-        if (pos.y >= 0) {
-            uint8_t found = game->board[pos.y][pos.x];
-            if (found != EMPTY) {
-                return found;
-            }
-        }
-    }
-    return EMPTY;
-}
-
-/**
- * Moves the active tetromino to the specified position relative to its current position and checks for collisions.
- * Possible return values are EMPTY, FLOOR, STACK and WALL.
- *
- * @param game The game struct pointer.
- * @param absPos The position of the tetromino relative to its current position` to check.
- * @returns The kind of block that the active piece would intersect.
- */
-uint8_t physics_testRelativePosition(Game* game, Position relPos) {
-
-    return physics_testAbsolutePosition(game, (Position) {
-        game->active_position.x + relPos.x, game->active_position.y + relPos.y
-    });
 }
 
 /**
@@ -155,36 +148,6 @@ bool physics_moveActivePiece(Game* game, uint8_t direction)
         return false;
 
     }
-}
-
-/**
- * Applies gravity to the active piece.
- * If the active piece would collide with the stack then it is added to the stack before it is moved.
- *
- * @param game The game struct pointer.
- * @returns true if the tetromino is still in play.
- */
-bool physics_applyGravity(Game* game)
-{
-    Position newPosition = { game->active_position.x, game->active_position.y + 1 };
-
-    uint8_t test = physics_testAbsolutePosition(game, newPosition);
-
-    if (test == EMPTY) {
-
-        // everything okay! let's move the piece to its new position
-        game->active_position.x = newPosition.x;
-        game->active_position.y = newPosition.y;
-        return true;
-
-    } else if (test == STACK || test == FLOOR) {
-
-        // uh, oh! the piece collided with the floor or the stack, let's turn the active piece into part of the stack
-        return false;
-
-    }
-
-    return true;
 }
 
 /**
@@ -263,18 +226,55 @@ bool physics_rotateActivePiece(Game* game, uint8_t direction)
 }
 
 /**
- * Performs a non-locking soft-drop of the active piece.
+ * Moves the active tetromino to the specified position and checks for collisions.
+ * Possible return values are EMPTY, FLOOR, STACK and WALL.
  *
  * @param game The game struct pointer.
+ * @param absPos The absolute position of the tetromino to check.
+ * @returns The kind of block that the active piece would intersect.
  */
-void physics_applySoftDrop(Game* game)
+uint8_t physics_testAbsolutePosition(Game* game, Position absPos)
 {
-    Position newPos = game->active_position;
+    Position *collData = physics_getCollisionData(game->active_piece, game->active_orientation);
 
-    while (physics_testAbsolutePosition(game, newPos) == EMPTY) {
-        newPos.y += 1;
+    uint8_t i;
+    for (i = 0; i < NUM_MINOS_IN_PIECE; i++) {
+
+        Position pos = { collData[i].x + absPos.x, collData[i].y + absPos.y };
+
+        // check x bounds
+        if (pos.x < 0 || pos.x >= GAME_BOARD_WIDTH) {
+            return WALL;
+        }
+
+        // check y bounds
+        if (pos.y >= GAME_BOARD_HEIGHT) {
+            return FLOOR;
+        }
+
+        // we ignore checking for if the piece occupies space above the play area
+        // but we still don't want to index game board with out of bounds indices
+        if (pos.y >= 0) {
+            uint8_t found = game->board[pos.y][pos.x];
+            if (found != EMPTY) {
+                return found;
+            }
+        }
     }
-    newPos.y -= 1;
+    return EMPTY;
+}
 
-    game->active_position = newPos;
+/**
+ * Moves the active tetromino to the specified position relative to its current position and checks for collisions.
+ * Possible return values are EMPTY, FLOOR, STACK and WALL.
+ *
+ * @param game The game struct pointer.
+ * @param absPos The position of the tetromino relative to its current position` to check.
+ * @returns The kind of block that the active piece would intersect.
+ */
+uint8_t physics_testRelativePosition(Game* game, Position relPos) {
+
+    return physics_testAbsolutePosition(game, (Position) {
+        game->active_position.x + relPos.x, game->active_position.y + relPos.y
+    });
 }
