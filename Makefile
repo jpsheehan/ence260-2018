@@ -29,7 +29,7 @@ tetris.o: $(SRC)/tetris.c $(SRC)/tetris.h $(SRC)/physics.h $(UCFK)/utils/pacer.h
 physics.o: $(SRC)/physics.c $(SRC)/physics.h $(SRC)/tetris.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h $(UCFK)/utils/tinygl.h $(UCFK)/fonts/font5x7_1.h $(UCFK)/drivers/avr/ir_uart.h
+game.o: $(SRC)/game.c $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h $(UCFK)/drivers/avr/ir_uart.h $(UCFK)/drivers/led.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 graphics.o: $(SRC)/graphics.c $(SRC)/graphics.h $(SRC)/tetris.h $(SRC)/physics.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/pio.h $(UCFK)/fonts/font5x7_1.h $(UCFK)/utils/font.h $(UCFK)/utils/tinygl.h

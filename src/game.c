@@ -10,10 +10,8 @@
 #include "navswitch.h"
 #include "button.h"
 #include "led.h"
-#include "pio.h"
 #include "pacer.h"
 #include "ir_uart.h"
-#include "tinygl.h"
 
 #include "state.h"
 #include "tetris.h"
@@ -26,6 +24,7 @@
  */
 int main (void)
 {
+    // init the system
     system_init ();
 
     // init the IR comms
@@ -47,6 +46,7 @@ int main (void)
     // init the pacer (100Hz should be good enough to update the screen and the game)
     pacer_init(300);
 
+    // init the state
     state_set(STATE_STARTUP);
 
     while (true)
