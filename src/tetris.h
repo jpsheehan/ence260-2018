@@ -30,28 +30,12 @@
 #define NONE 255
 
 /**
- * Represents the different states of rotation that the Tetrominos can be in.
- */
-#define ROTATE_0 0
-#define ROTATE_90 1
-#define ROTATE_180 2
-#define ROTATE_270 3
-
-/**
  * Some useful macros for the size of the game board
  */
 #define GAME_BOARD_WIDTH 5
 #define GAME_BOARD_HEIGHT 7
 #define NUM_MINOS_IN_PIECE 4
 #define NUM_TETROMINOS 7
-
-/**
- * Some useful macros for specifying relative rotation direction and shift direction.
- */
-#define CLOCKWISE 0
-#define COUNTERCLOCKWISE 1
-#define LEFT 0
-#define RIGHT 1
 
 /**
  * Some useful macros for specifying the type of block at a particular place
@@ -105,6 +89,36 @@ typedef struct game_s {
  * This is set in the tetris_init() function.
  */
 Position DefaultSpawnPosition;
+
+
+/**
+ * Commits the current active tetromino to the stack.
+ * After commiting the active piece, it checks to make sure that the game is not over.
+ * 
+ * @param game The game struct pointer.
+ * @returns true if the game is not over.
+ */
+bool physics_commitActiveTetrominoToStack(Game* game);
+
+/**
+ * Checks each row in the game board for any line clears.
+ * If any are found, they are removed and everything above is moved down.
+ * 
+ * @param game The game struct pointer.
+ * @returns The number of lines cleared.
+ */
+uint8_t physics_processLineClears(Game* game);
+
+/**
+ * Inserts n lines of junk at the bottom of the stack.
+ * If this causes any part of the stack to collide with the "sky" this function returns false as the game is over.
+ * To be fair to the player, the active piece is also moved up one piece.
+ *
+ * @param game The game struct pointer.
+ * @param num_lines The number of lines of junk to insert.
+ * @returns true if the game is not over.
+ */
+bool physics_insertJunk(Game* game, uint8_t num_lines);
 
 /**
  * To be called to initialise the game.

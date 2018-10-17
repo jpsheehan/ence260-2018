@@ -124,6 +124,144 @@ bool holdPiece(Game* game)
     }
 }
 
+
+/**
+ * Commits the current active tetromino to the stack.
+ * After commiting the active piece, it checks to make sure that the game is not over.
+ * 
+ * @param game The game struct pointer.
+ * @returns true if the game is not over.
+ */
+bool physics_commitActiveTetrominoToStack(Game* game)
+{
+    bool isGameOver = false;
+    uint8_t i;
+    for (i = 0; i < NUM_MINOS_IN_PIECE; i++) {
+        Position relPos = physics_getCollisionData(game->active_piece, game->active_orientation)[i];
+        int8_t x = game->active_position.x + relPos.x;
+        int8_t y = game->active_position.y + relPos.y;
+        if (y < 0) {
+            isGameOver = true;
+        } else {
+            game->board[y][x] = STACK;
+        }
+    }
+    return !isGameOver;
+}
+
+/**
+ * Checks each row in the game board for any line clears.
+ * If any are found, they are removed and everything above is moved down.
+ * 
+ * @param game The game struct pointer.
+ * @returns The number of lines cleared.
+ */
+uint8_t physics_processLineClears(Game* game)
+{
+    uint8_t num_clears = 0;
+    
+    // loop through each row
+    uint8_t i;
+    for (i = 0; i < GAME_BOARD_HEIGHT; i++) {
+        
+        // loop through each cell, checking that it is full (a part of the stack)
+        uint8_t j;
+        for (j = 0; j < GAME_BOARD_WIDTH; j++) {
+
+            if (game->board[i][j] != STACK) {
+                break;
+            }
+
+        }
+
+        // if this row is full
+        if (j == GAME_BOARD_WIDTH) {
+            num_clears++;
+
+            // we must now clear this row by shifting all rows above it down by 1
+
+            // starting at the current row (the row to be cleared) and working our way up to the top of the board,
+            // we must shift each k-1 row to the kth row position
+            uint8_t k;
+            for (k = i; k > 0; k--) {
+
+                // for each cell in the previous row move it down one
+                uint8_t j;
+                for (j = 0; j < GAME_BOARD_WIDTH; j++) {
+                    game->board[k][j] = game->board[k-1][j];
+                }
+            }
+
+            // we must now clear the 0th row, because there cannot possibly be any stack there
+            uint8_t j;
+            for (j = 0; j < GAME_BOARD_WIDTH; j++) {
+                game->board[0][j] = 0;
+            }
+        }
+    }
+    
+    return num_clears;
+}
+
+/**
+ * Inserts n lines of junk at the bottom of the stack.
+ * If this causes any part of the stack to collide with the "sky" this function returns false as the game is over.
+ * To be fair to the player, the active piece is also moved up one piece.
+ *
+ * @param game The game struct pointer.
+ * @param num_lines The number of lines of junk to insert.
+ * @returns true if the game is not over.
+ */
+bool physics_insertJunk(Game* game, uint8_t num_lines)
+{
+    // generate a line of junk to insert. a line of junk has one "hole" in it
+    uint8_t holePosition = rand() % GAME_BOARD_WIDTH;
+    bool is_game_lost = false;
+
+    // push the active piece up as well,
+    // we don't want to be dicks about the fact that you're losing
+    game->active_position.y -= 1;
+
+    // insert n lines of junk
+    uint8_t i;
+    for (i = 0; i < num_lines; i++) {
+
+        // first of all, shift everything in the entire stack up one
+        uint8_t j;
+        for (j = 0; j < GAME_BOARD_HEIGHT - 1; j++) {
+            
+            // shift each row up one
+            uint8_t k;
+            for (k = 0; k < GAME_BOARD_WIDTH; k++) {
+                
+                // if this is the first row, we check to see if any stack would be pushed
+                // up out of the playfield
+                if (j == 0) {
+                    if (game->board[j][k] == STACK) {
+                        is_game_lost = true;
+                    }
+                }
+
+                game->board[j][k] = game->board[j+1][k];
+            }
+
+        }
+
+        // insert the junk
+        for (j = 0; j < GAME_BOARD_WIDTH; j++) {
+            if (j == holePosition) {
+                game->board[GAME_BOARD_HEIGHT-1][j] = EMPTY;
+            } else {
+                game->board[GAME_BOARD_HEIGHT-1][j] = STACK;
+            }
+        }
+
+    }
+
+    return !is_game_lost;
+
+}
+
 /**
  * To be called to initialise the game.
  */
