@@ -1,6 +1,11 @@
 /**
- * Tetris Project
- * By Ben Slattery and Jesse Sheehan 2018
+ * graphics.c
+ *
+ * The graphics module provides functions for displaying things on the screen and manipulating the framebuffer.
+ *
+ * ENCE260 Assignment
+ * Written by Ben Slattery and Jesse Sheehan
+ * October 2018
  */
 
 #include "pio.h"
@@ -17,87 +22,123 @@
 #include "physics.h"
 #include "tetris.h"
 
-void graphics_init(void)
-{
-
-    // initialise TinyGL
-    tinygl_init (300);
-    tinygl_font_set (&font5x7_1);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
-    tinygl_clear ();
-    tinygl_text_speed_set (20);
-
-    // initialise the LED matrix
-    ledmat_init();
-}
-
-void displayCharacter(char c)
+/**
+ * Displays a single character on the screen.
+ * 
+ * @param character The character that you want to display.
+ */
+void graphics_displayCharacter(char character)
 {
     char string[2];
-    string[0] = c;
+    string[0] = character;
     string[1] = 0;
 
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
+    tinygl_text_mode_set(TINYGL_TEXT_MODE_STEP);
     tinygl_text(string);
 }
 
-void displayText(const char * string)
+/**
+ * Displays the framebuffer on the screen.
+ * 
+ * @param game The game struct pointer.
+ */
+void graphics_displayFramebuffer(Game *game)
 {
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    uint8_t cols[5] = {0};
+
+    // iterate through columns
+    uint8_t i;
+    for (i = 0; i < 5; i++)
+    {
+
+        //iterate through rows
+        uint8_t j;
+        for (j = 0; j < 7; j++)
+        {
+
+            // If pixel is active on gameboard
+            if (game->framebuffer[j][i])
+            {
+                cols[i] |= (1 << j);
+            }
+        }
+
+        ledmat_display_column(cols[i], i);
+        pacer_wait();
+    }
+
+    pio_output_high(LEDMAT_COL5_PIO);
+}
+
+/**
+ * Displays a string scrolling across the screen.
+ * 
+ * @param string The string to display on the screen.
+ */
+void graphics_displayText(const char *string)
+{
+    tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
     tinygl_text(string);
 }
 
-void fillFramebuffer(Game *game)
-{   
+/**
+ * Clears and fills the framebuffer from the current game data.
+ * 
+ * @param game The game struct pointer.
+ */
+void graphics_fillFramebuffer(Game *game)
+{
     // copy the stack data and clear the frameBuffer at the same time
-    uint8_t i = 0;
-    for (; i < GAME_BOARD_HEIGHT; i++) {
-        uint8_t j = 0;
-        for (; j < GAME_BOARD_WIDTH; j++) {
-            if (game->board[i][j]) {
+    uint8_t i;
+    for (i = 0; i < GAME_BOARD_HEIGHT; i++)
+    {
+
+        uint8_t j;
+        for (j = 0; j < GAME_BOARD_WIDTH; j++)
+        {
+
+            if (game->board[i][j])
+            {
                 game->framebuffer[i][j] = STACK;
-            } else {
+            }
+            else
+            {
                 game->framebuffer[i][j] = EMPTY;
             }
         }
     }
 
     // make it easier to access thhe position of the active piece
-    Position* absPos = &game->active_position;
+    Position *absPos = &game->active_position;
     Position *posData = physics_getCollisionData(game->active_piece, game->active_orientation);
 
     // draw the active piece
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++)
+    {
         Position relPos = posData[i];
         int8_t x = absPos->x + relPos.x;
         int8_t y = absPos->y + relPos.y;
 
-        if (x >= 0 && y >= 0 && x < GAME_BOARD_WIDTH && y < GAME_BOARD_HEIGHT && game->framebuffer[y][x] != STACK) {
+        if (x >= 0 && y >= 0 && x < GAME_BOARD_WIDTH && y < GAME_BOARD_HEIGHT && game->framebuffer[y][x] != STACK)
+        {
             game->framebuffer[y][x] = ACTIVE;
         }
     }
-    
 }
 
 /**
- * initialising columns
+ * Initialises the graphics module.
  */
-void show_screen(uint8_t gameBoard[7][5]) {
-    uint8_t cols[5] = {0};
+void graphics_init(void)
+{
 
-    // iterate through columns
-    uint8_t i;
-    for (i = 0; i < 5; i++) {
-        //iterate through rows
-        uint8_t j;
-        for (j = 0; j < 7; j++) {
-            // If pixel is active on gameboard
-            if (gameBoard[j][i]) {
-                cols[i] |= (1 << j);
-            }
-        }
-        ledmat_display_column (cols[i], i);
-        pacer_wait();
-    }
-    pio_output_high(LEDMAT_COL5_PIO);
+    // initialise TinyGL
+    tinygl_init(300);
+    tinygl_font_set(&font5x7_1);
+    tinygl_text_mode_set(TINYGL_TEXT_MODE_STEP);
+    tinygl_clear();
+    tinygl_text_speed_set(20);
+
+    // initialise the LED matrix
+    ledmat_init();
 }

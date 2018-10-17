@@ -65,7 +65,7 @@ int main (void)
 
             case STATE_STARTUP:
                 tinygl_clear();
-                displayText("Tetris");
+                graphics_displayText("Tetris");
                 while (1) {
                     navswitch_update();
                     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
@@ -80,9 +80,9 @@ int main (void)
             case STATE_MENU:
                 tinygl_clear();
                 if (player_num == 1) {
-                    displayText("1 Player");
+                    graphics_displayText("1 Player");
                 } else {
-                    displayText("2 Player");
+                    graphics_displayText("2 Player");
                 }
                 while (1) {
                     navswitch_update();
@@ -91,10 +91,10 @@ int main (void)
                         tinygl_clear();
                         if (player_num == 1) {
                             player_num = 2;
-                            displayText("2 Player");
+                            graphics_displayText("2 Player");
                         } else {
                             player_num = 1;
-                            displayText("1 Player");
+                            graphics_displayText("1 Player");
                         }
                     }
 
@@ -141,7 +141,7 @@ int main (void)
 
             case STATE_WON:
                 tinygl_clear();
-                displayText("You Win!");
+                graphics_displayText("You Win!");
                 while (1){
                     navswitch_update();
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
@@ -155,7 +155,7 @@ int main (void)
 
             case STATE_LOST:
                 tinygl_clear();
-                displayText("You Lose!");
+                graphics_displayText("You Lose!");
                 while (1){
                     navswitch_update();
                     if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
@@ -167,7 +167,6 @@ int main (void)
                 setState(STATE_STARTUP);
                 break;
         }
-
 
     }
 }

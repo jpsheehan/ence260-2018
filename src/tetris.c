@@ -295,7 +295,7 @@ Game* newGame(void)
 
     generateSevenBag();
     spawnNextTetromino(game);
-    fillFramebuffer(game);
+    graphics_fillFramebuffer(game);
     return game;
 }
 
@@ -317,7 +317,7 @@ uint8_t playTetris(uint8_t num_players)
     uint8_t lineClears = 0;
     led_set(0, false);
     if (num_players == 2) {
-        displayCharacter(' ');
+        graphics_displayCharacter(' ');
         tinygl_update();
         while (1) {
             pacer_wait();
@@ -350,7 +350,7 @@ uint8_t playTetris(uint8_t num_players)
 
         for (wait = 0; wait < aTime; wait++) {
             pacer_wait();
-            show_screen(game->framebuffer);
+            graphics_displayFramebuffer(game);
 
             button_update();
             navswitch_update ();
@@ -360,7 +360,7 @@ uint8_t playTetris(uint8_t num_players)
                 aTime = 35;
             }
             if (check_move(game)) {
-                fillFramebuffer(game);
+                graphics_fillFramebuffer(game);
             }
         }
 
@@ -422,7 +422,7 @@ uint8_t playTetris(uint8_t num_players)
             
         }
         
-        fillFramebuffer(game);
+        graphics_fillFramebuffer(game);
     }
     
     destroyGame(game);
