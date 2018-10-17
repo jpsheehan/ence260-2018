@@ -66,6 +66,12 @@
 #define GAME_NOT_OVER 2
 
 /**
+ * Constants for slowing down or speeding up gravity.
+ */
+#define SLOW_GRAVITY 35;
+#define FAST_GRAVITY 12;
+
+/**
  * Represents a 2D position.
  */
 typedef struct position_s
@@ -108,7 +114,7 @@ Position DefaultSpawnPosition;
 /**
  * Commits the current active tetromino to the stack.
  * After commiting the active piece, it checks to make sure that the game is not over.
- * 
+ *
  * @param game The game struct pointer.
  * @returns true if the game is not over.
  */
@@ -117,7 +123,7 @@ bool tetris_commitActiveTetrominoToStack(Game *game);
 /**
  * Checks each row in the game board for any line clears.
  * If any are found, they are removed and everything above is moved down.
- * 
+ *
  * @param game The game struct pointer.
  * @returns The number of lines cleared.
  */
@@ -141,7 +147,7 @@ void tetris_init(void);
 
 /**
  * Starts a game of tetris.
- * 
+ *
  * @param num_players The number of players this game is for (1 or 2).
  * @returns the score if a 1-player game, true if won if 2-player game.
  */
@@ -151,7 +157,7 @@ uint8_t tetris_play(uint8_t num_players);
  * Generates the next (or first) tetromino and spawns it.
  * If a new tetronmino cannot be spawned it will turn the current tetromino into stack and return false.
  * The game is over if this function returns false.
- * 
+ *
  * @param game The game struct pointer.
  * @returns true if the piece is able to spawn.
  */
@@ -159,7 +165,7 @@ bool tetris_spawnNextTetromino(Game *game);
 
 /**
  * Attempts to hold the active piece. The player can only hold the piece once before they must lock down another piece.
- * 
+ *
  * @param game The game struct pointer.
  * @returns true if the piece is held
  */
@@ -167,7 +173,7 @@ bool tetris_holdPiece(Game *game);
 
 /**
  * Checks the inputs and performs some functions depending on what was pressed.
- * 
+ *
  * @param game The game struct pointer.
  * @returns true if something occurred.
  */
@@ -176,7 +182,7 @@ bool tetris_checkMove(Game *game);
 /**
  * Creates a new game of tetris on the heap.
  * Must be freed with tetris_destroyGame() later.
- * 
+ *
  * @returns A pointer to the new game.
  */
 Game *tetris_newGame(void);
@@ -184,14 +190,14 @@ Game *tetris_newGame(void);
 /**
  * Frees up the memory associated with the game.
  * This must be called at some point when the program is finished with the game.
- * 
+ *
  * @param game The game struct pointer.
  */
 void tetris_destroyGame(Game *game);
 
 /**
  * Spawns a new tetromino at the default location.
- * 
+ *
  * @param game The game struct pointer.
  * @param piece The piece to spawn (I, O, T, S, Z, L or J).
  */

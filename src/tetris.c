@@ -50,7 +50,7 @@ bool tetris_spawnNextTetromino(Game *game)
 {
     tetris_spawnTetromino(game, randomiser_getNextTetromino());
     game->has_held_this_turn = false;
-    
+
     if (physics_testAbsolutePosition(game, game->position) == STACK)
     {
         tetris_commitActiveTetrominoToStack(game);
@@ -348,7 +348,7 @@ bool tetris_checkMove(Game *game)
  */
 uint8_t tetris_play(uint8_t num_players)
 {
-    uint8_t aTime = 35;
+    uint8_t gravity = SLOW_GRAVITY;
 
     // wait for another player if we are playing a 2-player game
     if (num_players == 2)
@@ -367,7 +367,7 @@ uint8_t tetris_play(uint8_t num_players)
     {
 
         uint16_t wait;
-        for (wait = 0; wait < aTime; wait++)
+        for (wait = 0; wait < gravity; wait++)
         {
             pacer_wait();
             graphics_displayFramebuffer(game);
@@ -376,11 +376,11 @@ uint8_t tetris_play(uint8_t num_players)
 
             if (button_down_p(0))
             {
-                aTime = 12;
+                gravity = FAST_GRAVITY;
             }
             else
             {
-                aTime = 35;
+                gravity = SLOW_GRAVITY;
             }
 
             // if something happened, update the framebuffer
@@ -395,7 +395,8 @@ uint8_t tetris_play(uint8_t num_players)
         {
             uint8_t result = comms_processMessage(game);
 
-            if (result != GAME_NOT_OVER) {
+            if (result != GAME_NOT_OVER)
+            {
                 return result;
             }
         }
@@ -409,7 +410,7 @@ uint8_t tetris_play(uint8_t num_players)
             {
 
                 // a new tetromino cannot spawn as it is being blocked by the stack
-                
+
                 // we send the game over signal if we are playing 2-player
                 if (num_players == 2)
                 {
@@ -453,5 +454,4 @@ uint8_t tetris_play(uint8_t num_players)
         // fill the framebuffer
         graphics_fillFramebuffer(game);
     }
-
 }
