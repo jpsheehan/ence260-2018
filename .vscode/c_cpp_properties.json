@@ -5,7 +5,9 @@
             "includePath": [
                 "./lib/drivers",
                 "./lib/drivers/avr",
-                "./src"
+                "./src",
+                "./lib/utils",
+                "./lib/fonts"
             ],
             "intelliSenseMode": "clang-x64",
             "browse": {
