@@ -1,6 +1,11 @@
 /**
- * Tetris Project
- * By Ben Slattery and Jesse Sheehan 2018
+ * menu.h
+ *
+ * The menu module provides functions for displaying menus.
+ *
+ * ENCE260 Assignment
+ * Written by Ben Slattery and Jesse Sheehan
+ * October 2018
  */
 
 #include "menu.h"
@@ -13,23 +18,64 @@
 #include "ir_uart.h"
 #include "pacer.h"
 
-void menu_startup(void)
+/**
+ * Displays the "You Lost!" message (for two-player games).
+ * Transitions to the main menu.
+ */
+void menu_lost(void)
 {
+
     tinygl_clear();
-    graphics_displayText("Tetris");
+    graphics_displayText("You Lose!");
     while (1)
     {
         navswitch_update();
         if (navswitch_push_event_p(NAVSWITCH_PUSH))
         {
-            state_set(STATE_MENU);
             break;
         }
         tinygl_update();
         pacer_wait();
     }
+    state_set(STATE_STARTUP);
 }
 
+/**
+ * Handles the running of all the menus.
+ */
+void menu_main(void)
+{
+    pacer_wait();
+
+    switch (state_get())
+    {
+
+    case STATE_STARTUP:
+        menu_startup();
+        break;
+
+    case STATE_MENU:
+        menu_player_selection();
+        break;
+
+    case STATE_SCORE:
+        menu_score(0);
+        break;
+
+    case STATE_WON:
+        menu_won();
+        break;
+
+    case STATE_LOST:
+        menu_lost();
+        break;
+    }
+}
+
+/**
+ * Displays the player selection screen to the user.
+ * Begins a one-player or two-player game.
+ */
 void menu_player_selection(void)
 {
     uint8_t player_num = 1;
@@ -92,6 +138,12 @@ void menu_player_selection(void)
     }
 }
 
+/**
+ * Displays the player's score.
+ * Transitions to the main menu.
+ *
+ * @param score The score to be displayed.
+ */
 void menu_score(uint8_t score)
 {
 
@@ -113,6 +165,31 @@ void menu_score(uint8_t score)
     //      setState(STATE_STARTUP);
 }
 
+/**
+ * Displays the startup screen to the user.
+ * Transitions to the player selection menu.
+ */
+void menu_startup(void)
+{
+    tinygl_clear();
+    graphics_displayText("Tetris");
+    while (1)
+    {
+        navswitch_update();
+        if (navswitch_push_event_p(NAVSWITCH_PUSH))
+        {
+            state_set(STATE_MENU);
+            break;
+        }
+        tinygl_update();
+        pacer_wait();
+    }
+}
+
+/**
+ * Displays the "You Won!" message (for two-player games).
+ * Transitions to the main menu.
+ */
 void menu_won(void)
 {
 
@@ -129,54 +206,4 @@ void menu_won(void)
         pacer_wait();
     }
     state_set(STATE_STARTUP);
-}
-
-void menu_lost(void)
-{
-
-    tinygl_clear();
-    graphics_displayText("You Lose!");
-    while (1)
-    {
-        navswitch_update();
-        if (navswitch_push_event_p(NAVSWITCH_PUSH))
-        {
-            break;
-        }
-        tinygl_update();
-        pacer_wait();
-    }
-    state_set(STATE_STARTUP);
-}
-
-/**
- * Displays the main menu to the user.
- */
-void menu_main(void)
-{
-    pacer_wait();
-
-    switch (state_get())
-    {
-
-    case STATE_STARTUP:
-        menu_startup();
-        break;
-
-    case STATE_MENU:
-        menu_player_selection();
-        break;
-
-    case STATE_SCORE:
-        menu_score(0);
-        break;
-
-    case STATE_WON:
-        menu_won();
-        break;
-
-    case STATE_LOST:
-        menu_lost();
-        break;
-    }
 }
