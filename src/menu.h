@@ -6,6 +6,8 @@
 #ifndef MENU_H_
 #define MENU_H_
 
+#include <stdint.h>
+
 /**
  * Displays the main menu to the user.
  */
