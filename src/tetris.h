@@ -48,11 +48,6 @@
 #define FLOOR 5
 
 /**
- * Related to random piece generation.
- */
-#define BAG_SIZE 7
-
-/**
  * Represents a 2D position.
  */
 typedef struct position_s {

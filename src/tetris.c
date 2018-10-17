@@ -19,60 +19,7 @@
 #include "tetris.h"
 #include "physics.h"
 #include "graphics.h"
-
-/**
- * We generate random numbers using the 7-bag system.
- * Imagine all 7 different pieces are placed in a bag and drawn at random one-by-one.
- * When you run out of pieces in the bag you put all the pieces back and start again.
- */
-static uint8_t sevenBag[BAG_SIZE];
-static uint8_t sevenBagIndex;
-
-bool existsInSevenBag(uint8_t piece)
-{
-    uint8_t i = 0;
-    for (; i < BAG_SIZE; i++) {
-        if (sevenBag[i] == piece) {
-            return true;
-        }
-    }
-    return false;
-}
-
-uint16_t getRand(void) {
-    return rand() + timer_get();
-}
-
-void generateSevenBag(void)
-{
-    // reset the contents of the bag
-    memset(sevenBag, NONE, BAG_SIZE);
-
-    uint8_t i = 0;
-    for (; i < BAG_SIZE; i++) {
-
-        // pick a piece at random
-        uint8_t piece = getRand() % NUM_TETROMINOS;
-
-        while (existsInSevenBag(piece)) {
-            piece = getRand() % NUM_TETROMINOS;
-        }
-
-        sevenBag[i] = piece;
-    }
-    sevenBagIndex = 0;
-}
-
-/**
- * Returns a number from 0 - 6 (inclusive) that represents the next tetromino to spawned
- */
-uint8_t getNextTetromino(void) {
-    if (sevenBagIndex == BAG_SIZE) {
-        generateSevenBag();
-    }
-    return sevenBag[sevenBagIndex++];
-}
-
+#include "randomiser.h"
 
 /**
  * spawns a particular tetromino.
@@ -92,7 +39,7 @@ void spawnTetromino(Game* game, Piece piece)
  */
 bool spawnNextTetromino(Game* game) {
 
-    spawnTetromino(game, getNextTetromino());
+    spawnTetromino(game, randomiser_getNextTetromino());
     game->has_held_this_turn = false;
     if (physics_testAbsolutePosition(game, game->active_position) == STACK) {
         physics_commitActiveTetrominoToStack(game);
@@ -112,7 +59,7 @@ bool holdPiece(Game* game)
         Piece tempPiece = game->held_piece;
         game->held_piece = game->active_piece;
         if (tempPiece == NONE) {
-            spawnTetromino(game, getNextTetromino());
+            spawnTetromino(game, randomiser_getNextTetromino());
         } else {
             spawnTetromino(game, tempPiece);
         }
@@ -266,7 +213,7 @@ bool physics_insertJunk(Game* game, uint8_t num_lines)
  */
 void tetris_init(void) {
     DefaultSpawnPosition = (Position){1, 0};
-    generateSevenBag();
+    randomiser_generateSevenBag();
 }
 
 
@@ -292,7 +239,7 @@ Game* newGame(void)
         }
     }
 
-    generateSevenBag();
+    randomiser_generateSevenBag();
     spawnNextTetromino(game);
     graphics_fillFramebuffer(game);
     return game;
