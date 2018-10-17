@@ -21,7 +21,7 @@ static uint8_t state;
  *
  * @param _state The state you wish to set (STATE_STARTUP, STATE_MENU, STATE_WON, STATE_LOST or STATE_SCORE).
  */
-uint8_t getState(void)
+uint8_t state_get(void)
 {
     return state;
 }
@@ -31,7 +31,7 @@ uint8_t getState(void)
  *
  * @returns The current state of the game.
  */
-void setState(uint8_t _state)
+void state_set(uint8_t _state)
 {
     state = _state;
 }

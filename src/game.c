@@ -28,6 +28,7 @@ int main (void)
 {
     system_init ();
 
+    // init the IR comms
     ir_uart_init();
 
     // init the button
@@ -40,28 +41,22 @@ int main (void)
     led_init();
     led_set(0, false);
 
+    // init the graphics module
     graphics_init();
-
-    
-
-    // init the IR comms
     
     // init the pacer (100Hz should be good enough to update the screen and the game)
     pacer_init(300);
 
+    state_set(STATE_STARTUP);
 
-    setState(STATE_STARTUP);
-
-    
     uint8_t player_num = 1;
     uint8_t won = 0;
 
-    while (1)
+    while (true)
     {
         pacer_wait();
         
-
-        switch (getState()) {
+        switch (state_get()) {
 
             case STATE_STARTUP:
                 tinygl_clear();
@@ -69,7 +64,7 @@ int main (void)
                 while (1) {
                     navswitch_update();
                     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-                        setState(STATE_MENU);
+                        state_set(STATE_MENU);
                         break;
                     }
                     tinygl_update();
@@ -102,15 +97,15 @@ int main (void)
                         tinygl_clear();
                         if (player_num == 1) {
                             won = playTetris(1);
-                            // setState(STATE_SCORE);
+                            // state_set(STATE_SCORE);
                             // break;
                         } else {
                             won = playTetris(2);
                         }
                         if (won) {
-                            setState(STATE_WON);
+                            state_set(STATE_WON);
                         } else {
-                            setState(STATE_LOST);
+                            state_set(STATE_LOST);
                         }
                         break;
                     }
@@ -150,7 +145,7 @@ int main (void)
                     tinygl_update();
                     pacer_wait();
                 }
-                setState(STATE_STARTUP);
+                state_set(STATE_STARTUP);
                 break;
 
             case STATE_LOST:
@@ -164,7 +159,7 @@ int main (void)
                     tinygl_update();
                     pacer_wait();
                 }
-                setState(STATE_STARTUP);
+                state_set(STATE_STARTUP);
                 break;
         }
 

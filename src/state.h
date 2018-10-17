@@ -27,13 +27,13 @@
  *
  * @returns The current state of the game.
  */
-uint8_t getState(void);
+uint8_t state_get(void);
 
 /**
  * Sets the current state of the game.
  *
  * @param _state The state you wish to set (STATE_STARTUP, STATE_MENU, STATE_WON, STATE_LOST or STATE_SCORE).
  */
-void setState(uint8_t _state);
+void state_set(uint8_t _state);
 
 #endif
