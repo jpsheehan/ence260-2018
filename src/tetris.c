@@ -1,6 +1,11 @@
 /**
- * Tetris Project
- * By Ben Slattery and Jesse Sheehan 2018
+ * tetris.c
+ *
+ * The tetris module provides functions for implementing the tetris game logic (except physics).
+ *
+ * ENCE260 Assignment
+ * Written by Ben Slattery and Jesse Sheehan
+ * October 2018
  */
 
 #include <stdint.h>
