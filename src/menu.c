@@ -114,13 +114,13 @@ void menu_player_selection(void)
             tinygl_clear();
             if (player_num == 1)
             {
-                won = playTetris(1);
+                won = tetris_play(1);
                 // state_set(STATE_SCORE);
                 // break;
             }
             else
             {
-                won = playTetris(2);
+                won = tetris_play(2);
             }
             if (won)
             {

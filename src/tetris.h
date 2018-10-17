@@ -98,7 +98,7 @@ Position DefaultSpawnPosition;
  * @param game The game struct pointer.
  * @returns true if the game is not over.
  */
-bool physics_commitActiveTetrominoToStack(Game* game);
+bool tetris_commitActiveTetrominoToStack(Game* game);
 
 /**
  * Checks each row in the game board for any line clears.
@@ -107,7 +107,7 @@ bool physics_commitActiveTetrominoToStack(Game* game);
  * @param game The game struct pointer.
  * @returns The number of lines cleared.
  */
-uint8_t physics_processLineClears(Game* game);
+uint8_t tetris_processLineClears(Game* game);
 
 /**
  * Inserts n lines of junk at the bottom of the stack.
@@ -118,7 +118,7 @@ uint8_t physics_processLineClears(Game* game);
  * @param num_lines The number of lines of junk to insert.
  * @returns true if the game is not over.
  */
-bool physics_insertJunk(Game* game, uint8_t num_lines);
+bool tetris_insertJunk(Game* game, uint8_t num_lines);
 
 /**
  * To be called to initialise the game.
@@ -128,21 +128,23 @@ void tetris_init(void);
 /**
  * Starts a game of tetris.
  */
-uint8_t playTetris(uint8_t num_players);
+uint8_t tetris_play(uint8_t num_players);
 
 /**
  * Generates the next (or first) tetromino and spawns it.
  */
-bool spawnNextTetromino(Game* game);
+bool tetris_spawnNextTetromino(Game* game);
 
 /**
  * Attempts to hold the active piece.
  * Returns true if successful.
  */
-bool holdPiece(Game* game);
+bool tetris_holdPiece(Game* game);
 
-bool check_move(Game* game);
+bool tetris_checkMove(Game* game);
 
-Game* newGame(void);
+Game* tetris_newGame(void);
+
+void tetris_destroyGame(Game* game);
 
 #endif

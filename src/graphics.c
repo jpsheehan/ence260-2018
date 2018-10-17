@@ -20,6 +20,7 @@
 #include "graphics.h"
 #include "physics.h"
 #include "tetris.h"
+#include "game.h"
 
 /**
  * Displays a single character on the screen.
@@ -132,7 +133,7 @@ void graphics_init(void)
 {
 
     // initialise TinyGL
-    tinygl_init(300);
+    tinygl_init(GAME_RATE);
     tinygl_font_set(&font5x7_1);
     tinygl_text_mode_set(TINYGL_TEXT_MODE_STEP);
     tinygl_clear();

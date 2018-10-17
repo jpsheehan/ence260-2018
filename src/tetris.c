@@ -22,9 +22,9 @@
 #include "randomiser.h"
 
 /**
- * spawns a particular tetromino.
+ * Spawns a particular tetromino.
  */
-void spawnTetromino(Game* game, Piece piece)
+void tetris_spawnTetromino(Game* game, Piece piece)
 {
     game->piece = piece;
     game->position = (Position){ DefaultSpawnPosition.x, DefaultSpawnPosition.y };
@@ -37,12 +37,12 @@ void spawnTetromino(Game* game, Piece piece)
  * If a new tetronmino cannot be spawned it will turn the current tetromino into stack and return false.
  * The game is over if this function returns false
  */
-bool spawnNextTetromino(Game* game) {
+bool tetris_spawnNextTetromino(Game* game) {
 
-    spawnTetromino(game, randomiser_getNextTetromino());
+    tetris_spawnTetromino(game, randomiser_getNextTetromino());
     game->has_held_this_turn = false;
     if (physics_testAbsolutePosition(game, game->position) == STACK) {
-        physics_commitActiveTetrominoToStack(game);
+        tetris_commitActiveTetrominoToStack(game);
         return false;
     } else {
         return true;
@@ -53,15 +53,15 @@ bool spawnNextTetromino(Game* game) {
  * Attempts to hold the active piece.
  * Returns true if successful.
  */
-bool holdPiece(Game* game)
+bool tetris_holdPiece(Game* game)
 {
     if (game->has_held_this_turn == false) {
         Piece tempPiece = game->held_piece;
         game->held_piece = game->piece;
         if (tempPiece == NONE) {
-            spawnTetromino(game, randomiser_getNextTetromino());
+            tetris_spawnTetromino(game, randomiser_getNextTetromino());
         } else {
-            spawnTetromino(game, tempPiece);
+            tetris_spawnTetromino(game, tempPiece);
         }
         game->has_held_this_turn = true;
         return true;
@@ -78,7 +78,7 @@ bool holdPiece(Game* game)
  * @param game The game struct pointer.
  * @returns true if the game is not over.
  */
-bool physics_commitActiveTetrominoToStack(Game* game)
+bool tetris_commitActiveTetrominoToStack(Game* game)
 {
     bool isGameOver = false;
     uint8_t i;
@@ -102,7 +102,7 @@ bool physics_commitActiveTetrominoToStack(Game* game)
  * @param game The game struct pointer.
  * @returns The number of lines cleared.
  */
-uint8_t physics_processLineClears(Game* game)
+uint8_t tetris_processLineClears(Game* game)
 {
     uint8_t num_clears = 0;
     
@@ -158,10 +158,10 @@ uint8_t physics_processLineClears(Game* game)
  * @param num_lines The number of lines of junk to insert.
  * @returns true if the game is not over.
  */
-bool physics_insertJunk(Game* game, uint8_t num_lines)
+bool tetris_insertJunk(Game* game, uint8_t num_lines)
 {
     // generate a line of junk to insert. a line of junk has one "hole" in it
-    uint8_t holePosition = rand() % GAME_BOARD_WIDTH;
+    uint8_t holePosition = randomiser_getRand() % GAME_BOARD_WIDTH;
     bool is_game_lost = false;
 
     // push the active piece up as well,
@@ -218,7 +218,7 @@ void tetris_init(void) {
 
 
 // Allocates a new game on the heap
-Game* newGame(void)
+Game* tetris_newGame(void)
 {
     // initialise a new game object
     Game* game = malloc(sizeof(Game));
@@ -240,13 +240,13 @@ Game* newGame(void)
     }
 
     randomiser_generateSevenBag();
-    spawnNextTetromino(game);
+    tetris_spawnNextTetromino(game);
     graphics_fillFramebuffer(game);
     return game;
 }
 
 // frees the memory used by a game
-void destroyGame(Game* game)
+void tetris_destroyGame(Game* game)
 {
     free(game);
 }
@@ -255,7 +255,7 @@ void destroyGame(Game* game)
 /**
  * Starts a game of tetris.
  */
-uint8_t playTetris(uint8_t num_players)
+uint8_t tetris_play(uint8_t num_players)
 {
     uint8_t receivedChar;
     uint16_t wait;
@@ -290,7 +290,7 @@ uint8_t playTetris(uint8_t num_players)
     led_set(0, false);
     tetris_init();
     uint8_t aTime = 35;
-    Game *game = newGame();
+    Game *game = tetris_newGame();
 
     while (1) {
 
@@ -305,7 +305,7 @@ uint8_t playTetris(uint8_t num_players)
             } else {
                 aTime = 35;
             }
-            if (check_move(game)) {
+            if (tetris_checkMove(game)) {
                 graphics_fillFramebuffer(game);
             }
         }
@@ -313,7 +313,7 @@ uint8_t playTetris(uint8_t num_players)
         if (ir_uart_read_ready_p()) {
             receivedChar = ir_uart_getc();
             if (receivedChar == 'L') {
-                destroyGame(game);
+                tetris_destroyGame(game);
                 if (num_players == 2){
                     return 1;
                 } else {
@@ -322,9 +322,9 @@ uint8_t playTetris(uint8_t num_players)
             }
             if (receivedChar < 5 && receivedChar > 0) {
                 junkRows += receivedChar;
-                if(!physics_insertJunk(game, junkRows / 2)) {
+                if(!tetris_insertJunk(game, junkRows / 2)) {
                     ir_uart_putc ('L');
-                    destroyGame(game);
+                    tetris_destroyGame(game);
                     if (num_players == 2){
                         return 0;
                     } else {
@@ -339,11 +339,11 @@ uint8_t playTetris(uint8_t num_players)
 
         if (!physics_applyGravity(game)) {
 
-            if (!physics_commitActiveTetrominoToStack(game)) {
+            if (!tetris_commitActiveTetrominoToStack(game)) {
                 if (num_players == 2) {
                     ir_uart_putc ('L');
                 }
-                destroyGame(game);
+                tetris_destroyGame(game);
                 if (num_players == 2){
                     return 0;
                 } else {
@@ -351,18 +351,18 @@ uint8_t playTetris(uint8_t num_players)
                 }
             }
 
-            lineClears = physics_processLineClears(game);
+            lineClears = tetris_processLineClears(game);
             if (num_players == 2 && lineClears > 0) {
                 ir_uart_putc (lineClears);
                 lineClears = 0;
             }
 
             
-            if (!spawnNextTetromino(game)) {
+            if (!tetris_spawnNextTetromino(game)) {
                 if (num_players == 2) {
                     ir_uart_putc ('L');
                 }
-                destroyGame(game);
+                tetris_destroyGame(game);
                 return 0;
             }
             
@@ -371,12 +371,12 @@ uint8_t playTetris(uint8_t num_players)
         graphics_fillFramebuffer(game);
     }
     
-    destroyGame(game);
+    tetris_destroyGame(game);
 
 }
 
 // returns true if we need to update the frame buffer
-bool check_move(Game* game)
+bool tetris_checkMove(Game* game)
 {
     if (navswitch_push_event_p(NAVSWITCH_EAST)) {
         physics_moveActivePiece(game, RIGHT);
@@ -391,7 +391,7 @@ bool check_move(Game* game)
         physics_rotateActivePiece(game, CLOCKWISE);
 
     } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-        holdPiece(game);
+        tetris_holdPiece(game);
 
     } else {
         return false;

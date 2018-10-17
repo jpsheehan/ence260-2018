@@ -32,7 +32,7 @@ physics.o: $(SRC)/physics.c $(SRC)/physics.h $(SRC)/tetris.h
 game.o: $(SRC)/game.c $(SRC)/game.h $(UCFK)/drivers/avr/system.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/navswitch.h $(UCFK)/drivers/avr/ir_uart.h $(UCFK)/drivers/led.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-graphics.o: $(SRC)/graphics.c $(SRC)/graphics.h $(SRC)/tetris.h $(SRC)/physics.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/pio.h $(UCFK)/fonts/font5x7_1.h $(UCFK)/utils/font.h $(UCFK)/utils/tinygl.h
+graphics.o: $(SRC)/graphics.c $(SRC)/graphics.h $(SRC)/tetris.h $(SRC)/physics.h $(SRC)/game.h $(UCFK)/drivers/ledmat.h $(UCFK)/drivers/display.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/pio.h $(UCFK)/fonts/font5x7_1.h $(UCFK)/utils/font.h $(UCFK)/utils/tinygl.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 randomiser.o: $(SRC)/randomiser.c $(SRC)/randomiser.h $(SRC)/tetris.h $(UCFK)/drivers/avr/timer.h
