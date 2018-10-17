@@ -11,4 +11,14 @@
  */
 void menu_main(void);
 
+void menu_startup(void);
+
+void menu_player_selection(void);
+
+void menu_score(uint8_t score);
+
+void menu_won(void);
+
+void menu_lost(void);
+
 #endif
