@@ -38,7 +38,7 @@ graphics.o: $(SRC)/graphics.c $(SRC)/graphics.h $(SRC)/tetris.h $(SRC)/physics.h
 randomiser.o: $(SRC)/randomiser.c $(SRC)/randomiser.h $(SRC)/tetris.h $(UCFK)/drivers/avr/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-comms.o: $(SRC)/comms.c $(SRC)/comms.h $(UCFK)/drivers/avr/ir_uart.h $(UCFK)/drivers/led.h $(UCFK)/utils/pacer.h
+comms.o: $(SRC)/comms.c $(SRC)/comms.h $(SRC)/tetris.h $(UCFK)/drivers/avr/ir_uart.h $(UCFK)/drivers/led.h $(UCFK)/utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 # Drivers/System stuff:

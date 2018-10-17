@@ -59,6 +59,13 @@
 #define FLOOR 5
 
 /**
+ * Macros for defining the state of the game.
+ */
+#define GAME_OVER_LOSE 0
+#define GAME_OVER_WIN 1
+#define GAME_NOT_OVER 2
+
+/**
  * Represents a 2D position.
  */
 typedef struct position_s

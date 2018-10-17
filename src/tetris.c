@@ -14,10 +14,8 @@
 
 #include "navswitch.h"
 #include "button.h"
-#include "led.h"
 #include "pio.h"
 #include "pacer.h"
-#include "ir_uart.h"
 #include "timer.h"
 #include "tinygl.h"
 
@@ -350,32 +348,32 @@ bool tetris_checkMove(Game *game)
  */
 uint8_t tetris_play(uint8_t num_players)
 {
-    uint8_t receivedChar = 0;
-    uint16_t wait = 0;
-    uint8_t junkRows = 0;
+    uint8_t aTime = 35;
 
-    led_set(0, false);
+    // wait for another player if we are playing a 2-player game
     if (num_players == 2)
     {
+        // clear the screen
         graphics_displayCharacter(' ');
         tinygl_update();
+
+        // wait for the second player to join
         comms_waitForOtherPlayer();
     }
 
-    tetris_init();
-    uint8_t aTime = 35;
     Game *game = tetris_newGame();
 
-    while (1)
+    while (true)
     {
 
+        uint16_t wait;
         for (wait = 0; wait < aTime; wait++)
         {
             pacer_wait();
             graphics_displayFramebuffer(game);
-
             button_update();
             navswitch_update();
+
             if (button_down_p(0))
             {
                 aTime = 12;
@@ -384,93 +382,76 @@ uint8_t tetris_play(uint8_t num_players)
             {
                 aTime = 35;
             }
+
+            // if something happened, update the framebuffer
             if (tetris_checkMove(game))
             {
                 graphics_fillFramebuffer(game);
             }
         }
 
-        if (ir_uart_read_ready_p())
+        // process any messages from the other player
+        if (num_players == 2 && comms_readyToReceive())
         {
-            receivedChar = ir_uart_getc();
-            if (receivedChar == 'L')
-            {
-                uint8_t score = game->score;
-                tetris_destroyGame(game);
-                if (num_players == 2)
-                {
-                    return 1;
-                }
-                else
-                {
-                    return score;
-                }
-            }
-            if (receivedChar < 5 && receivedChar > 0)
-            {
-                junkRows += receivedChar;
-                if (!tetris_insertJunk(game, junkRows / 2))
-                {
-                    ir_uart_putc('L');
-                    uint8_t score = game->score;
-                    tetris_destroyGame(game);
-                    if (num_players == 2)
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return score;
-                    }
-                }
-                junkRows = junkRows % 2;
+            uint8_t result = comms_processMessage(game);
+
+            if (result != GAME_NOT_OVER) {
+                return result;
             }
         }
 
+        // if applying the gravity somehow fails:
         if (!physics_applyGravity(game))
         {
 
+            // attempt to commit the active tetromino to the stack
             if (!tetris_commitActiveTetrominoToStack(game))
             {
+
+                // a new tetromino cannot spawn as it is being blocked by the stack
+                
+                // we send the game over signal if we are playing 2-player
                 if (num_players == 2)
                 {
-                    ir_uart_putc('L');
+                    comms_sendGameOver();
+                    return GAME_OVER_LOSE;
                 }
+
+                // otherwise we return the score
                 uint8_t score = game->score;
                 tetris_destroyGame(game);
-                if (num_players == 2)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return score;
-                }
+                return score;
             }
 
+            // if we clear some lines, send that information to the other player
             uint8_t lineClears = tetris_processLineClears(game);
             if (num_players == 2 && lineClears > 0)
             {
-                ir_uart_putc(lineClears);
+                comms_sendLineClears(lineClears);
             }
 
+            // attempt to spawn the next tetromino
             if (!tetris_spawnNextTetromino(game))
             {
+
+                // we can't spawn the next tetromino!!
+
+                // send a game over signal if we are playing two player
                 if (num_players == 2)
                 {
-                    ir_uart_putc('L');
+                    comms_sendGameOver();
+                    return GAME_OVER_LOSE;
                 }
 
+                // otherwise, return the score
                 uint8_t score = game->score;
                 tetris_destroyGame(game);
                 return score;
             }
         }
 
+        // fill the framebuffer
         graphics_fillFramebuffer(game);
     }
 
-    uint8_t score = game->score;
-    tetris_destroyGame(game);
-    return score;
 }
