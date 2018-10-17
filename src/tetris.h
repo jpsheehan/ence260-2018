@@ -56,7 +56,8 @@
 /**
  * Represents a 2D position.
  */
-typedef struct position_s {
+typedef struct position_s
+{
     int8_t x;
     int8_t y;
 } Position;
@@ -74,15 +75,16 @@ typedef uint8_t Piece;
 /**
  * Represents the entire state of the game.
  */
-typedef struct game_s {
-    uint8_t board[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];         // contains information about the stack ONLY.
-    uint8_t framebuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];   // contains the data to be written to the screen.
-    Piece piece;                // the currently active piece.
-    Orientation orientation;    // the orientation of the currently active piece.
-    Position position;          // the position of the currently active piece.
-    uint16_t score;             // the score of this game.
-    Piece held_piece;           // the piece that is currently being held. Defaults to NONE.
-    bool has_held_this_turn;    // true if a piece has been held since the previous piece was locked down.
+typedef struct game_s
+{
+    uint8_t board[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];       // contains information about the stack ONLY.
+    uint8_t framebuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH]; // contains the data to be written to the screen.
+    Piece piece;                                              // the currently active piece.
+    Orientation orientation;                                  // the orientation of the currently active piece.
+    Position position;                                        // the position of the currently active piece.
+    uint16_t score;                                           // the score of this game.
+    Piece held_piece;                                         // the piece that is currently being held. Defaults to NONE.
+    bool has_held_this_turn;                                  // true if a piece has been held since the previous piece was locked down.
 } Game;
 
 /**
@@ -98,7 +100,7 @@ Position DefaultSpawnPosition;
  * @param game The game struct pointer.
  * @returns true if the game is not over.
  */
-bool tetris_commitActiveTetrominoToStack(Game* game);
+bool tetris_commitActiveTetrominoToStack(Game *game);
 
 /**
  * Checks each row in the game board for any line clears.
@@ -107,7 +109,7 @@ bool tetris_commitActiveTetrominoToStack(Game* game);
  * @param game The game struct pointer.
  * @returns The number of lines cleared.
  */
-uint8_t tetris_processLineClears(Game* game);
+uint8_t tetris_processLineClears(Game *game);
 
 /**
  * Inserts n lines of junk at the bottom of the stack.
@@ -118,7 +120,7 @@ uint8_t tetris_processLineClears(Game* game);
  * @param num_lines The number of lines of junk to insert.
  * @returns true if the game is not over.
  */
-bool tetris_insertJunk(Game* game, uint8_t num_lines);
+bool tetris_insertJunk(Game *game, uint8_t num_lines);
 
 /**
  * To be called to initialise the game.
@@ -127,24 +129,60 @@ void tetris_init(void);
 
 /**
  * Starts a game of tetris.
+ * 
+ * @param num_players The number of players this game is for (1 or 2).
+ * @returns the score if a 1-player game, true if won if 2-player game.
  */
 uint8_t tetris_play(uint8_t num_players);
 
 /**
  * Generates the next (or first) tetromino and spawns it.
+ * If a new tetronmino cannot be spawned it will turn the current tetromino into stack and return false.
+ * The game is over if this function returns false.
+ * 
+ * @param game The game struct pointer.
+ * @returns true if the piece is able to spawn.
  */
-bool tetris_spawnNextTetromino(Game* game);
+bool tetris_spawnNextTetromino(Game *game);
 
 /**
- * Attempts to hold the active piece.
- * Returns true if successful.
+ * Attempts to hold the active piece. The player can only hold the piece once before they must lock down another piece.
+ * 
+ * @param game The game struct pointer.
+ * @returns true if the piece is held
  */
-bool tetris_holdPiece(Game* game);
+bool tetris_holdPiece(Game *game);
 
-bool tetris_checkMove(Game* game);
+/**
+ * Checks the inputs and performs some functions depending on what was pressed.
+ * 
+ * @param game The game struct pointer.
+ * @returns true if something occurred.
+ */
+bool tetris_checkMove(Game *game);
 
-Game* tetris_newGame(void);
+/**
+ * Creates a new game of tetris on the heap.
+ * Must be freed with tetris_destroyGame() later.
+ * 
+ * @returns A pointer to the new game.
+ */
+Game *tetris_newGame(void);
 
-void tetris_destroyGame(Game* game);
+/**
+ * Frees up the memory associated with the game.
+ * This must be called at some point when the program is finished with the game.
+ * 
+ * @param game The game struct pointer.
+ */
+void tetris_destroyGame(Game *game);
+
+/**
+ * Spawns a new tetromino at the default location.
+ * 
+ * @param game The game struct pointer.
+ * @param piece The piece to spawn (I, O, T, S, Z, L or J).
+ */
+void tetris_spawnTetromino(Game *game, Piece piece);
 
 #endif

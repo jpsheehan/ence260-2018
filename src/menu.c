@@ -117,18 +117,19 @@ void menu_player_selection(void)
                 won = tetris_play(1);
                 // state_set(STATE_SCORE);
                 // break;
+                state_set(STATE_LOST);
             }
             else
             {
                 won = tetris_play(2);
-            }
-            if (won)
-            {
-                state_set(STATE_WON);
-            }
-            else
-            {
-                state_set(STATE_LOST);
+                if (won)
+                {
+                    state_set(STATE_WON);
+                }
+                else
+                {
+                    state_set(STATE_LOST);
+                }
             }
             break;
         }
