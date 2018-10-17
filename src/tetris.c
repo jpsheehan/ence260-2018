@@ -96,7 +96,7 @@ bool tetris_commitActiveTetrominoToStack(Game* game)
 }
 
 /**
- * Checks each row in the game board for any line clears.
+ * Checks each row in the game board for any line clears and increments the game score.
  * If any are found, they are removed and everything above is moved down.
  * 
  * @param game The game struct pointer.
@@ -145,6 +145,8 @@ uint8_t tetris_processLineClears(Game* game)
             }
         }
     }
+
+    game->score += num_clears;
     
     return num_clears;
 }
@@ -209,15 +211,19 @@ bool tetris_insertJunk(Game* game, uint8_t num_lines)
 }
 
 /**
- * To be called to initialise the game.
+ * Initialises the tetris module.
  */
 void tetris_init(void) {
     DefaultSpawnPosition = (Position){1, 0};
     randomiser_generateSevenBag();
 }
 
-
-// Allocates a new game on the heap
+/**
+ * Creates a new game of tetris on the heap.
+ * Must be freed with tetris_destroyGame() later.
+ * 
+ * @returns A pointer to the new game.
+ */
 Game* tetris_newGame(void)
 {
     // initialise a new game object
@@ -229,7 +235,7 @@ Game* tetris_newGame(void)
     game->held_piece = NONE;
     game->has_held_this_turn = false;
 
-    // clear the game board
+    // clear the game board and framebuffer
     uint8_t i;
     for (i = 0; i < GAME_BOARD_HEIGHT; i++) {
         uint8_t j;
@@ -239,13 +245,21 @@ Game* tetris_newGame(void)
         }
     }
 
+    // reset the piece generator, spawn a new piece and populate the framebuffer
     randomiser_generateSevenBag();
     tetris_spawnNextTetromino(game);
     graphics_fillFramebuffer(game);
+
+    // return the pointer to the newly created game
     return game;
 }
 
-// frees the memory used by a game
+/**
+ * Frees up the memory associated with the game.
+ * This must be called at some point when the program is finished with the game.
+ * 
+ * @param game The game struct pointer.
+ */
 void tetris_destroyGame(Game* game)
 {
     free(game);
@@ -254,13 +268,16 @@ void tetris_destroyGame(Game* game)
 
 /**
  * Starts a game of tetris.
+ * 
+ * @param num_players The number of players this game is for (1 or 2).
+ * @return 
  */
 uint8_t tetris_play(uint8_t num_players)
 {
     uint8_t receivedChar;
     uint16_t wait;
     uint8_t junkRows = 0;
-    uint8_t lineClears = 0;
+
     led_set(0, false);
     if (num_players == 2) {
         graphics_displayCharacter(' ');
@@ -313,29 +330,29 @@ uint8_t tetris_play(uint8_t num_players)
         if (ir_uart_read_ready_p()) {
             receivedChar = ir_uart_getc();
             if (receivedChar == 'L') {
+                uint8_t score = game->score;
                 tetris_destroyGame(game);
                 if (num_players == 2){
                     return 1;
                 } else {
-                    return lineClears;
+                    return score;
                 }
             }
             if (receivedChar < 5 && receivedChar > 0) {
                 junkRows += receivedChar;
                 if(!tetris_insertJunk(game, junkRows / 2)) {
                     ir_uart_putc ('L');
+                    uint8_t score = game->score;
                     tetris_destroyGame(game);
                     if (num_players == 2){
                         return 0;
                     } else {
-                        return lineClears;
+                        return score;
                     }
                 }
                 junkRows = junkRows % 2;
             }
-            
         }
-
 
         if (!physics_applyGravity(game)) {
 
@@ -343,21 +360,20 @@ uint8_t tetris_play(uint8_t num_players)
                 if (num_players == 2) {
                     ir_uart_putc ('L');
                 }
+                uint8_t score = game->score;
                 tetris_destroyGame(game);
                 if (num_players == 2){
                     return 0;
                 } else {
-                    return lineClears;
+                    return score;
                 }
             }
 
-            lineClears = tetris_processLineClears(game);
+            uint8_t lineClears = tetris_processLineClears(game);
             if (num_players == 2 && lineClears > 0) {
-                ir_uart_putc (lineClears);
-                lineClears = 0;
+                ir_uart_putc(lineClears);
             }
 
-            
             if (!tetris_spawnNextTetromino(game)) {
                 if (num_players == 2) {
                     ir_uart_putc ('L');
@@ -372,6 +388,7 @@ uint8_t tetris_play(uint8_t num_players)
     }
     
     tetris_destroyGame(game);
+    return 0;
 
 }
 
