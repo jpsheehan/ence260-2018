@@ -36,7 +36,7 @@ void menu_player_selection(void);
  *
  * @param score The score to be displayed.
  */
-void menu_score(uint8_t score);
+// void menu_score(uint8_t score);
 
 /**
  * Displays the startup screen to the user.

@@ -58,9 +58,9 @@ void menu_main(void)
         menu_player_selection();
         break;
 
-    case STATE_SCORE:
-        menu_score(0);
-        break;
+    // case STATE_SCORE:
+    //     menu_score(0);
+    //     break;
 
     case STATE_WON:
         menu_won();
@@ -79,7 +79,6 @@ void menu_main(void)
 void menu_player_selection(void)
 {
     uint8_t player_num = 1;
-    uint8_t won = 0;
 
     tinygl_clear();
     if (player_num == 1)
@@ -114,15 +113,14 @@ void menu_player_selection(void)
             tinygl_clear();
             if (player_num == 1)
             {
-                won = tetris_play(1);
+                tetris_play(1);
                 // state_set(STATE_SCORE);
                 // break;
                 state_set(STATE_LOST);
             }
             else
             {
-                won = tetris_play(2);
-                if (won)
+                if (tetris_play(2) == GAME_OVER_WIN)
                 {
                     state_set(STATE_WON);
                 }
@@ -145,8 +143,8 @@ void menu_player_selection(void)
  *
  * @param score The score to be displayed.
  */
-void menu_score(uint8_t score)
-{
+// void menu_score(uint8_t score)
+// {
 
     //     tinygl_clear();
     //     char buffer[20];
@@ -164,7 +162,7 @@ void menu_score(uint8_t score)
     //         pacer_wait();
     //     }
     //      setState(STATE_STARTUP);
-}
+// }
 
 /**
  * Displays the startup screen to the user.

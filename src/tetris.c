@@ -48,9 +48,9 @@ void tetris_spawnTetromino(Game *game, Piece piece)
  */
 bool tetris_spawnNextTetromino(Game *game)
 {
-
     tetris_spawnTetromino(game, randomiser_getNextTetromino());
     game->has_held_this_turn = false;
+    
     if (physics_testAbsolutePosition(game, game->position) == STACK)
     {
         tetris_commitActiveTetrominoToStack(game);
