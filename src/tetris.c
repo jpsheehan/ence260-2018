@@ -95,8 +95,8 @@ bool spawnNextTetromino(Game* game) {
 
     spawnTetromino(game, getNextTetromino());
     game->has_held_this_turn = false;
-    if (testAbsolutePosition(game, game->active_position) == STACK) {
-        commitActiveTetrominoToStack(game);
+    if (physics_testAbsolutePosition(game, game->active_position) == STACK) {
+        physics_commitActiveTetrominoToStack(game);
         return false;
     } else {
         return true;
@@ -238,7 +238,7 @@ uint8_t playTetris(uint8_t num_players)
             }
             if (receivedChar < 5 && receivedChar > 0) {
                 junkRows += receivedChar;
-                if(!insertJunk(game, junkRows / 2)) {
+                if(!physics_insertJunk(game, junkRows / 2)) {
                     ir_uart_putc ('L');
                     destroyGame(game);
                     if (num_players == 2){
@@ -253,9 +253,9 @@ uint8_t playTetris(uint8_t num_players)
         }
 
 
-        if (!applyGravity(game)) {
+        if (!physics_applyGravity(game)) {
 
-            if (!commitActiveTetrominoToStack(game)) {
+            if (!physics_commitActiveTetrominoToStack(game)) {
                 if (num_players == 2) {
                     ir_uart_putc ('L');
                 }
@@ -267,7 +267,7 @@ uint8_t playTetris(uint8_t num_players)
                 }
             }
 
-            lineClears = processLineClears(game);
+            lineClears = physics_processLineClears(game);
             if (num_players == 2 && lineClears > 0) {
                 ir_uart_putc (lineClears);
                 lineClears = 0;
@@ -295,16 +295,16 @@ uint8_t playTetris(uint8_t num_players)
 bool check_move(Game* game)
 {
     if (navswitch_push_event_p(NAVSWITCH_EAST)) {
-        moveActivePiece(game, RIGHT);
+        physics_moveActivePiece(game, RIGHT);
 
     } else if (navswitch_push_event_p(NAVSWITCH_WEST)) {
-        moveActivePiece(game, LEFT);
+        physics_moveActivePiece(game, LEFT);
 
     } else if (navswitch_push_event_p(NAVSWITCH_NORTH)) {
-        rotateActivePiece(game, COUNTERCLOCKWISE);
+        physics_rotateActivePiece(game, COUNTERCLOCKWISE);
 
     } else if (navswitch_push_event_p(NAVSWITCH_SOUTH)) {
-        rotateActivePiece(game, CLOCKWISE);
+        physics_rotateActivePiece(game, CLOCKWISE);
 
     } else if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         holdPiece(game);
