@@ -3,23 +3,23 @@
  * By Ben Slattery and Jesse Sheehan 2018
  */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "system.h"
 #include "navswitch.h"
 #include "button.h"
 #include "led.h"
 #include "pio.h"
-#include <stdlib.h>
-#include <string.h>
-
-#include "../lib/utils/pacer.h"
+#include "pacer.h"
+#include "ir_uart.h"
+#include "tinygl.h"
 
 #include "state.h"
 #include "tetris.h"
 #include "menu.h"
 #include "physics.h"
 #include "graphics.h"
-#include "ir_uart.h"
-#include "../lib/utils/tinygl.h"
 
 /**
  * Initialises the hardware and starts the main loop.

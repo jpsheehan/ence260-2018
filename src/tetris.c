@@ -7,19 +7,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "tetris.h"
-#include "physics.h"
-#include "graphics.h"
-
 #include "navswitch.h"
 #include "button.h"
 #include "led.h"
 #include "pio.h"
-#include "../lib/utils/pacer.h"
+#include "pacer.h"
 #include "ir_uart.h"
 #include "timer.h"
-#include "../lib/utils/tinygl.h"
+#include "tinygl.h"
 
+#include "tetris.h"
+#include "physics.h"
+#include "graphics.h"
 
 /**
  * We generate random numbers using the 7-bag system.

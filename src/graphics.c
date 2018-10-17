@@ -12,11 +12,10 @@
 #include "system.h"
 #include "ledmat.h"
 #include "display.h"
-
-#include "../lib/utils/tinygl.h"
-#include "../lib/fonts/font3x5_1.h"
-#include "../lib/fonts/font5x7_1.h"
-#include "../lib/utils/pacer.h"
+#include "tinygl.h"
+#include "font3x5_1.h"
+#include "font5x7_1.h"
+#include "pacer.h"
 
 #include "graphics.h"
 #include "physics.h"
