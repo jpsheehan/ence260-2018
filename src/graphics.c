@@ -108,8 +108,8 @@ void graphics_fillFramebuffer(Game *game)
     }
 
     // make it easier to access thhe position of the active piece
-    Position *absPos = &game->active_position;
-    Position *posData = physics_getCollisionData(game->active_piece, game->active_orientation);
+    Position *absPos = &game->position;
+    Position *posData = physics_getCollisionData(game->piece, game->orientation);
 
     // draw the active piece
     for (i = 0; i < 4; i++)

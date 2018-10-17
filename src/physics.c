@@ -71,15 +71,15 @@ static Position collisionData[7][4][4] = {
  */
 bool physics_applyGravity(Game* game)
 {
-    Position newPosition = { game->active_position.x, game->active_position.y + 1 };
+    Position newPosition = { game->position.x, game->position.y + 1 };
 
     uint8_t test = physics_testAbsolutePosition(game, newPosition);
 
     if (test == EMPTY) {
 
         // everything okay! let's move the piece to its new position
-        game->active_position.x = newPosition.x;
-        game->active_position.y = newPosition.y;
+        game->position.x = newPosition.x;
+        game->position.y = newPosition.y;
         return true;
 
     } else if (test == STACK || test == FLOOR) {
@@ -99,14 +99,14 @@ bool physics_applyGravity(Game* game)
  */
 void physics_applySoftDrop(Game* game)
 {
-    Position newPos = game->active_position;
+    Position newPos = game->position;
 
     while (physics_testAbsolutePosition(game, newPos) == EMPTY) {
         newPos.y += 1;
     }
     newPos.y -= 1;
 
-    game->active_position = newPos;
+    game->position = newPos;
 }
 
 /**
@@ -131,15 +131,15 @@ Position* physics_getCollisionData(Piece piece, uint8_t rotation)
  */
 bool physics_moveActivePiece(Game* game, uint8_t direction)
 {
-    Position newPosition = { game->active_position.x + (direction == LEFT ? -1 : 1), game->active_position.y };
+    Position newPosition = { game->position.x + (direction == LEFT ? -1 : 1), game->position.y };
 
     uint8_t test = physics_testAbsolutePosition(game, newPosition);
 
     if (test == EMPTY) {
 
         // everything is ok! we can move the piece to the new position
-        game->active_position.x = newPosition.x;
-        game->active_position.y = newPosition.y;
+        game->position.x = newPosition.x;
+        game->position.y = newPosition.y;
         return true;
 
     } else {
@@ -161,54 +161,54 @@ bool physics_moveActivePiece(Game* game, uint8_t direction)
 bool physics_rotateActivePiece(Game* game, uint8_t direction)
 {
     // store the old rotation unless we neeed it
-    Orientation oldOrientation = game->active_orientation;
+    Orientation oldOrientation = game->orientation;
 
     // change the orientation of the piece
-    switch (game->active_orientation) {
+    switch (game->orientation) {
 
     case ROTATE_0:
         if (direction == CLOCKWISE) {
-            game->active_orientation = ROTATE_90;
+            game->orientation = ROTATE_90;
         } else {
-            game->active_orientation = ROTATE_270;
+            game->orientation = ROTATE_270;
         }
         break;
 
     case ROTATE_90:
         if (direction == CLOCKWISE) {
-            game->active_orientation = ROTATE_180;
+            game->orientation = ROTATE_180;
         } else {
-            game->active_orientation = ROTATE_0;
+            game->orientation = ROTATE_0;
         }
         break;
 
     case ROTATE_180:
         if (direction == CLOCKWISE) {
-            game->active_orientation = ROTATE_270;
+            game->orientation = ROTATE_270;
         } else {
-            game->active_orientation = ROTATE_90;
+            game->orientation = ROTATE_90;
         }
         break;
 
     case ROTATE_270:
         if (direction == CLOCKWISE) {
-            game->active_orientation = ROTATE_0;
+            game->orientation = ROTATE_0;
         } else {
-            game->active_orientation = ROTATE_180;
+            game->orientation = ROTATE_180;
         }
         break;
 
     }
 
     // check to see if the rotation is valid (doesn't collide with anything)
-    if (game->active_piece == O) {
+    if (game->piece == O) {
 
         // O doesn't rotate
         return true;
 
     } else {
 
-        if (physics_testAbsolutePosition(game, game->active_position) == EMPTY) {
+        if (physics_testAbsolutePosition(game, game->position) == EMPTY) {
 
             // if this orientation doesn't collide with anything, keep it there
             return true;
@@ -216,7 +216,7 @@ bool physics_rotateActivePiece(Game* game, uint8_t direction)
         } else {
 
             // rotation is not possible for this piece here. restore its orientation
-            game->active_orientation = oldOrientation;
+            game->orientation = oldOrientation;
             return false;
 
         }
@@ -235,7 +235,7 @@ bool physics_rotateActivePiece(Game* game, uint8_t direction)
  */
 uint8_t physics_testAbsolutePosition(Game* game, Position absPos)
 {
-    Position *collData = physics_getCollisionData(game->active_piece, game->active_orientation);
+    Position *collData = physics_getCollisionData(game->piece, game->orientation);
 
     uint8_t i;
     for (i = 0; i < NUM_MINOS_IN_PIECE; i++) {
@@ -275,6 +275,6 @@ uint8_t physics_testAbsolutePosition(Game* game, Position absPos)
 uint8_t physics_testRelativePosition(Game* game, Position relPos) {
 
     return physics_testAbsolutePosition(game, (Position) {
-        game->active_position.x + relPos.x, game->active_position.y + relPos.y
+        game->position.x + relPos.x, game->position.y + relPos.y
     });
 }

@@ -26,9 +26,9 @@
  */
 void spawnTetromino(Game* game, Piece piece)
 {
-    game->active_piece = piece;
-    game->active_position = (Position){ DefaultSpawnPosition.x, DefaultSpawnPosition.y };
-    game->active_orientation = ROTATE_0;
+    game->piece = piece;
+    game->position = (Position){ DefaultSpawnPosition.x, DefaultSpawnPosition.y };
+    game->orientation = ROTATE_0;
 }
 
 /**
@@ -41,7 +41,7 @@ bool spawnNextTetromino(Game* game) {
 
     spawnTetromino(game, randomiser_getNextTetromino());
     game->has_held_this_turn = false;
-    if (physics_testAbsolutePosition(game, game->active_position) == STACK) {
+    if (physics_testAbsolutePosition(game, game->position) == STACK) {
         physics_commitActiveTetrominoToStack(game);
         return false;
     } else {
@@ -57,7 +57,7 @@ bool holdPiece(Game* game)
 {
     if (game->has_held_this_turn == false) {
         Piece tempPiece = game->held_piece;
-        game->held_piece = game->active_piece;
+        game->held_piece = game->piece;
         if (tempPiece == NONE) {
             spawnTetromino(game, randomiser_getNextTetromino());
         } else {
@@ -83,9 +83,9 @@ bool physics_commitActiveTetrominoToStack(Game* game)
     bool isGameOver = false;
     uint8_t i;
     for (i = 0; i < NUM_MINOS_IN_PIECE; i++) {
-        Position relPos = physics_getCollisionData(game->active_piece, game->active_orientation)[i];
-        int8_t x = game->active_position.x + relPos.x;
-        int8_t y = game->active_position.y + relPos.y;
+        Position relPos = physics_getCollisionData(game->piece, game->orientation)[i];
+        int8_t x = game->position.x + relPos.x;
+        int8_t y = game->position.y + relPos.y;
         if (y < 0) {
             isGameOver = true;
         } else {
@@ -166,7 +166,7 @@ bool physics_insertJunk(Game* game, uint8_t num_lines)
 
     // push the active piece up as well,
     // we don't want to be dicks about the fact that you're losing
-    game->active_position.y -= 1;
+    game->position.y -= 1;
 
     // insert n lines of junk
     uint8_t i;
@@ -222,9 +222,9 @@ Game* newGame(void)
 {
     // initialise a new game object
     Game* game = malloc(sizeof(Game));
-    game->active_piece = I;
-    game->active_orientation = ROTATE_0;
-    game->active_position = DefaultSpawnPosition;
+    game->piece = I;
+    game->orientation = ROTATE_0;
+    game->position = DefaultSpawnPosition;
     game->score = 0;
     game->held_piece = NONE;
     game->has_held_this_turn = false;

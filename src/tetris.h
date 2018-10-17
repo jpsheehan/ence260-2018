@@ -16,9 +16,7 @@
 #include <string.h>
 
 /**
- * Represents the Tetrominos.
- * The origin of all pieces is defined as being the topmost cell. If there is
- * more than one topmost cell, then the topmost and leftmost cell is the origin
+ * Represents each of the tetrominos.
  */
 #define I 0
 #define J 1
@@ -30,15 +28,23 @@
 #define NONE 255
 
 /**
- * Some useful macros for the size of the game board
+ * Macros for the size of the game board.
  */
 #define GAME_BOARD_WIDTH 5
 #define GAME_BOARD_HEIGHT 7
+
+/**
+ * Macro for specifying the number of squares in each piece.
+ */
 #define NUM_MINOS_IN_PIECE 4
+
+/**
+ * Macro for specifying the number of unique tetrominos.
+ */
 #define NUM_TETROMINOS 7
 
 /**
- * Some useful macros for specifying the type of block at a particular place
+ * Macros for specifying the type of block at a particular place.
  */
 #define EMPTY 0
 #define WALL 1
@@ -69,14 +75,14 @@ typedef uint8_t Piece;
  * Represents the entire state of the game.
  */
 typedef struct game_s {
-    uint8_t board[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH]; // contains information about the stack ONLY
-    uint8_t framebuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH]; // contains the data to be written to the screen
-    Piece active_piece;
-    Orientation active_orientation;
-    Position active_position;
-    uint16_t score;
-    Piece held_piece;
-    bool has_held_this_turn;
+    uint8_t board[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];         // contains information about the stack ONLY.
+    uint8_t framebuffer[GAME_BOARD_HEIGHT][GAME_BOARD_WIDTH];   // contains the data to be written to the screen.
+    Piece piece;                // the currently active piece.
+    Orientation orientation;    // the orientation of the currently active piece.
+    Position position;          // the position of the currently active piece.
+    uint16_t score;             // the score of this game.
+    Piece held_piece;           // the piece that is currently being held. Defaults to NONE.
+    bool has_held_this_turn;    // true if a piece has been held since the previous piece was locked down.
 } Game;
 
 /**
@@ -84,7 +90,6 @@ typedef struct game_s {
  * This is set in the tetris_init() function.
  */
 Position DefaultSpawnPosition;
-
 
 /**
  * Commits the current active tetromino to the stack.
