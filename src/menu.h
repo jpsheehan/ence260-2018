@@ -9,6 +9,6 @@
 /**
  * Displays the main menu to the user.
  */
-void mainMenu(void);
+void menu_main(void);
 
 #endif

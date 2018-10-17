@@ -20,7 +20,7 @@ all: game.out
 state.o: $(SRC)/state.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-menu.o: $(SRC)/menu.c
+menu.o: $(SRC)/menu.c $(SRC)/menu.h $(SRC)/tetris.h $(SRC)/state.h $(UCFK)/drivers/navswitch.h $(UCFK)/utils/tinygl.h $(UCFK)/drivers/avr/ir_uart.h $(UCFK)/utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 tetris.o: $(SRC)/tetris.c $(SRC)/tetris.h $(SRC)/physics.h $(UCFK)/utils/pacer.h $(UCFK)/drivers/avr/system.h $(UCFK)/drivers/avr/ir_uart.h
