@@ -25,6 +25,7 @@
 #include "physics.h"
 #include "graphics.h"
 #include "randomiser.h"
+#include "comms.h"
 
 /**
  * Spawns a new tetromino at the default location.
@@ -358,36 +359,9 @@ uint8_t tetris_play(uint8_t num_players)
     {
         graphics_displayCharacter(' ');
         tinygl_update();
-        while (1)
-        {
-            pacer_wait();
-            if (ir_uart_read_ready_p())
-            {
-                led_set(0, false);
-                receivedChar = ir_uart_getc();
-                if (receivedChar == 'r')
-                {
-                    ir_uart_putc('r');
-                    for (wait = 0; wait < 390; wait++)
-                    {
-                        pacer_wait();
-                    }
-                    break;
-                }
-            }
-            else
-            {
-                led_set(0, true);
-                ir_uart_putc('r');
-                receivedChar = ir_uart_getc();
-                if (receivedChar == 'r')
-                {
-                    break;
-                }
-            }
-        }
+        comms_waitForOtherPlayer();
     }
-    led_set(0, false);
+
     tetris_init();
     uint8_t aTime = 35;
     Game *game = tetris_newGame();

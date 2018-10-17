@@ -11,15 +11,14 @@
 #include "system.h"
 #include "navswitch.h"
 #include "button.h"
-#include "led.h"
 #include "pacer.h"
-#include "ir_uart.h"
 
 #include "state.h"
 #include "tetris.h"
 #include "menu.h"
 #include "physics.h"
 #include "graphics.h"
+#include "comms.h"
 #include "game.h"
 
 /**
@@ -33,24 +32,20 @@ int main(void)
     // init the system
     system_init();
 
-    // init the IR comms
-    ir_uart_init();
-
     // init the button
     button_init();
 
     // init the nav switch
     navswitch_init();
 
-    // init the led and turn it off
-    led_init();
-    led_set(0, false);
-
     // init the graphics module
     graphics_init();
 
     // init the pacer
     pacer_init(GAME_RATE);
+
+    // init the communications
+    comms_init();
 
     // init the state
     state_set(STATE_STARTUP);
