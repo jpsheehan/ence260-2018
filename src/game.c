@@ -50,6 +50,9 @@ int main(void)
     // init the state
     state_set(STATE_STARTUP);
 
+    // init the tetris game
+    tetris_init();
+
     while (true)
     {
         menu_main();
